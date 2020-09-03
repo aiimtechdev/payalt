@@ -3296,13 +3296,25 @@ exports = module.exports = function (req, res, next) {
             function(next) {
                 dbo.collection("bitcoin_address").find({}).toArray(function (err, result) {
                     if (typeof result != 'undefined' && result != null && result != "" && (err == null || err == "")) {
-                        var dropDown = '<div class="cus-select"><select name="coin_type" id="coin_type" style="width:250px;" required><option value="">Select Coin Type</option>';
+                        /*var dropDown = '<div class="cus-select"><select name="coin_type" id="coin_type" style="width:250px;" required><option value="">Select Coin Type</option>';
                         result.forEach(function (rescoin, resmsg) {
                             if(rescoin.active == "1"){
                                 dropDown += '<option value="'+rescoin.code+'">'+rescoin.name+'</option>';
                             }
                         });
-                        dropDown += '</select></div>';
+                        dropDown += '</select></div>';*/
+                        var dropDown = '', count = 0, firstCode = '';
+                        result.forEach(function (rescoin, resmsg) {
+                            var code = rescoin.code;
+                            if(count == 0){
+                                firstCode = code;
+                            }
+                            if(rescoin.active == "1"){
+                                dropDown += '<div id="'+code+'" class="coinlst mr-2 mb-3 '+(count == 0 ? "active" : "")+'"><img src="'+process.env.SERVER_URL+'/images/cryptocurrency/'+code+'.png"></div>';
+                            }
+                            count++;
+                        });
+                        dropDown += '<input type="hidden" name="coin_type" id="coin_type" value="'+firstCode+'"/>';
                         return res.send({msg:"success",dropDown: dropDown});
                     } else {
                         return res.send({msg:"error",txt:'Error in processing.  Try again later'});
@@ -3456,4 +3468,31 @@ exports = module.exports = function (req, res, next) {
         ]);
     }
     /** CHECK CARD BALANCE WITH CHECKOUT AMOUNT **/
+
+    /** GET USER TRANSACTIONS **/
+    if(action == "get_user_transactions"){
+        var shopper_id = req.body.logged_user_id;
+        var condition = {shopper_id: ObjectId(shopper_id),status:"processed"};
+
+        dbo.collection("transaction").find(condition, {"sort": ['_id', 'desc']}).skip(0).limit(5).toArray(function (err, result) {
+            var send_contents = '';
+            if (!err){
+                if(result.length > 0){
+                    send_contents += '<table>';
+                    result.forEach(function (index, res) {
+                        send_contents += '<tr><td style="width:10%;"><span class="transaction_circle">'+index.platform[0]+'</span><!--<img src="images/ebay.png"/>--></td>'+
+                        '<td style="font-size: 12px;width: 70%;text-align: left;" class="bold_font lineafter">'+index.platform+'</td>'+
+                        '<td style="font-size: 12px;width: 20%" class="bold_font">$'+index.checkout_amount+'</td>'+
+                        '</tr>';
+                    });
+                    send_contents += '</table><a class="viewallpurchase">View all purchases</a>';
+                } else {
+                    send_contents = '<div style="font-size:14px;padding: 20px;" class="italic">No Transactions Found</div>';
+                }
+            } else {
+                send_contents = '<div style="font-size:14px;padding: 20px;" class="italic">No Transactions Found</div>';
+            }
+            res.send({content: send_contents});
+        });
+    }
 }

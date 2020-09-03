@@ -64,7 +64,8 @@ crypto_popup_span.onclick = function() {
 
 var cryptoselect_popup_span = document.getElementsByClassName("cryptoselect_popup_close")[0];
 cryptoselect_popup_span.onclick = function() {
-    cryptoselect_popup.style.display = "none";
+    $("#cryptoselect_popup").modal("hide");
+    //cryptoselect_popup.style.display = "none";
 }
 
 var payselection_popup_span = document.getElementsByClassName("payselection_popup_close")[0];
@@ -81,7 +82,7 @@ var processing_popup_span = document.getElementsByClassName("processing_popup_cl
 processing_popup_span.onclick = function() {
     processing_popup.style.display = "none";
     payment_popup.style.display = "none";
-    swal("","If you have already manually sent crypto to the wallet address provided, it will take up to 3 hours to process. We will email you when your crypto credit card is ready. Do not click \"Pay\" again otherwise you may be charged a second time. If you did not send the original amount asked, click \"Pay\" again.","warning");
+    swal("","If you have already manually sent crypto to the wallet address provided, it will take up to 3 hours to process. We will email you when your crypto credit card is ready. Do not click \"Pay Now!\" again otherwise you may be charged a second time. If you did not send the original amount asked, click \"Pay Now!\" again.","warning");
 }
 
 var payment_popup_span = document.getElementsByClassName("payment_popup_close")[0];
@@ -134,21 +135,25 @@ oauth_popup_span.onclick = function() {
                 swal("",data.txt,"error");
                 var oauth_view = document.getElementById('oauth_view');
                 oauth_view.remove();
-                oauth_popup.style.display = "none";
+                
+                $("#oauth_popup").modal("hide");
+                //oauth_popup.style.display = "none";
                 payment_popup.style.display = "none";
             },
             error: function (err) {
                 $(".overlayloading,.overlaymain").hide();
                 var oauth_view = document.getElementById('oauth_view');
                 oauth_view.remove();
-                oauth_popup.style.display = "none";
+                $("#oauth_popup").modal("hide");
+                //oauth_popup.style.display = "none";
                 payment_popup.style.display = "none";
             }
         });
     } else {
         var oauth_view = document.getElementById('oauth_view');
         oauth_view.remove();
-        oauth_popup.style.display = "none";
+        $("#oauth_popup").modal("hide");
+        //oauth_popup.style.display = "none";
         payment_popup.style.display = "none";
     }
 }
@@ -166,15 +171,33 @@ function hide_loading_animation()
 webview.addEventListener('new-window', (e) => {
     webview.loadURL(e.url);
 });
-
+function getUserTransactions(){
+    $(".overlaymain,.overlayloading").show();
+    $.ajax({
+        url: site_url+'/trans/get_user_transactions',
+        data: {logged_user_id: logged_user_id},
+        dataType: 'json',
+        type: 'POST',
+        success: function (data) {
+            $(".overlaymain,.overlayloading").hide();
+            $("#latestPurchasesTable").html(data.content);
+        }, error: function(data) {
+            $(".overlaymain,.overlayloading").hide();
+            $("#latestPurchasesTable").html('<div style="font-size:14px;padding: 20px;" class="italic">No Transactions Found</div>');
+        }
+    });
+}
 $(document).ready(function(){
+    if(logged_user_id != '' && logged_user_id != null){
+        getUserTransactions();
+    }
     webview.addEventListener("dom-ready", event => {
         webview.blur();
         webview.focus();
         //webview.openDevTools();
     });
     $("a.billing_dollar").html('<i class="fa fa-credit-card"></i>').css({"font-size": "2.5em","padding": "20px","line-height": "45px"});
-    $("#login_box .modal-title").html("Login to start shopping with crypto. Press \"Pay\" when you're ready to convert and pay!");
+    $("#login_box .modal-title").html("Login to start shopping with crypto.");
     $('#currency_form').validate({
         ignore: [],
     });
@@ -204,7 +227,7 @@ $(document).on("click",".socio_button",function(e){
     } else if(id == "reddit_link"){
         link = 'https://www.reddit.com/submit?url=payalt.com&title=I joined PayAlt and can now shop with crypto anywhere online for free!';
     }
-    window.open(link,'_blank','toolbar=0,status=0,width=700,height=700');
+    window.open(link,'PayAlt','toolbar=0,status=0,width=700,height=700');
 });
 
 $(document).on("click","#pop_close",function(e) {
@@ -225,7 +248,7 @@ $(document).on("click",".coinbase_authorize_ip", function(){
     }
 });
 
-$(document).on("click", ".pymt_select", function(){
+/*$(document).on("click", ".pymt_select", function(){
     var thiss = $(this);
     $(".pymt_select").removeClass("active");
     thiss.addClass("active");
@@ -262,7 +285,7 @@ $(document).on("click", ".pymt_select", function(){
             $(".pymt_select").removeClass("active");
         }
     });
-});
+});*/
 
 $(document).on("click", "#logout", function(){
     localStorage.setItem('logged_user_id',"");
@@ -377,7 +400,7 @@ $(document).on("click", "a#paywithcryto", function(){
                                         $("#paywithcryto span").html('$'+numberWithCommas(data_details.availableBalance));
                                         
                                         var spantxt = document.createElement("span");
-                                        spantxt.innerHTML = "Click the <i class='fa fa-credit-card'></i> (\"credit card icon\") to the left to see your card number. You can use the credit card number anywhere VISA is accepted.";
+                                        spantxt.innerHTML = "Click the <i class='fa fa-credit-card'></i> (\"credit card icon\") to the right to see your card number. You can use the credit card number anywhere VISA is accepted.";
                                         swal({
                                             html: true,
                                             title: "",
@@ -474,7 +497,7 @@ $(document).on("click", "#custom_payment_amount", function(){
     }
 });
 
-$(document).on("click", "#mark_completed", function(){
+/*$(document).on("click", "#mark_completed", function(){
     const wrapper = document.createElement('div');
     wrapper.innerHTML = "<div style='width:100%;display:table-cell;vertical-align:middle;'>Are you sure you want to mark this transaction as completed?</div>";
     
@@ -532,7 +555,7 @@ $(document).on("click", "#mark_completed", function(){
             });
         }
     });
-});
+});*/
 
 $(document).on("click", ".manual_select", function(){
     payselection_popup.style.display = "none";
@@ -593,7 +616,8 @@ function coinbase_oauth(reauth){
                 exchange_coinbase_transaction();
             }else if(data.msg == "noaccount"){
                 if(data.oauth_url != ''){
-                    oauth_popup.style.display = "block";
+                    $("#oauth_popup").modal("show");
+                    //oauth_popup.style.display = "block";
                     oauth_url = data.oauth_url;
                     
                     $("#oauth_views").html('');
@@ -605,7 +629,8 @@ function coinbase_oauth(reauth){
                         let url = new URL(oauth_webview_url);
                         let searchParams = new URLSearchParams(url.search);
                         if(searchParams.get('code') != '' && searchParams.get('code') != null){
-                            oauth_popup.style.display = "none";
+                            $("#oauth_popup").modal("hide");
+                            //oauth_popup.style.display = "none";
                             oauth_views.remove();
                             $(".overlayloading,.overlaymain").show();
                             var code = searchParams.get('code');
@@ -650,7 +675,9 @@ function createVirtualCard(logged_user_id,trans_id){
             } else if(data.msg == "success_existing"){
                 markFinishTrans(logged_user_id,trans_id,data,"existing");
             } else if(data.msg == "error"){
-                $(".overlaycardcreation,.overlaymain").hide();
+                //$(".overlaycardcreation,.overlaymain").hide();
+                $(".overlaycardcreation").modal('hide');
+                $(".overlaymain").hide();
                 swal("",data.txt,"error");
             }
         }
@@ -686,8 +713,10 @@ function markFinishTrans(logged_user_id,trans_id,datares,cardtyp){
             data: {logged_user_id: logged_user_id, transaction_id: trans_id, img: img},
             type: 'POST',
             success: function (dataret) {
+                //$(".overlaycardcreation,.overlaymain").hide();
+                $(".overlaycardcreation").modal("hide");
+                $(".overlaymain").hide();
 
-                $(".overlaycardcreation,.overlaymain").hide();
                 data_details = datares.dataarray;
                 if(typeof data_details.billing != "undefined" && datares.billing != ""){
                     var datetime = data_details.pymt.expdt;
@@ -723,7 +752,7 @@ function markFinishTrans(logged_user_id,trans_id,datares,cardtyp){
                         swal("","Your crypto has been converted and your money has been loaded to a new crypto credit card. You are ready to pay! Click \"OK\", review and place your order. If your credit card number hasn't been automatically entered into the website, you can manually do so by clicking the \"$\" button on the left to view your card information.","success");
                     }*/
                     var spantxt = document.createElement("span");
-                    spantxt.innerHTML = "Congratulations, you just added money to a crypto credit card and it's ready to use. Click the <i class='fa fa-credit-card'></i> (\"credit card icon\") to the left to see your card number. You can use the credit card number anywhere VISA is accepted.";
+                    spantxt.innerHTML = "Congratulations, you just added money to a crypto credit card and it's ready to use. Click the <i class='fa fa-credit-card'></i> (\"credit card icon\") to the right to see your card number. You can use the credit card number anywhere VISA is accepted.";
                     swal({
                         html: true,
                         title: "",
@@ -775,7 +804,9 @@ function checkTransactionCompleted(trans_id,bitcoin_sale_id){
             if(data.msg == "completed"){
                 payment_popup.style.display = "none";
                 processing_popup.style.display = "none";
-                $(".overlaycardcreation,.overlaymain").show();
+                //$(".overlaycardcreation,.overlaymain").show();
+                $(".overlaycardcreation").modal({backdrop: 'static',keyboard: false});
+                $(".overlaymain").show();
                 createVirtualCard(shopper_id,trans_id);
             } else if(data.msg == "processing"){
                 processing_popup.style.display = "block";
@@ -820,7 +851,9 @@ function checkTransactionCompletedNew(trans_id,bitcoin_sale_id){
             if(data.msg == "completed"){
                 payment_popup.style.display = "none";
                 processing_popup.style.display = "none";
-                $(".overlaycardcreation,.overlaymain").show();
+                //$(".overlaycardcreation,.overlaymain").show();
+                $(".overlaycardcreation").modal({backdrop: 'static',keyboard: false});
+                $(".overlaymain").show();
                 createVirtualCard(shopper_id,trans_id);
             } else if(data.msg == "invalidaddress"){
                 checkTransactionCompleted(trans_id,bitcoin_sale_id);
@@ -1023,7 +1056,7 @@ function prompt_otp(){
         content: {
             element: "input",
             attributes: {
-                placeholder: "Coinbase Verification Code",type: "text"
+                placeholder: "Coinbase Verification Code",type: "text",class: "newtxtbox"
             }
         }
     }).then((value) => {
@@ -1063,7 +1096,9 @@ function prompt_otp(){
                             swal("","Coinbase Payment Completed.","success");
                             payment_popup.style.display = "none";
                             processing_popup.style.display = "none";
-                            $(".overlaycardcreation,.overlaymain").show();
+                            //$(".overlaycardcreation,.overlaymain").show();
+                            $(".overlaycardcreation").modal({backdrop: 'static',keyboard: false});
+                            $(".overlaymain").show();
                             createVirtualCard(logged_user_id,trans_id);
                         } else if(data.msg == "reauthenticate"){
                             swal("",data.txt,"warning");
@@ -1135,11 +1170,14 @@ function exchange_coinbase_transaction(){
             type: 'POST',
             success: function (data) {
                 $(".overlaymain,.overlayloading").hide();
+                console.log(data);
                 if(data.msg == "success"){
                     swal("","Coinbase Payment Completed.","success");
                     payment_popup.style.display = "none";
                     processing_popup.style.display = "none";
-                    $(".overlaycardcreation,.overlaymain").show();
+                    //$(".overlaycardcreation,.overlaymain").show();
+                    $(".overlaycardcreation").modal({backdrop: 'static',keyboard: false});
+                    $(".overlaymain").show();
                     createVirtualCard(logged_user_id,trans_id);
                 } else if(data.msg == "reauthenticate"){
                     swal("",data.txt,"warning");
@@ -1153,6 +1191,7 @@ function exchange_coinbase_transaction(){
                 }
             },
             error: function (err) {
+                console.log(err);
                 $(".overlaymain,.overlayloading").hide();
                 swal("","Error in Processing.  Try again later","error");
             }
@@ -1258,8 +1297,9 @@ $(document).on("click", "#preload_payment_amount", function(){
                 $(".overlayloading,.overlaymain").hide();
                 if(data.msg == "success"){
                     $(".coins_dropdown").html(data.dropDown);
-                    callSelectPicker();
-                    cryptoselect_popup.style.display = "block";
+                    //callSelectPicker();
+                    //cryptoselect_popup.style.display = "block";
+                    $("#cryptoselect_popup").modal("show");
                 } else{
                     swal("",data.txt,"error");
                 }
@@ -1305,19 +1345,23 @@ function paynowPopup(){
     pay_value = pay_value.toFixed(2);
     scrap_title = "Checkout Payment";
     
-    scrap_txt = '<div class="txtleft" style="font-size: 14px;">Let\'s convert your crypto to a credit card! Is the payment amount correct? If so, click "Convert". If not, click "Edit" and enter the correct amount.</div>';
+    var info_icon = "images/info_icon.png";
+    
+    scrap_txt = '<div class="row"><div class="col-3"><div class="infoIconClass"></div></div><div class="col-9"><div class="txtleft" style="font-size: 16px;">Let\'s convert your crypto to a credit card! Is the payment amount correct? If so, click "Convert". If not, click "Edit" and enter the correct amount.</div>';
     scrap_txt += '<div class="chkamt_txt" style="margin-top: 20px;">'+
         '<div class="bold_font" style="font-size: 16px;text-align: left;margin-bottom: 15px;">Total Payment: <span style="margin-left: 20px;" id="chkamtval">$'+numberWithCommas(pay_value)+'</span></div>'+
-    '</div>';
+    '</div></div>';
     button_array = {
         manualenter: {
             text: "EDIT",
-            value: "manualenter"
+            value: "manualenter",
+            className: "cancel_button"
         },
         confirm: {
             text: "CONVERT",
             confirm: true,
-            value: "confirm"
+            value: "confirm",
+            className: "swal_buttons"
         }
     }
     const wrapper = document.createElement('div');
@@ -1331,7 +1375,7 @@ function paynowPopup(){
             $("#custom_amount_callback").val("paynow");
             $("#custom_amount_popup_two").modal("show");
         } else if(value == "confirm") {
-            
+            $(".overlayloading,.overlaymain").show();
             /** CHECK CARD BALANCE AVAILABLE **/
             $.ajax({
                 url: site_url+'/trans/check_card_balance',
@@ -1345,7 +1389,7 @@ function paynowPopup(){
                     var preloaded = $(".billing_dollar").css("display");
                     if(preloaded == "none" || reconvert == 1){
                         $("#preloadHid").val("");
-                        $(".overlayloading,.overlaymain").show();
+                        //$(".overlayloading,.overlaymain").show();
                         $.ajax({
                             url: site_url+'/trans/get_all_cryptocoins',
                             data: {},
@@ -1354,8 +1398,9 @@ function paynowPopup(){
                                 $(".overlayloading,.overlaymain").hide();
                                 if(data.msg == "success"){
                                     $(".coins_dropdown").html(data.dropDown);
-                                    callSelectPicker();
-                                    cryptoselect_popup.style.display = "block";
+                                    //callSelectPicker();
+                                    $("#cryptoselect_popup").modal("show");
+                                    //cryptoselect_popup.style.display = "block";
                                 } else{
                                     swal("",data.txt,"error");
                                 }
@@ -1369,8 +1414,8 @@ function paynowPopup(){
                                 data: {logged_user_id: logged_user_id},
                                 type: 'POST',
                                 success: function (data) {
+                                    $(".overlayloading,.overlaymain").hide();
                                     if(data.msg == "success"){
-
                                         addr_details = data.retarray;
                                         var webview = document.getElementById('view');
                                         autofill_card = "";
@@ -1440,7 +1485,7 @@ webview.addEventListener("ipc-message", function (e) {
             autofill_card = "1";
         }
     } else if (e.channel === "cart-detect-completed") {
-        console.log("INSIDE CART DETECTION");
+        //console.log("INSIDE CART DETECTION");
         $(".overlayloading,.overlaymain").hide();
         var cart_data = e.args[0];
         var cart_total = cart_data.cart_total;
@@ -1560,8 +1605,9 @@ $(document).on("click", "#currencyselect_payment", function(e){
                 var preloadHid = $("#preloadHid").val();
                 $("#preloadHid").val("");
                 billing_popup.style.display = "none";
-                crypto_popup.style.display = "none";                
-                cryptoselect_popup.style.display = "none";
+                crypto_popup.style.display = "none";
+                $("#cryptoselect_popup").modal("hide");
+                //cryptoselect_popup.style.display = "none";
                 $(".overlaymain,.overlayloading").show();
                 //bitcoin_transaction("","");   //Aliant Pay Commented
                 coinbase_trans(preloadHid,"",coin_type);
@@ -1570,3 +1616,54 @@ $(document).on("click", "#currencyselect_payment", function(e){
     }
 });
 /** SELECT CURRENCY **/
+
+/*COIN SELECTION SCRIPT **/
+$(document).on("click", ".coinlst", function(e){
+    e.stopImmediatePropagation();
+    var thiss = $(this);
+    $(".coinlst").removeClass("active");
+    thiss.addClass("active");
+    var sel = thiss.attr("id");
+    $("input[type='hidden']#coin_type").val(sel);
+});
+$(document).on("click", "#oauth_back", function(e){
+    e.stopImmediatePropagation();
+    var oauth_view = document.getElementById('oauth_view');
+    oauth_view.remove();
+    $("#oauth_popup").modal("hide");
+    $("#cryptoselect_popup").modal("show");
+});
+$(document).on("click", "#currencyselect_payment_back", function(e){
+    e.stopImmediatePropagation();
+
+    var preloadHid = $("#preloadHid").val();    
+    $("#cryptoselect_popup").modal("hide");
+    if(preloadHid == "preloadcard"){
+        $("#preload_amount_popup").modal("show");
+    } else {
+       paynowPopup();
+    }
+});
+$(document).on("click", ".fullscreen", function(e){
+    toggleFullScreen();
+});
+function toggleFullScreen() {
+  if ((document.fullScreenElement && document.fullScreenElement !== null) ||    
+   (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+    if (document.documentElement.requestFullScreen) {  
+      document.documentElement.requestFullScreen();  
+    } else if (document.documentElement.mozRequestFullScreen) {  
+      document.documentElement.mozRequestFullScreen();  
+    } else if (document.documentElement.webkitRequestFullScreen) {  
+      document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);  
+    }  
+  } else {  
+    if (document.cancelFullScreen) {  
+      document.cancelFullScreen();  
+    } else if (document.mozCancelFullScreen) {  
+      document.mozCancelFullScreen();  
+    } else if (document.webkitCancelFullScreen) {  
+      document.webkitCancelFullScreen();  
+    }  
+  }  
+}
