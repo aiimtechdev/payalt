@@ -1,0 +1,59 @@
+<% include layout/webportal_header %>
+    <script type="text/javascript" src="js/jquery.mask.js"></script>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+    <div class="content_login">
+        <div id="login_bx">
+            <div id="adduserbox" class="rswidauto">
+
+                <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
+                <div class="alert alert-danger"><%-err_msg%></div>
+                <%}%>
+                <%if(typeof succ_msg != 'undefined' && succ_msg != ''){%>
+                <div class="alert alert-success"><%-succ_msg%></div>
+                <%}%>
+                <h2 class="mtop0 padbottom20" style="text-align: center;">Add User</h2>
+                <form action="" method="post" id="register_form">
+                    <div class="">
+                        <div class="uname_box">
+                            <p class="mbottom5">First Name</p>
+                            <input type="text" class="input wid100imp" id="first_name" name="first_name" placeholder="First Name" required value="">
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5">Last Name</p>
+                            <input type="text" class="input wid100imp" id="last_name" name="last_name" placeholder="Last Name" required value="">
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5">Username</p>
+                            <input type="text" class="input wid100imp" id="username" name="username" placeholder="Username" required>
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5">Email</p>
+                            <input type="email" class="input wid100imp" id="email" name="email" placeholder="Email" required value="">
+                        </div>                            
+                        <div class="uname_box">
+                            <p class="mbottom5">Phone #</p>
+                            <input type="text" class="input wid100imp" id="phone" name="phone" placeholder="Phone #" required value="">
+                        </div>
+                    </div>
+
+                    <div class="txtcenter padtop20 col-md-12 col-sm-12 col-xs-12">
+                        <input type="submit" class="site-btn wid200px" value="Add User" id="add_user">
+                    </div>
+                    <input type="hidden" name="add_user" value="1"/>
+                </form>
+                <a href="/user_management" class="back_link"><i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+        </div>
+    </div>
+    <script>
+    jQuery(document).ready(function(){
+        jQuery("#phone").mask('(000) 000-0000');
+    });
+    jQuery(document).on("click","#add_user",function(){
+        var valid = $("#register_form").valid();
+        if(valid){
+            $("#register_form").submit();
+        }
+    });
+    </script>
+<% include layout/footer %>

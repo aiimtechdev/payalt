@@ -1,0 +1,166 @@
+/*!
+ * Contact Buttons Plugin Demo 0.1.0
+ * https://github.com/joege/contact-buttons-plugin
+ *
+ * Copyright 2015, José Gonçalves
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+#contact-buttons-bar {
+    position: fixed;
+    top: 34%;
+    left: -50px;
+    width: 50px;
+    right: 0px;
+    left: unset !important;
+}
+
+
+#contact-buttons-bar.slide-on-scroll {
+    position: absolute;
+}
+
+.contact-button-link  {
+    display: block;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    margin-bottom: 1px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 22px;
+    background: #8e8e93;
+    color: #fff;
+    position: relative;
+    left: 0;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    -webkit-transition: all 250ms;
+    -moz-transition: all 250ms;
+    transition: all 250ms;
+}
+.contact-button-link:hover,
+.contact-button-link:focus,
+.contact-button-link:active {
+    color: #fff;
+    padding-right: 20px;
+    width: 70px;
+    left: -20px;
+}
+.contact-button-link.cb-hidden {
+    left: 50px;
+}
+.contact-button-link.facebook {
+    background: #3b5998;
+}
+.contact-button-link.twitter {
+    background: #00acee;
+}
+.contact-button-link.linkedin {
+    background: #0077b5;
+}
+.contact-button-link.tumblr {
+    background: #34526f;
+}
+.contact-button-link.git {
+    background: #ad5c51;
+}
+.contact-button-link.pinterest {
+    background: #c8232c;
+}
+.contact-button-link.reddit {
+    background: #ff4301;
+}
+.contact-button-link.gplus {
+    background: #db4437;
+}
+
+.contact-button-link.separated {
+    margin-top: 1em;
+}
+
+.show-hide-contact-bar,
+.contact-button-link.show-hide-contact-bar:focus,
+.contact-button-link.show-hide-contact-bar:active {
+    background: #fff800;
+    color: #000;
+    border: 0;
+    outline: 0;
+    padding: 0;
+    width: 50px;
+    left: 0px;
+    box-shadow: 0px 0px 5px 0px #ccc;
+}
+.show-hide-contact-bar .fa.fa-share-alt
+{
+    color: #000 !important;
+}
+.contact-button-link.show-hide-contact-bar:hover {
+    color: #000;
+    /*background: #1884ab;*/
+    /*background-color: rgba(24, 132, 171, 0.7);*/
+    background: #fff800;
+    padding: 0;
+    width: 50px;
+    left: 0px;
+}
+.fa.fa-share-alt
+{
+    color: #fff;
+}
+@media all and (min-width: 320px) and (max-width: 766px){
+    #contact-buttons-bar{
+        top: 12% !important;
+    }
+}
+/*Top align CSS begins*/
+
+/*#contact-buttons-bar {
+    position: fixed;
+    top: 0%;
+    left: -50px;
+    width: auto;
+    right: 42%;
+    left: unset !important;
+    z-index: 5;
+}
+.contact-button-link
+{
+    display: inline-block;
+}
+.contact-button-link:hover, .contact-button-link:focus, .contact-button-link:active
+{
+    color: #fff;
+    height: 70px;
+    padding-right: 0px;
+    left: 0px;
+}
+.contact-button-link.show-hide-contact-bar:hover, .contact-button-link.show-hide-contact-bar:active, .contact-button-link.show-hide-contact-bar:focus
+{
+    color: #000;
+    background: #1884ab;
+    background-color: rgba(24, 132, 171, 0.7);
+    padding: 0;
+    width: 50px;
+    left: 0px;
+    height: 50px;
+}
+.contact-button-link.cb-hidden {
+    left: unset;
+    top: -50px;
+}
+.show-hide-contact-bar, .contact-button-link.show-hide-contact-bar:hover, .contact-button-link.show-hide-contact-bar:active, .contact-button-link.show-hide-contact-bar:focus
+{
+    background: transparent;
+}
+.fa.fa-share-alt
+{
+    color: #000;
+}*/
+
+/*Top align CSS ends*/

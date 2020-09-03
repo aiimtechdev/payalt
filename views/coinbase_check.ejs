@@ -1,0 +1,58 @@
+<% include layout/header %>
+<link rel="stylesheet" href="js/sweetalert.min.css">
+<script src="js/sweetalert.js"></script>
+
+<script type="text/javascript" src="js/jquery.validate.min.js"></script>
+
+<div style="max-width:400px;min-height:500px;margin:0 auto;">
+<div class="pymt_select col-md-10 col-sm-10 col-xs-12" id="coinbase_select" style="margin: 0 auto;" data-value="coinbase">
+    <form action="" method="post" id="billing_form" style="min-width: 400px;">
+        <h2>Bitcoin Payment</h2>
+        <div class="uname_box">
+            <p class="mbottom5 txtleft" style="font-weight: bold;font-size: 18px;">Payment Amount</p>
+            <div class="input-group mbottom10">
+                <input type="text" class="input wid100imp" id="pay_amt" name="pay_amt" placeholder="Enter Amount" required>
+            </div>
+        </div>
+        <button type="button" class="site_button" id="make_payment">Make Payment</button>
+    </form>
+</div>
+</div>
+<script>
+jQuery(document).on("click","#make_payment",function(){
+    var valid = $("#billing_form").valid();
+    if(valid){
+        var billing_amount = $("#pay_amt").val();
+        billing_amount = billing_amount.replace(/,/g, '');
+        var server_url = '<%=process.env.SERVER_URL%>';
+        $.ajax({
+            url: server_url+'/trans/test_coinbase_payment',
+            data: {billing_amount:billing_amount},
+            type: 'POST',
+            success: function (data) {
+                $(".overlayloading,.overlaymain").hide();
+                if(data.msg == "success"){
+                    start_coinbase_transaction();
+                }else if(data.msg == "noaccount"){
+                    if(data.oauth_url != ''){                        
+                        oauth_url = data.oauth_url;
+                        window.open(oauth_url,"Coinbase OAuth2");
+                    }
+                }else if(data.msg == "error"){
+                    swal("",data.txt,"error");
+                }
+            },
+            error: function (err) {
+                $(".overlayloading,.overlaymain").hide();
+                swal("","Error in login.  Try again later","error");
+            }
+        });
+    }
+});
+</script>
+<style type="text/css">
+label.error{
+    display:none !important;
+}
+</style>
+<% include layout/footer %>

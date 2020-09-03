@@ -1,0 +1,293 @@
+<% include layout/webportal_header %>
+<style>
+section .section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+}
+.nav-tabs .nav-link{
+    color: #000 !important;
+}
+#tabs .nav-tabs .nav-item.show .nav-link,.nav-tabs .nav-link.active {    
+    background-color: transparent;
+    border-color: transparent transparent #f3f3f3;
+    border-bottom: 4px solid #55cac2 !important
+}
+#tabs .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    color: #333 !important;
+    padding: 20px;
+}
+.transtbl.table thead th{
+    padding: 1.3em;
+    text-align: center;
+    color: #55cac2;
+    background: #fff;
+    border: none;
+}
+.transtbl.table td, .transtbl.table th{
+    padding:1.3em;
+    text-align:center;
+    border-top: 1px solid #dee2e6;
+    font-size:14px;
+}
+#nav-tabContent
+{
+    background: #fff;
+}
+@media only screen and (max-width: 800px) {
+	.cuswid550{width: 90% !important;}
+}
+</style>
+<style type="text/css">
+    .select2.select2-container{width:100% !important;margin-bottom: 20px;}
+</style>
+
+    <link rel="stylesheet" href="js/select2.min.css">
+    <script src="js/select2.min.js"></script>
+
+    <link rel="stylesheet" href="js/sweetalert.min.css">
+    <script src="js/sweetalert.js"></script>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+
+    <div class="update_notifications">Updated Successfully.</div>
+
+    <div class="content_login" style="width: 75%;margin: 35px auto 0 auto;">
+        <!--<nav class="resp_top50" style="background: #fff;">
+            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-bitcoin-tab" data-toggle="tab" href="#nav-bitcoin" role="tab" aria-controls="nav-bitcoin" aria-selected="true">BitCoin Address</a>
+                <a class="nav-item nav-link active" id="nav-shoplinks-tab" data-toggle="tab" href="#nav-shoplinks" role="tab" aria-controls="nav-shoplinks" aria-selected="false">Download Links</a>
+                <a class="nav-item nav-link" id="nav-apikeys-tab" data-toggle="tab" href="#nav-apikeys" role="tab" aria-controls="nav-apikeys" aria-selected="false">API Settings</a>
+            </div>
+        </nav>-->
+        <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+            <!--<div class="tab-pane fade show active no-more-tables" id="nav-bitcoin" role="tabpanel" aria-labelledby="nav-bitcoin-tab">
+                <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+                    <h1 class="txtcenter">Bitcoin Address</h1>
+                </div>
+                <div class="white-box pad0 cuswid550">
+                    <div class="content" id="register_bx" style="margin-top:20px;">
+                        <form action="" method="post" id="register_form" class="bitcoin_form">
+                            <div class="uname_box">
+                                <label for="btc_address" class="txtleft displayblock">Bitcoin Address for BTC: </label>
+                                <input type="text" class="input wid100imp" id="btc_address" name="btc_address" placeholder="Enter Address" value="<%if(typeof bitcoin == "undefined"){}else{%><%=bitcoin.btc_address%><%}%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="ltc_address" class="txtleft displayblock">Bitcoin Address for LTC: </label>
+                                <input type="text" class="input wid100imp" id="ltc_address" name="ltc_address" placeholder="Enter Address" value="<%if(typeof bitcoin == "undefined"){}else{%><%=bitcoin.ltc_address%><%}%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="eth_address" class="txtleft displayblock">Bitcoin Address for ETH: </label>
+                                <input type="text" class="input wid100imp" id="eth_address" name="eth_address" placeholder="Enter Address" value="<%if(typeof bitcoin == "undefined"){}else{%><%=bitcoin.eth_address%><%}%>" required>
+                            </div>
+                            <input type="hidden" name="update_bitcoin" value="1"/>
+                        </form>
+                        <button type="button" class="site_button" style="margin-top:20px;" id="update_info_bitcoin">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade no-more-tables" id="nav-shoplinks" role="tabpanel" aria-labelledby="nav-shoplinks-tab">            
+                <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+                    <h1 class="txtcenter">Update Download Links</h1>
+                </div>
+                <div class="white-box pad0 cuswid550">
+                    <div class="content" id="register_bx" style="margin-top:20px;">
+                        <form action="" method="post" id="register_form" class="link_form">
+                            <div class="uname_box">
+                                <label for="windows_32_bit" class="txtleft displayblock">Windows 32 Bit Download Link: </label>
+                                <input type="text" class="input wid100imp" id="windows_32_bit" name="windows_32_bit" placeholder="Enter Link" value="<%=links.windows_32_bit%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="windows_64_bit" class="txtleft displayblock">Windows 64 Bit Download Link: </label>
+                                <input type="text" class="input wid100imp" id="windows_64_bit" name="windows_64_bit" placeholder="Enter Link" value="<%=links.windows_64_bit%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="linux_32_bit" class="txtleft displayblock">Linux 32 Bit Download Link: </label>
+                                <input type="text" class="input wid100imp" id="linux_32_bit" name="linux_32_bit" placeholder="Enter Link" value="<%=links.linux_32_bit%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="linux_64_bit" class="txtleft displayblock">Linux 64 Bit Download Link: </label>
+                                <input type="text" class="input wid100imp" id="linux_64_bit" name="linux_64_bit" placeholder="Enter Link" value="<%=links.linux_64_bit%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="mac_64_bit" class="txtleft displayblock">Mac 64 Bit Download Link: </label>
+                                <input type="text" class="input wid100imp" id="mac_64_bit" name="mac_64_bit" placeholder="Enter Link" value="<%=links.mac_64_bit%>" required>
+                            </div>
+                            <input type="hidden" name="update_link" value="1"/>
+                        </form>
+                        <button type="button" class="site_button" style="margin-top:20px;" id="update_info">Update</button>
+                    </div>
+                </div>
+            </div>-->
+            <div class="tab-pane fade show active no-more-tables" id="nav-apikeys" role="tabpanel" aria-labelledby="nav-apikeys-tab">
+                <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+                    <h1 class="txtcenter">API Settings</h1>
+                </div>
+                <div class="white-box pad0 cuswid550">
+                    <div class="content" id="register_bx" style="margin-top:20px;padding:5%;">
+                        <form action="" method="post" id="register_form" class="settings_form">
+                            <h3 style="color: #55cac2;border-left: 4px solid;text-align: left;padding-left: 8px;margin-bottom: 20px;">AliantPay Settings</h3>
+                            <div class="uname_box">
+                                <label for="aliantpay_sandbox" class="txtleft displayblock">AliantPay Sandbox Mode?</label>
+                                <select name="aliantpay_sandbox" id="aliantpay_sandbox" required class="">
+                                    <option value="true" <%=(site_settings.aliantpay_sandbox == 'true' || site_settings.aliantpay_sandbox == '') ? 'selected' : ''%>>Yes</option>
+                                    <option value="false" <%=site_settings.aliantpay_sandbox == 'false' ? 'selected' : ''%>>No</option>
+                                </select>
+                            </div>
+                            <div class="uname_box">
+                                <label for="aliantpay_api_url" class="txtleft displayblock">AliantPay API URL: </label>
+                                <input type="text" class="input wid100imp" id="aliantpay_api_url" name="aliantpay_api_url" placeholder="Enter URL" value="<%=site_settings.aliantpay_api_url%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="aliantpay_invoice_url" class="txtleft displayblock">AliantPay Invoice URL: </label>
+                                <input type="text" class="input wid100imp" id="aliantpay_invoice_url" name="aliantpay_invoice_url" placeholder="Enter URL" value="<%=site_settings.aliantpay_invoice_url%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="aliantpay_authorization" class="txtleft displayblock">AliantPay Authorization: </label>
+                                <input type="text" class="input wid100imp" id="aliantpay_authorization" name="aliantpay_authorization" placeholder="Enter Value" value="<%=site_settings.aliantpay_authorization%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="aliantpay_api_token" class="txtleft displayblock">AliantPay API Token: </label>
+                                <textarea class="input wid100imp" id="aliantpay_api_token" name="aliantpay_api_token" placeholder="Enter Value" required><%=site_settings.aliantpay_api_token%></textarea>
+                            </div>
+
+                            <h3 style="color: #55cac2;border-left: 4px solid;text-align: left;padding-left: 8px;margin-top: 20px;margin-bottom: 20px;">PEX Card Settings</h3>
+                            <div class="uname_box">
+                                <label for="vcard_username" class="txtleft displayblock">PEX Username: </label>
+                                <input type="text" class="input wid100imp" id="vcard_username" name="vcard_username" placeholder="Enter URL" value="<%=site_settings.vcard_username%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="vcard_password" class="txtleft displayblock">PEX Password: </label>
+                                <input type="text" class="input wid100imp" id="vcard_password" name="vcard_password" placeholder="Enter URL" value="<%=site_settings.vcard_password%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="vcard_encoded_upass" class="txtleft displayblock">PEX Encoded Username/Password: </label>
+                                <input type="text" class="input wid100imp" id="vcard_encoded_upass" name="vcard_encoded_upass" placeholder="Enter Value" value="<%=site_settings.vcard_encoded_upass%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="vcard_api_url" class="txtleft displayblock">PEX API URL: </label>
+                                <input type="text" class="input wid100imp" id="vcard_api_url" name="vcard_api_url" placeholder="Enter Value" value="<%=site_settings.vcard_api_url%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="vcard_datahook_url" class="txtleft displayblock">PEX Card DataHook URL: </label>
+                                <input type="text" class="input wid100imp" id="vcard_datahook_url" name="vcard_datahook_url" placeholder="Enter Value" value="<%=site_settings.vcard_datahook_url%>" required>
+                            </div>
+
+                            <h3 style="color: #55cac2;border-left: 4px solid;text-align: left;padding-left: 8px;margin-top: 20px;margin-bottom: 20px;">Coinbase Settings</h3>
+                            <div class="uname_box">
+                                <label for="coinbase_api_url" class="txtleft displayblock">Coinbase API URL: </label>
+                                <input type="text" class="input wid100imp" id="coinbase_api_url" name="coinbase_api_url" placeholder="Enter URL" value="<%=site_settings.coinbase_api_url%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="coinbase_api_key" class="txtleft displayblock">Coinbase API Key: </label>
+                                <input type="text" class="input wid100imp" id="coinbase_api_key" name="coinbase_api_key" placeholder="Enter Value" value="<%=site_settings.coinbase_api_key%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="coinbase_api_secret" class="txtleft displayblock">Coinbase API Secret: </label>
+                                <input type="text" class="input wid100imp" id="coinbase_api_secret" name="coinbase_api_secret" placeholder="Enter Value" value="<%=site_settings.coinbase_api_secret%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="coinbase_oauth_client_id" class="txtleft displayblock">Coinbase OAuth Client ID: </label>
+                                <input type="text" class="input wid100imp" id="coinbase_oauth_client_id" name="coinbase_oauth_client_id" placeholder="Enter Value" value="<%=site_settings.coinbase_oauth_client_id%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="coinbase_oauth_client_secret" class="txtleft displayblock">Coinbase OAuth Client Secret: </label>
+                                <input type="text" class="input wid100imp" id="coinbase_oauth_client_secret" name="coinbase_oauth_client_secret" placeholder="Enter Value" value="<%=site_settings.coinbase_oauth_client_secret%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="coinbase_oauth_redirect_url" class="txtleft displayblock">Coinbase OAuth Redirect URL: </label>
+                                <input type="text" class="input wid100imp" id="coinbase_oauth_redirect_url" name="coinbase_oauth_redirect_url" placeholder="Enter URL" value="<%=site_settings.coinbase_oauth_redirect_url%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="coinbase_oauth_scope" class="txtleft displayblock">Coinbase OAuth Scope: </label>
+                                <textarea class="input wid100imp" id="coinbase_oauth_scope" name="coinbase_oauth_scope" placeholder="Enter Value" required><%=site_settings.coinbase_oauth_scope%></textarea>
+                            </div>
+                            
+                            <h3 style="color: #55cac2;border-left: 4px solid;text-align: left;padding-left: 8px;margin-top: 20px;margin-bottom: 20px;">Twilio Settings</h3>
+                            <div class="uname_box">
+                                <label for="twilio_sandbox" class="txtleft displayblock">Twilio Sandbox Mode?</label>
+                                <select name="twilio_sandbox" id="twilio_sandbox" required class="">
+                                    <option value="true" <%=(site_settings.twilio_sandbox == 'true' || site_settings.twilio_sandbox == '') ? 'selected' : ''%>>Yes</option>
+                                    <option value="false" <%=site_settings.twilio_sandbox == 'false' ? 'selected' : ''%>>No</option>
+                                </select>
+                            </div>
+                            <div class="uname_box">
+                                <label for="twilio_sid" class="txtleft displayblock">Twilio SID: </label>
+                                <input type="text" class="input wid100imp" id="twilio_sid" name="twilio_sid" placeholder="Enter Value" value="<%=site_settings.twilio_sid%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="twilio_token" class="txtleft displayblock">Twilio Token: </label>
+                                <input type="text" class="input wid100imp" id="twilio_token" name="twilio_token" placeholder="Enter Value" value="<%=site_settings.twilio_token%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="twilio_from" class="txtleft displayblock">Twilio From Number: </label>
+                                <input type="text" class="input wid100imp" id="twilio_from" name="twilio_from" placeholder="Enter Value" value="<%=site_settings.twilio_from%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="twilio_countrycode" class="txtleft displayblock">Twilio Country Code: </label>
+                                <input type="text" class="input wid100imp" id="twilio_countrycode" name="twilio_countrycode" placeholder="Enter Value" value="<%=site_settings.twilio_countrycode%>" required>
+                            </div>
+
+                            <!--<h3 style="color: #55cac2;border-left: 4px solid;text-align: left;padding-left: 8px;margin-top: 20px;margin-bottom: 20px;">Cloudinary Settings</h3>
+                            <div class="uname_box">
+                                <label for="cloudinary_name" class="txtleft displayblock">Cloudinary Name: </label>
+                                <input type="text" class="input wid100imp" id="cloudinary_name" name="cloudinary_name" placeholder="Enter Value" value="<%=site_settings.cloudinary_name%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="cloudinary_key" class="txtleft displayblock">Cloudinary Key: </label>
+                                <input type="text" class="input wid100imp" id="cloudinary_key" name="cloudinary_key" placeholder="Enter Value" value="<%=site_settings.cloudinary_key%>" required>
+                            </div>
+                            <div class="uname_box">
+                                <label for="cloudinary_secret" class="txtleft displayblock">Cloudinary Secret Key: </label>
+                                <input type="text" class="input wid100imp" id="cloudinary_secret" name="cloudinary_secret" placeholder="Enter Value" value="<%=site_settings.cloudinary_secret%>" required>
+                            </div>-->
+                            <input type="hidden" name="cloudinary_name" value=""/>
+                            <input type="hidden" name="cloudinary_key" value=""/>
+                            <input type="hidden" name="cloudinary_secret" value=""/>
+
+
+                            <h3 style="color: #55cac2;border-left: 4px solid;text-align: left;padding-left: 8px;margin-top: 20px;margin-bottom: 20px;">Transaction Settings</h3>
+                            <div class="uname_box">
+                                <label for="transaction_sandbox" class="txtleft displayblock">Sandbox Mode?</label>
+                                <select name="transaction_sandbox" id="transaction_sandbox" required class="">
+                                    <option value="true" <%=(site_settings.transaction_sandbox == 'true') ? 'selected' : ''%>>Yes</option>
+                                    <option value="false" <%=(site_settings.transaction_sandbox == 'false' || site_settings.transaction_sandbox == '') ? 'selected' : ''%>>No</option>
+                                </select>
+                            </div>
+
+                            <input type="hidden" name="update_settings" value="1"/>
+                        </form>
+                        <button type="button" class="site_button" style="margin-top:20px;" id="update_settings">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    jQuery(document).ready(function(){
+        jQuery('#aliantpay_sandbox').select2();
+        jQuery('#twilio_sandbox').select2();
+        jQuery('#transaction_sandbox').select2();
+    });
+    jQuery(document).on("click","#update_info",function(){
+        var valid = $(".link_form").valid();
+        if(valid){
+            $(".link_form").submit();
+        }
+    });
+    jQuery(document).on("click","#update_info_bitcoin",function(){
+        var valid = $(".bitcoin_form").valid();
+        if(valid){
+            $(".bitcoin_form").submit();
+        }
+    });
+    jQuery(document).on("click","#update_settings",function(){
+        var valid = $(".settings_form").valid();
+        if(valid){
+            $(".settings_form").submit();
+        }
+    });
+    </script>
+<% include layout/footer %>

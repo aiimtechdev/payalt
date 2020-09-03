@@ -1,0 +1,117 @@
+            <div class="col-md-12 col-sm-12 col-xs-12 padleft0 padright0" id="footer-widget">
+                <div class="container">
+                    <div class="txtcenter" style="/*margin-bottom: 15px;*/">
+                        <a href="mailto:contact@payalt.com" style="margin: 0px 10px;">
+                            <img src="../images/updated/mail.png" style="width: 50px;">
+                        </a>
+                        <a style="margin: 0px 10px;" href="https://twitter.com/payalt_official">
+                            <img src="./images/updated/twitter.png" style="width: 50px;">
+                        </a>
+                        <a style="margin: 0px 10px;" href="https://www.instagram.com/payalt_official/">
+                            <img src="./images/updated/instagram.png" style="width: 50px;">
+                        </a>
+                        <a style="margin: 0px 10px;" href="https://www.facebook.com/payaltofficial/">
+                            <img src="./images/updated/facebook.png" style="width: 50px;">
+                        </a>
+                    </div>
+                    <!--
+                    <div class="footcontent txtcenter">
+                        <a style="text-decoration: none;" href="./terms_conditions">Terms & Conditions | </a>
+                        <a style="text-decoration: none;" href="./privacy_policy">Privacy Policy | </a>
+                        <a style="text-decoration: none;" href="./about">About</a>
+                    </div>
+                    -->
+                </div>
+            </div>
+            <div id="share-bar"></div>
+            <div class="modal" id="myModal" role="dialog" style="background: #fff; height: auto; width: auto; top: 10px;">
+                <div class="modal-header">
+                    <h4 class="modal-title">Shop Now</h4>
+                    <button type="button" class="close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+                </div>
+                <div class="content" style="padding: 5%;">
+                    <div style="font-size: 20px; margin-bottom: 10px;">Download Windows Or Mac Installer</div>
+                    <div class="resp_total_modal" style="border: 1px solid #ccc;">
+                        <div class="window_install_sec" style="display: inline-block; width: 45%; position: relative; padding-right: 25px; border-right: 1px solid #ccc;">
+                            <h5 class="resp_top_head" style="margin-bottom: 20px;">Windows Installer</h5>
+                            <a href="" style="color: #fff; display: inline-block;" class="site_button" id="windows_32_link">Download 32 Bit</a>
+                            <a href="" style="color: #fff; margin-top: 10px; display: inline-block;" class="site_button" id="windows_64_link">Download 64 Bit</a>
+                            <span style="position: absolute; right: 4px; top: 40%;">O</span>
+                        </div>
+                        <div class="mac_install_sec" style="display: inline-block; width: 45%; position: relative; padding-left: 25px;vertical-align:top;">
+                            <h5 class="resp_top_head mbott20">Mac Installer</h5>
+                            <a href="" style="color:#fff;margin-top:0px;display: inline-block;" class="site_button" id="mac_64_link">Download 64 Bit</a>
+                            <span style="position: absolute; left: 1px; top: 65%;">R</span>
+                        </div>
+                        <!--<div style="display: inline-block; width: 45%; position: relative; padding-left: 25px;">    
+                            <h5 class="resp_top_head mbott20">Linux Debian Installer</h5>
+                            <a href="" style="color:#fff;display: inline-block;" class="site_button" id="linux_32_link">Download 32 Bit</a>
+                            <a href="" style="color:#fff;margin-top:10px;display: inline-block;" class="site_button" id="linux_64_link">Download 64 Bit</a>
+                            <span style="position: absolute; left: 1px; top: 40%;">R</span>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+            <script src="js/float_social/js/jquery.contact-buttons.js"></script>
+            <script src="js/float_social/js/demo.js"></script>
+            <script src="js/protocolcheck.js"></script>
+            <script type="text/javascript">
+                $(window).scroll(function(){
+                    if ($(window).scrollTop() > 0) {
+                        $('#headerdiv').addClass('fixed-header');
+                        $(".bancontpad").addClass("padtop12emimp");
+                    }
+                    else {
+                        $('#headerdiv').removeClass('fixed-header');
+                        $(".bancontpad").removeClass("padtop12emimp");
+                    }
+                });
+                $(document).ready(function(){
+                    //jQuery('.wrapmenu').adaptiveMenu();
+                    $.ajax({
+                        url: '/trans/get_download_link',
+                        data: {},
+                        type: 'POST',
+                        success: function (data) {
+                            if(typeof data !== "undefined" && data != ""){
+                                if(typeof data.links !== "undefined" && data.links != ""){
+                                    $("#windows_32_link").attr("href",data.links.windows_32_bit);
+                                    $("#windows_64_link").attr("href",data.links.windows_64_bit);
+                                    $("#linux_32_link").attr("href",data.links.linux_32_bit);
+                                    $("#linux_64_link").attr("href",data.links.linux_64_bit);
+                                    $("#mac_64_link").attr("href",data.links.mac_64_bit);
+                                }
+                            }
+                        }
+                    });
+                });
+            $(document).on("click",".shopnow_button",function(event){
+                $("#myModal").modal("show");
+                /*var href= 'payalt://';
+                window.protocolCheck(href,function () {
+                    console.log("protocol not recognized");
+                    $("#myModal").modal("show");
+                },
+                function () {
+                    console.log("protocol recognized");
+                });
+                event.preventDefault ? event.preventDefault() : event.returnValue = false;*/
+            });
+            </script>
+            
+            <!--Start of Tawk.to Script-->
+            <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+            var s1=document.createElement("script"), s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/5cb413c8d6e05b735b428f1a/default';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+            })();
+            </script>
+            <!--End of Tawk.to Script-->
+            
+    </body>
+</html>

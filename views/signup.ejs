@@ -1,0 +1,592 @@
+<% include layout/header %>    
+    <script type="text/javascript" src="js/jquery.mask.js"></script>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+    <div class="content_login">
+        <div id="register_bx">
+            <h2 class="mtop0 register_heading" style="text-align: center;margin-top: 20px;">Sign Up</h2>
+            
+            <div class="container mobrespcontner">
+                <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
+                    <div class="error"><%-err_msg%></div>
+                <%}%>
+                <div class="row">
+                    <div class="col-md-12 register-payalt">
+                        <form id="msform" method="post" action="">
+                            <!-- progressbar -->
+                            <div class="regsteps">
+                            <ul id="progressbar" style="padding-left:0px;">
+                                <li class="active yelwcolor"><span>1</span></li>
+                                <li><span>2</span></li>
+                                <li><span>3</span></li>
+                                <div class="brderline"></div>
+                            </ul>
+                            </div>
+                            <!-- fieldsets -->
+                            <fieldset id="personinfo" class="animate">
+                                <div style="display:none;" class="mobstepsonly"><span>1</span></div>
+                                <h2 class="fs-title">Personal Information</h2>                   
+                                <div class="stepsheight1">
+                                <div class="row col-md-12 pdrmove">
+                                 <div class="col-md-4 col-xs-12 ">   
+                                     <div style="display:none;" data-error="first_name" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
+                                     <input type="text" id="first_name" class="txtOnly reqfled" name="first_name" placeholder="FIRST NAME" tabindex="1" value="<%=formData.first_name%>"/>
+                                 </div>
+                                 <div class="col-md-4 col-xs-12 "> 
+                                     <div style="display:none;" data-error="last_name" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>    
+                                    <input type="text" id="last_name" class="txtOnly reqfled" name="last_name" placeholder="LAST NAME" tabindex="2" value="<%=formData.last_name%>" />                                         
+                                 </div>
+                                 <div class="col-md-4 col-xs-12 ">   
+                                     <div style="display:none;" data-error="email" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
+                                     <input type="email" id="email" class="reqfled" name="email" placeholder="EMAIL ADDRESS" tabindex="3" value="<%=formData.email%>" />                      
+                                 </div>                
+                                </div>
+                                <div class="row col-md-12 pdrmove">
+                                    <div class="col-md-4 col-xs-12 ">   
+                                     <div style="display:none;" data-error="phone" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
+                                     <input id="phone" class="reqfled" type="text" name="phone" placeholder="PHONE" tabindex="4" value="<%=formData.phone%>" />
+                                    </div>
+                                    <div class="col-md-4 col-xs-12">
+                                        <div style="display:none;" data-error="dob" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
+                                        <input type="text" id="dob" class="reqfled" name="dob" placeholder="DATE OF BIRTH" tabindex="5" value="<%=formData.dob%>" />
+                                    </div>
+                                 <div class="col-md-4 col-xs-12 ovregtndiv">      
+                                     <div class="ovreigtn">Over Eighteen ?</div>
+                                      <label class="radiocontainer radiocotone">Yes
+                                        <input class="regover" type="radio" checked="checked" name="radio" value="yes" tabindex="6" >
+                                        <span class="radiocheckmark"></span>
+                                      </label>
+                                      <label class="radiocontainer radiocottwo">No
+                                        <input class="regover" type="radio" name="radio" value="no" tabindex="7" >
+                                        <span class="radiocheckmark"></span>
+                                      </label>
+                                     <div style="display:none;" class="overeight">Can't register, Age must be above 18 years</div>
+                                 </div>                 
+                                </div> 
+                                </div>
+                                <div class="nextbttnregtr col-md-12 col-xs-12 col-sm-12">
+                                    <button id="nextbtn1" type="button" name="next" class="next  register-button">  Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>      
+                                </div>
+                            </fieldset>
+                            <fieldset style="display:none;" id="billinfo" class="animate">
+                                <div style="display:none;" class="mobstepsonly"><span>2</span></div>
+                                <h2 class="fs-title">Billing Information</h2>
+                                <h3 class="fs-subtitle">( This will be the billing address that will be used for all credit cards we create for you. )</h3>
+                                <div class="stepsheight2">
+                                <div class="row col-md-12 pdrmove">
+                                <div class="col-md-4 col-xs-12"> 
+                                <div style="display:none;" data-error="address" class="errorfld"><i class="fa fa-exclamation-circle"></i></div> 
+                                <input type="text" id="address" class="reqfled" name="address" placeholder="ADDRESS" tabindex="8" value="<%=formData.address%>" />
+                                </div>                                                
+                                <div class="col-md-4 col-xs-12"> 
+                                <div style="display:none;" data-error="zipcode" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>    
+                                <input type="text" id="zipcode" class="reqfled numOnly" maxlength="5" name="zipcode" placeholder="ZIPCODE" tabindex="9" value="<%=formData.zipcode%>"/>
+                                </div>
+                                <div class="col-md-4 col-xs-12"> 
+                                <div style="display:none;" data-error="city" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>    
+                                <input type="text" id="city" class="txtOnly reqfled" name="city" placeholder="CITY" tabindex="10" value="<%=formData.city%>"/>
+                                </div>
+                                <div class="col-md-4 col-xs-12">           
+                                    <div style="display:none;" data-error="state" class="errorfld"><i class="fa fa-exclamation-circle"></i></div> 
+                                    <select class="form-control stateselfrm reqfled" id="state" name="state" placeholder="STATE" tabindex="11" >
+                                        <option value="">STATE</option>
+                                        <%us_states.forEach(function(rslt, index) {%>
+                                        <option value="<%=rslt%>" <%if(formData.state == rslt){%>selected<%}%>><%=rslt%></option>
+                                        <%})%>
+                                    </select>
+                                </div>
+                                </div>  
+                                </div>
+                                <div class="backregsbtn col-md-12 col-xs-12 col-sm-12">
+                                    <button id="backbtn2" type="button" class="previous action-button-previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i>Back </button>     
+                                    <button id="nextbtn2" type="button" class="next action-button"> Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                                    <div class="clrbt"></div>
+                                </div>                
+                            </fieldset>
+                            <fieldset style="display:none;" id="logininfo" class="animate">
+                                <div style="display:none;" class="mobstepsonly"><span>3</span></div>
+                                <h2 class="fs-title">Login Information</h2>
+                                <h3 class="fs-subtitle"></h3>
+                                <div class="stepsheight3">
+                                    <div class="row col-md-12 pdrmove">
+                                        <div class="col-md-4 col-xs-12"> 
+                                            <div style="display:none;" data-error="username" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
+                                            <input type="text" id="username" class="reqfled noSpace" name="username" placeholder="USER NAME" tabindex="12" value="<%=formData.username%>"/>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12"> 
+                                            <div style="display:none;" data-error="reg-password" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>    
+                                            <input type="password" id="reg-password" class="reqfled noSpace" name="password" placeholder="PASSWORD" tabindex="13" />
+                                            <div style="display:none;" class="passmsg1">Password should have atleast 6 characters.</div>
+                                        </div>
+                                        <div class="col-md-4 col-xs-12"> 
+                                            <div style="display:none;" data-error="reg-repassword" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
+                                            <input type="password" id="reg-repassword" class="reqfled noSpace" name="repassword" placeholder="CONFIRM PASSWORD" tabindex="14" />
+                                            <div style="display:none;" class="passmsg2">Confirm Password not matches with your Password.</div>
+                                        </div>
+                                    </div>
+                                    <div class="row col-md-12">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input reqfled" id="terms_all" data-id="all_terms" value="1">
+                                            <label class="custom-control-label" for="terms_all">I accept <a href="#terms_conditions_content" class="terms_conditions"> Terms and Conditions</a></label>
+                                            <div style="display:none;" class="termmsg">Agree to Terms and Conditions.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clrbt"></div>
+                                <div class="col-md-12 col-xs-12 col-sm-12">
+                                    <button id="backbtn3" type="button" class="previous action-button-previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i>Back </button>                               
+                                    <button type="button" id="submitbtnreg" class="action-button">Submit <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                                </div>
+                                <div class="clrbt"></div>
+                            </fieldset>
+                            <input type="hidden" name="submit_form_register" value="1"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="terms_conditions_content" style="display:none;">
+        <div class="col-md-12 col-sm-12 col-xs-12 padleft0 padright0 padtop20 padbottom20">
+            <div><strong>Acceptance of the Terms of Use</strong></div><br>
+        <div>These terms of use are entered into by and between You and PayAlt Corp. ("<strong>Company,</strong>" "<strong>we,</strong>" or "<strong>us</strong>"). The following terms and conditions, together with our Privacy Policy found at <a href="https://payalt.com/privacy_policy">https://payalt.com/privacy_policy</a> and Copyright Policy found at <a href="https://payalt.com/legal">https://payalt.com/legal</a> which are expressly incorporated by reference (collectively, "<strong>Terms of Use</strong>"), govern your access to and use of payalt.com, including any content, functionality, and services offered on or through <a href="https://payalt.com/">https://payalt.com/</a>  (the "<strong>Website</strong>"), whether as a guest or a registered user.<br><br>
+Please read the Terms of Use carefully before you start to use the Website. <strong>By using the Website or by clicking to accept or agree to the Terms of Use when this option is made available to you, you accept and agree to be bound and abide by these Terms of Use and our Privacy Policy, found at <a href="https://payalt.com/privacy_policy">https://payalt.com/privacy_policy</a>, incorporated herein by reference.</strong> If you do not want to agree to these Terms of Use or the Privacy Policy, you must not access or use the Website.
+<br><br>
+This Website is offered and available to users who 18 years of age or older, and who are not otherwise restricted by any local, state, or federal law associated with their jurisdiction of residence or location. By using this Website, you represent and warrant that you are of legal age to form a binding contract with the Company and meet all of the foregoing eligibility requirements. If you do not meet all of these requirements, you must not access or use the Website.</div><br>
+
+    <div><strong>Changes to the Terms of Use</strong></div><br>
+    <div>We may revise and update these Terms of Use from time to time in our sole discretion. All changes are effective immediately when we post them, and apply to all access to and use of the Website thereafter. However, any changes to the dispute resolution provisions set out in Governing Law and Jurisdiction will not apply to any disputes for which the parties have actual notice on or before the date the change is posted on the Website.
+<br><br>
+Your continued use of the Website following the posting of revised Terms of Use means that you accept and agree to the changes. You are expected to check this page each time you access this Website so you are aware of any changes, as they are binding on you.</div><br>
+
+    <div><strong>Accessing the Website and Account Security</strong></div><br>
+    <div>We reserve the right to withdraw or amend this Website, and any service or material we provide on the Website, in our sole discretion without notice. We will not be liable if for any reason all or any part of the Website is unavailable at any time or for any period. From time to time, we may restrict access to some parts of the Website, or the entire Website, to users, including registered users.<br>You are responsible for both:<br><br>
+    <ul class="ullist">
+        <li>Making all arrangements necessary for you to have access to the Website.</li>
+        <li>Ensuring that all persons who access the Website through your internet connection are aware of these Terms of Use and comply with them.</li>
+    </ul>
+
+    <div>To access the Website or some of the resources it offers, you may be asked to provide certain registration details or other information. It is a condition of your use of the Website that all the information you provide on the Website is correct, current, and complete. You agree that all information you provide to register with this Website or otherwise, including, but not limited to, through the use of any interactive features on the Website, is governed by our <a href="https://payalt.com/privacy_policy">Privacy Policy</a>, and you consent to all actions we take with respect to your information consistent with our Privacy Policy.</div><br>
+    <div>If you choose, or are provided with, a user name, password, or any other piece of information as part of our security procedures, you must treat such information as confidential, and you must not disclose it to any other person or entity. You also acknowledge that your account is personal to you and agree not to provide any other person with access to this Website or portions of it using your user name, password, or other security information. You agree to notify us immediately of any unauthorized access to or use of your user name or password or any other breach of security. You also agree to ensure that you exit from your account at the end of each session. You should use particular caution when accessing your account from a public or shared computer so that others are not able to view or record your password or other personal information.</div><br>
+    <div>We have the right to disable any user name, password, or other identifier, whether chosen by you or provided by us, at any time in our sole discretion for any or no reason, including if, in our opinion, you have violated any provision of these Terms of Use.</div>
+</div><br>
+
+    <div><strong>Intellectual Property Rights</strong></div><br>
+    <div>The Website and its entire contents, features, and functionality (including but not limited to all information, software, text, displays, images, video, and audio, and the design, selection, and arrangement thereof) are owned by the Company, its licensors, or other providers of such material and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.<br><br>
+    These Terms of Use permit you to use the Website for your personal, non-commercial use only. You must not reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of the material on our Website, except as follows:<br><br>
+    <ul class="ullist">
+        <li>Your computer may temporarily store copies of such materials in RAM incidental to your accessing and viewing those materials.</li>
+        <li>You may store files that are automatically cached by your Web browser for display enhancement purposes.</li>
+        <li>You may print [or download] one copy of a reasonable number of pages of the Website for your own personal, non-commercial use and not for further reproduction, publication, or distribution.</li>
+        <li>If we provide desktop, mobile, or other applications for download, you may download a single copy to your computer or mobile device solely for your own personal, non-commercial use, provided you agree to be bound by our end user license agreement for such applications.</li>
+        <li>If we provide social media features with certain content, you may take such actions as are enabled by such features.</li>
+    </ul>
+
+    <div>You must not:</div><br>
+
+    <ul class="ullist">
+        <li>Modify copies of any materials from this site.</li>
+        <li>Use any illustrations, photographs, video or audio sequences, or any graphics separately from the accompanying text.</li>
+        <li>Delete or alter any copyright, trademark, or other proprietary rights notices from copies of materials from this site.</li>
+    </ul>
+
+    <div>You must not access or use for any commercial purposes any part of the Website or any services or materials available through the Website.
+If you wish to make any use of material on the Website other than that set out in this section, please address your request to: <a href="mailto:compliance@payalt.com">compliance@payalt.com</a>.<br><br>
+
+If you print, copy, modify, download, or otherwise use or provide any other person with access to any part of the Website in breach of the Terms of Use, your right to use the Website will stop immediately and you must, at our option, return or destroy any copies of the materials you have made. No right, title, or interest in or to the Website or any content on the Website is transferred to you, and all rights not expressly granted are reserved by the Company. Any use of the Website not expressly permitted by these Terms of Use is a breach of these Terms of Use and may violate copyright, trademark, and other laws.</div>    
+    </div><br>
+
+    <div><strong>Trademarks</strong></div><br>
+    <div>The Company name, the terms COMPANY TRADEMARKS, the Company logo, and all related names, logos, product and service names, designs, and slogans are trademarks of the Company or its affiliates or licensors. You must not use such marks without the prior written permission of the Company. All other names, logos, product and service names, designs, and slogans on this Website are the trademarks of their respective owners.</div><br>
+
+    <div><strong>Prohibited Uses</strong></div><br>
+    <div>You may use the Website only for lawful purposes and in accordance with these Terms of Use. You agree not to use the Website:</div><br>
+    <ul class="ullist">
+        <li>In any way that violates any applicable federal, state, local, or international law or regulation (including, without limitation, any laws regarding the export of data or software to and from the US or other countries).</li>
+        <li>For the purpose of exploiting, harming, or attempting to exploit or harm minors in any way by exposing them to inappropriate content, asking for personally identifiable information, or otherwise.</li>
+        <li>To send, knowingly receive, upload, download, use, or re-use any material that does not comply with the terms set out in these Terms of Use.</li>
+        <li>To transmit, or procure the sending of, any advertising or promotional material without our prior written consent, including any “junk mail,” “chain letter,” “spam,” or any other similar solicitation.</li>
+        <li>To impersonate or attempt to impersonate the Company, a Company employee, another user, or any other person or entity (including, without limitation, by using email addresses or screen names associated with any of the foregoing).</li>
+        <li>To engage in any other conduct that restricts or inhibits anyone’s use or enjoyment of the Website, or which, as determined by us, may harm the Company or users of the Website, or expose them to liability.</li>
+    </ul>
+    <div>Additionally, you agree not to:</div><br>
+    <ul class="ullist">
+        <li>Use the Website in any manner that could disable, overburden, damage, or impair the site or interfere with any other party’s use of the Website, including their ability to engage in real time activities through the Website.</li>
+        <li>Use any robot, spider, or other automatic device, process, or means to access the Website for any purpose, including monitoring or copying any of the material on the Website.</li>
+        <li>Use any manual process to monitor or copy any of the material on the Website, or for any other purpose not expressly authorized in these Terms of Use, without our prior written consent.</li>
+        <li>Use any device, software, or routine that interferes with the proper working of the Website.</li>
+        <li>Introduce any viruses, Trojan horses, worms, logic bombs, or other material that is malicious or technologically harmful.</li>
+        <li>Attempt to gain unauthorized access to, interfere with, damage, or disrupt any parts of the Website, the server on which the Website is stored, or any server, computer, or database connected to the Website.</li>
+        <li>Attack the Website via a denial-of-service attack or a distributed denial-of-service attack.</li>
+        <li>Otherwise attempt to interfere with the proper working of the Website.</li>
+    </ul>
+
+    <div><strong>User Contributions</strong></div><br>
+    <div>The Website may contain message boards, chat rooms, personal web pages or profiles, forums, bulletin boards, and other interactive features (collectively, "<strong>Interactive Services</strong>") that allow users to post, submit, publish, display, or transmit to other users or other persons (hereinafter, "<strong>post</strong>") content or materials (collectively, "<strong>User Contributions</strong>") on or through the Website.</div><br>
+    <div>All User Contributions must comply with the Content Standards set out in these Terms of Use. Any User Contribution you post to the site will be considered non-confidential and non-proprietary. By providing any User Contribution on the Website, you grant us and our affiliates and service providers, and each of their and our respective licensees, successors, and assigns the right to use, reproduce, modify, perform, display, distribute, and otherwise disclose to third parties any such material for any purpose.
+You represent and warrant that:</div><br>
+
+    <ul class="ullist">
+        <li>You own or control all rights in and to the User Contributions and have the right to grant the license granted above to us and our affiliates and service providers, and each of their and our respective licensees, successors, and assigns.</li>
+        <li>All of your User Contributions do and will comply with these Terms of Use.</li>
+    </ul>
+
+    <div>You understand and acknowledge that you are responsible for any User Contributions you submit or contribute, and you, not the Company, have full responsibility for such content, including its legality, reliability, accuracy, and appropriateness. We are not responsible or liable to any third party for the content or accuracy of any User Contributions posted by you or any other user of the Website.</div><br>
+
+    <div><strong>Monitoring and Enforcement; Termination</strong></div><br>
+    <div>We have the right to:</div><br>
+    <ul class="ullist">
+        <li>Remove or refuse to post any User Contributions for any or no reason in our sole discretion.</li>
+        <li>Take any action with respect to any User Contribution that we deem necessary or appropriate in our sole discretion, including if we believe that such User Contribution violates the Terms of Use, including the Content Standards, infringes any intellectual property right or other right of any person or entity, threatens the personal safety of users of the Website or the public, or could create liability for the Company.</li>
+        <li>Disclose your identity or other information about you to any third party who claims that material posted by you violates their rights, including their intellectual property rights or their right to privacy.</li>
+        <li>Take appropriate legal action, including without limitation, referral to law enforcement, for any illegal or unauthorized use of the Website.</li>
+        <li>Terminate or suspend your access to all or part of the Website for any or no reason, including without limitation, any violation of these Terms of Use.</li>
+    </ul>
+
+    <div>Without limiting the foregoing, we have the right to cooperate fully with any law enforcement authorities or court order requesting or directing us to disclose the identity or other information of anyone posting any materials on or through the Website. YOU WAIVE AND HOLD HARMLESS THE COMPANY AND ITS AFFILIATES, LICENSEES, AND SERVICE PROVIDERS FROM ANY CLAIMS RESULTING FROM ANY ACTION TAKEN BY THE COMPANY AND ANY OF THE FOREGOING PARTIES DURING, OR TAKEN AS A CONSEQUENCE OF, INVESTIGATIONS BY EITHER THE COMPANY AND SUCH OTHER PARTIES OR LAW ENFORCEMENT AUTHORITIES.<br><br>However, we do not undertake to review all material before it is posted on the Website, and cannot ensure prompt removal of objectionable material after it has been posted. Accordingly, we assume no liability for any action or inaction regarding transmissions, communications, or content provided by any user or third party. We have no liability or responsibility to anyone for performance or nonperformance of the activities described in this section.</div><br>
+
+    <div><strong>Content Standards</strong></div><br>
+    <div>These content standards apply to any and all User Contributions and use of Interactive Services. User Contributions must in their entirety comply with all applicable federal, state, local, and international laws and regulations. Without limiting the foregoing, User Contributions must not:</div><br>    
+
+    <ul class="ullist">
+        <li>Contain any material that is defamatory, obscene, indecent, abusive, offensive, harassing, violent, hateful, inflammatory, or otherwise objectionable.</li>
+        <li>Promote sexually explicit or pornographic material, violence, or discrimination based on race, sex, religion, nationality, disability, sexual orientation, or age.</li>
+        <li>Infringe any patent, trademark, trade secret, copyright, or other intellectual property or other rights of any other person.</li>
+        <li>Violate the legal rights (including the rights of publicity and privacy) of others or contain any material that could give rise to any civil or criminal liability under applicable laws or regulations or that otherwise may be in conflict with these Terms of Use and our <a href="https://payalt.com/privacy_policy">Privacy Policy</a>.</li>
+        <li>Be likely to deceive any person.</li>
+        <li>Promote any illegal activity, or advocate, promote, or assist any unlawful act.</li>
+        <li>Cause annoyance, inconvenience, or needless anxiety or be likely to upset, embarrass, alarm, or annoy any other person.</li>
+        <li>Impersonate any person, or misrepresent your identity or affiliation with any person or organization.</li>
+        <li>Involve commercial activities or sales, such as contests, sweepstakes, and other sales promotions, barter, or advertising.</li>
+        <li>Give the impression that they emanate from or are endorsed by us or any other person or entity, if this is not the case.</li>
+    </ul>
+
+    <div><strong>Copyright Infringement</strong></div><br>
+    <div>If you believe that any User Contributions violate your copyright, please see our <a href="https://payalt.com/legal">Copyright Policy</a> for instructions on sending us a notice of copyright infringement. It is the policy of the Company to terminate the user accounts of repeat infringers.</div><br>
+
+    <div><strong>Reliance on Information Posted</strong></div><br>
+    <div>The information presented on or through the Website is made available solely for general information purposes. We do not warrant the accuracy, completeness, or usefulness of this information. Any reliance you place on such information is strictly at your own risk. We disclaim all liability and responsibility arising from any reliance placed on such materials by you or any other visitor to the Website, or by anyone who may be informed of any of its contents.
+<br><br>
+This Website may include content provided by third parties, including materials provided by other users, bloggers, and third-party licensors, syndicators, aggregators, and/or reporting services. All statements and/or opinions expressed in these materials, and all articles and responses to questions and other content, other than the content provided by the Company, are solely the opinions and the responsibility of the person or entity providing those materials. These materials do not necessarily reflect the opinion of the Company. We are not responsible, or liable to you or any third party, for the content or accuracy of any materials provided by any third parties.</div><br>
+
+    <div><strong>Changes to the Website</strong></div><br>
+    <div>We may update the content on this Website from time to time, but its content is not necessarily complete or up-to-date. Any of the material on the Website may be out of date at any given time, and we are under no obligation to update such material.</div><br>
+
+    <div><strong>Information About You and Your Visits to the Website</strong></div><br>
+    <div>All information we collect on this Website is subject to our <a href="https://payalt.com/privacy_policy">Privacy Policy</a>. By using the Website, you consent to all actions taken by us with respect to your information in compliance with the Privacy Policy.</div><br>
+
+    <div><strong>Online Purchases and Other Terms and Conditions</strong></div><br>
+    <div>All purchases through our site or other transactions for the sale of goods, or services, or information formed through the Website, or resulting from visits made by you, are governed by the terms and conditions of the site from which the goods are sold, WITH THE EXCEPTION OF RETURNS.  YOU EXPRESSLY CONSENT TO CONTACT THE RELEVANT THIRD-PARTY MERCHANT FROM WHICH THE GOODS WERE PURCHASED.  WE PROVIDE THE NAME AND CONTACT INFORMATION IN YOUR USER ACCOUNT UNDER TRANSACTIONS TAB.     WE DO NOT UNDER ANY CIRCUMSTANCES PROVIDE OR OFFER RETURNS.  
+<br><br>
+Additional terms and conditions may also apply to specific portions, services, or features of the Website. All such additional terms and conditions are hereby incorporated by this reference into these Terms of Use.</div><br>
+    
+    <div><strong>Links from the Website</strong></div><br>
+    <div>If the Website contains links to other sites and resources provided by third parties, these links are provided for your convenience only. This includes links contained in advertisements, including banner advertisements and sponsored links. We have no control over the contents of those sites or resources, and accept no responsibility for them or for any loss or damage that may arise from your use of them. If you decide to access any of the third-party websites linked to this Website, you do so entirely at your own risk and subject to the terms and conditions of use for such websites.</div><br>
+
+    <div><strong>Geographic Restrictions</strong></div><br>
+    <div>Access to the Website may not be legal by certain persons or in certain countries. If you access this, you do so on your own initiative and are responsible for compliance with local laws.</div><br>
+
+    <div><strong>Disclaimer of Warranties</strong></div><br>
+    <div>You understand that we cannot and do not guarantee or warrant that files available for downloading from the internet or the Website will be free of viruses or other destructive code. You are responsible for implementing sufficient procedures and checkpoints to satisfy your particular requirements for anti-virus protection and accuracy of data input and output, and for maintaining a means external to our site for any reconstruction of any lost data. TO THE FULLEST EXTENT PROVIDED BY LAW, WE WILL NOT BE LIABLE FOR ANY LOSS OR DAMAGE CAUSED BY A DISTRIBUTED DENIAL-OF-SERVICE ATTACK, VIRUSES, OR OTHER TECHNOLOGICALLY HARMFUL MATERIAL THAT MAY INFECT YOUR COMPUTER EQUIPMENT, COMPUTER PROGRAMS, DATA, OR OTHER PROPRIETARY MATERIAL DUE TO YOUR USE OF THE WEBSITE OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE OR TO YOUR DOWNLOADING OF ANY MATERIAL POSTED ON IT, OR ON ANY WEBSITE LINKED TO IT.
+<br><br>
+YOUR USE OF THE WEBSITE, ITS CONTENT, AND ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE IS AT YOUR OWN RISK. THE WEBSITE, ITS CONTENT, AND ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE ARE PROVIDED ON AN “AS IS” AND “AS AVAILABLE” BASIS, WITHOUT ANY WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. NEITHER THE COMPANY NOR ANY PERSON ASSOCIATED WITH THE COMPANY MAKES ANY WARRANTY OR REPRESENTATION WITH RESPECT TO THE COMPLETENESS, SECURITY, RELIABILITY, QUALITY, ACCURACY, OR AVAILABILITY OF THE WEBSITE. WITHOUT LIMITING THE FOREGOING, NEITHER THE COMPANY NOR ANYONE ASSOCIATED WITH THE COMPANY REPRESENTS OR WARRANTS THAT THE WEBSITE, ITS CONTENT, OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE WILL BE ACCURATE, RELIABLE, ERROR-FREE, OR UNINTERRUPTED, THAT DEFECTS WILL BE CORRECTED, THAT OUR SITE OR THE SERVER THAT MAKES IT AVAILABLE ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS, OR THAT THE WEBSITE OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE WILL OTHERWISE MEET YOUR NEEDS OR EXPECTATIONS.
+TO THE FULLEST EXTENT PROVIDED BY LAW, THE COMPANY HEREBY DISCLAIMS ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, NON-INFRINGEMENT, AND FITNESS FOR PARTICULAR PURPOSE.
+<br><br>
+THE FOREGOING DOES NOT AFFECT ANY WARRANTIES THAT CANNOT BE EXCLUDED OR LIMITED UNDER APPLICABLE LAW.</div><br>
+
+    <div><strong>Limitation on Liability</strong></div><br>
+    <div>TO THE FULLEST EXTENT PROVIDED BY LAW, IN NO EVENT WILL THE COLLECTIVE LIABILITY OF THE COMPANY AND ITS SUBSIDIARIES AND AFFILIATES, AND THEIR LICENSORS, SERVICE PROVIDERS, EMPLOYEES, AGENTS, OFFICERS, AND DIRECTORS, TO ANY PARTY (REGARDLESS OF THE FORM OF ACTION, WHETHER IN CONTRACT, TORT, OR OTHERWISE) EXCEED THE AMOUNT YOU HAVE PAID TO THE COMPANY FOR THE APPLICABLE PRODUCT, OR SERVICE AT THE PRECISE TIME OF PURCHASE OUT OF WHICH LIABILITY AROSE.
+<br><br>
+The limitation of liability set out above does not apply to liability resulting from our gross negligence or willful misconduct or death or bodily injury caused by products you purchase through the site.
+<br><br>
+THE FOREGOING DOES NOT AFFECT ANY LIABILITY THAT CANNOT BE EXCLUDED OR LIMITED UNDER APPLICABLE LAW.</div><br>
+
+    <div><strong>Indemnification</strong></div><br>
+    <div>You agree to defend, indemnify, and hold harmless the Company, its affiliates, licensors, and service providers, and its and their respective officers, directors, employees, contractors, agents, licensors, suppliers, successors, and assigns from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys’ fees) arising out of or relating to your violation of these Terms of Use or your use of the Website, including, but not limited to, your User Contributions, any use of the Website’s content, services, and products other than as expressly authorized in these Terms of Use, or your use of any information obtained from the Website.</div><br>
+
+    <div><strong>DISPUTES</strong></div><br>
+    <div style="font-weight:bold;">Governing Law and Jurisdiction<br>
+YOU EXPRESSLY AGREE THAT THE FEDERAL ARBITRATION ACT, APPLICABLE FEDERAL LAW AND THE LAWS OF THE STATE OF DELEWARE, WITHOUT REGARD TO PRINCIPLES OF CONFLICT OF LAWS, WILL GOVERN THESE TERMS OF USE AND ANY DISPUTE THAT MIGHT ARISE BETWEEN YOU AND THE COMPANY. 
+<br><br>
+ANY AND ALL CLAIMS AND/OR DISPUTES ARISING OUT OF OR RELATING TO YOUR USE OF THE WEBSITE OR THE COMPANY’S PRODUCTS AND SERVICES, SOLD OR DISTRBUTED BY THE COMPANY OR THROUGH PAYALT.COM WILL BE RESOLVED BY BINDING ARBITRATION, NOT IN COURT, EXCEPT THAT YOU MAY ASSERT CLAIMS IN SMALL CLAIMS COURT IF YOUR CLAIMS QUALIFY.  THE FEDERAL ARBITRATION ACT AND FEDERAL ARBITRATION LAW APPLY TO THIS AGREEMENT. <br><br>
+ARBITRATION DOES NOT FUNCTION IN THE SAME MANNER AS TRADITIONAL COURTS.  IN ARBITRATION IS THERE IS NO JURY OR JUDGE AND TRADITIONAL COURT REVIEW OF AN ARBITRATION IS LIMITED.<br><br>
+TO BEGIN ARBITRATION YOU MUST SEND A LETTER REQUESTING ARBITRATION AND DESCRIBING YOUR CLAIM TO OUR PAYALT CORP AT 108 WEST 13TH STREET, WILMINGTON, DELAWARE 19801.  THE ARBITRATION WILL BE CONDUCTED BY THE AMERICAN ARBITRATION ASSOCIATION (“AAA”) UNDER ITS RULES, INCLUDING THE AAA’S SUPPLEMENTARY PROCEDURES FOR CONSUMER-RELATED DISPUTES.  AAA’S RULES ARE AVAILABLE AT <a href="www.adr.org">WWW.ADR.ORG</a> OR BY CALLNG 1-800-778-7879.  PAYMENT OF ALL FILING, ADMINISTRATION AND ARBITRATOR FEES WILL BE GOVERNED BY THE AAA’S RULES.  WE WILL REIMBURSE THOSE FEES WHERE THE ARBITRATOR RULES IN YOUR FAVOR.  WE WILL NOT SEEK ATTORNEY’S FEES AND COSTS IN ARBITRATION UNLESS THE ARBITRATOR DETERMINES THE CLAIMS ARE FRIVOLOUS.  YOU MAY CHOOSE TO HAVE THE ARBITRATION CONDUCTED BY TELEPHONE, BASED ON WRITTEN SUBMISSIONS, OR IN PERSON IN THE COUNTY WHERE YOU LIVE OR AT ANOTHER MUTUALLY AGREED LOCATION.<br><br>
+WE EACH AGREE THAT ANY DISPUTE RESOLUTION PROCEEDINGS WILL BE CONDUCTED ONLY ON AN INDIVIDUAL BASIS AND NOT IN A CLASS, CONSOLIDATED OR REPRESENTATIVE ACTION.  IF FOR ANY REASON A CLAIM PROCEEDS IN COURT RATHER THAN IN ARBITRATION WE EACH WAIVE ANY RIGHT TO A JURY TRIAL.  WE ALS BOTH AGREE THAT YOU ARE WE MAY BRING SUIT IN COURT TO ENJOIN INFRINGEMENT OR OTHER MISUSE OF INTELLECTUAL PROPERTY RIGHTS. </div><br>
+
+    <div><strong>Limitation on Time to File Claims</strong></div><br>
+    <div>ANY CAUSE OF ACTION OR CLAIM YOU MAY HAVE ARISING OUT OF OR RELATING TO THESE TERMS OF USE OR THE WEBSITE MUST BE COMMENCED WITHIN ONE (1) YEAR AFTER THE CAUSE OF ACTION ACCRUES; OTHERWISE, SUCH CAUSE OF ACTION OR CLAIM IS PERMANENTLY BARRED.</div><br>
+
+    <div><strong>Waiver and Severability</strong></div><br>
+    <div>No waiver by the Company of any term or condition set out in these Terms of Use shall be deemed a further or continuing waiver of such term or condition or a waiver of any other term or condition, and any failure of the Company to assert a right or provision under these Terms of Use shall not constitute a waiver of such right or provision.<br>
+If any provision of these Terms of Use is held by a court or other tribunal of competent jurisdiction to be invalid, illegal, or unenforceable for any reason, such provision shall be eliminated or limited to the minimum extent such that the remaining provisions of the Terms of Use will continue in full force and effect.</div><br>
+
+    <div><strong>Entire Agreement</strong></div><br>
+    <div>The Terms of Use, and our Privacy Policy, and our Copyright Policy constitute the sole and entire agreement between you and PayAlt Corp. regarding the Website and supersede all prior and contemporaneous understandings, agreements, representations, and warranties, both written and oral, regarding the Website.</div><br>
+
+    <div><strong>Your Comments and Concerns</strong></div><br>
+    <div>This website is operated by PayAlt Corp. All notices of copyright infringement claims should be sent to the copyright agent designated in our <a href="https://payalt.com/legal">Copyright Policy</a> in the manner and by the means set out therein.<br><br>
+
+All other feedback, comments, requests for technical support, and other communications relating to the Website should be directed to: <a href="mailto:compliance@payalt.com">compliance@payalt.com</a>.</div><br>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="js/fancybox/jquery.fancybox.css" />
+    <script src="js/fancybox/jquery.fancybox.js"></script>
+    <script>
+    jQuery(document).ready(function(){
+        
+        jQuery(".terms_conditions").fancybox({
+            title: "Terms & Conditions",
+            titleShow: true,
+            autoScale: false,
+            autoDimensions: false,
+            maxWidth: 600
+        });
+
+        jQuery("#phone").mask('(000) 000-0000');
+        jQuery("#dob").mask("00/00/0000", {placeholder: 'MM/DD/YYYY'});
+
+        jQuery( ".txtOnly" ).keydown(function(e) {               
+            var key = e.keyCode;        
+            if(!((key == 8) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90)) && (key != 9) && (key != 32)) 
+            {        
+                e.preventDefault();            
+            }
+        });  
+
+        jQuery(".numOnly").keydown(function(e) {        
+            var key = e.keyCode;             
+            if(!((key == 8) || (key == 46) || (key >= 35 && key <= 40) || (key >= 48 && key <= 57) || (key >= 96 && key <= 105)) && (key != 9)) 
+            {                     
+                e.preventDefault();            
+            }        
+        });
+
+        jQuery(".noSpace").keydown(function(e) {
+            var key = e.keyCode;
+            if(key == 32)
+            {
+                e.preventDefault(); 
+            }        
+        });      
+    });
+    </script>
+    <link rel="stylesheet" type="text/css" href="css/register.css"/>
+    <script>
+    jQuery("#email").keyup(function(){
+        jQuery("#username").val(jQuery(this).val());
+    });
+    function is_int(value){ 
+        if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) {
+            return true;
+        } else { 
+            return false;
+        }
+    }
+    $(document).on("keyup change","#zipcode",function() {
+        var el = jQuery(this);
+        if ((el.val().length == 5) && (is_int(el.val()))) {
+            jQuery.ajax({
+                url: "http://api.zippopotam.us/US/" + el.val(),
+                cache: false,
+                dataType: "json",
+                type: "GET",
+                success: function(result, success) {
+                    var city_abbr = "place name";
+                    jQuery("#city").val(result.places[0][city_abbr]);
+                    var state_abbr = "state abbreviation";
+                    jQuery("#state").val(result.places[0][state_abbr]);
+                    //jQuery('#state').select2().trigger('change');
+                },
+                error: function(result, success) {
+                    $(".zip-error").show(); /* Ruh row */
+                }
+            });
+        }
+    });
+
+    $(document).on("click","#nextbtn1",function()
+    {
+        var check = 0;
+        $("#personinfo .reqfled").each(function(i) 
+        {
+            var ids = $(this).attr('id');
+            if($.trim($(this).val()) == "")
+            {
+                $('div[data-error='+ids+']').show();
+                check = 1;
+            }
+            else
+            {
+               $('div[data-error='+ids+']').hide(); 
+            }
+            if(ids == 'email' && $(this).val() != "")
+            {            
+                var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+                var emailres = pattern.test($(this).val());
+                if(emailres == false)
+                {
+                  $('div[data-error='+ids+']').show();
+                  check = 1;  
+                }
+            }
+            if(ids == 'phone' && $(this).val() != "")
+            {
+                var ph = $(this).val().replace(/[^0-9]/gi, '');
+                if(ph.length < 10)
+                {
+                    $('div[data-error='+ids+']').show();
+                    check = 1;
+                }
+            }
+        });
+        if($(".regover:checked").val() == 'no')
+        {
+            check = 1;
+            $(".overeight").show();        
+        }
+        else
+        {
+            $(".overeight").hide();
+        }
+        if(check == 0)
+        {
+            $("#personinfo").addClass("focusout_anime");
+            $("#billinfo").addClass("focusin_anime");
+            $("#personinfo").hide();
+            $("#progressbar li:nth-child(2)").addClass('yelwcolor');       
+            $("#billinfo").show();
+             setTimeout(function()
+             { 
+                 $("#personinfo").removeClass("focusout_anime");
+                 $("#billinfo").removeClass("focusin_anime"); 
+             }, 800);
+        }
+    });
+
+    $(document).on("click","#nextbtn2",function()
+    {
+        var check = 0;
+        $("#billinfo .reqfled").each(function(i) 
+        {
+            var ids = $(this).attr('id');
+            if($.trim($(this).val()) == "")
+            {
+                $('div[data-error='+ids+']').show();
+                check = 1;
+            }
+            else
+            {
+               $('div[data-error='+ids+']').hide(); 
+            }
+            if(ids == 'zipcode' && $(this).val() != "")
+            {                       
+                if($(this).val().length < 5)
+                {
+                  $('div[data-error='+ids+']').show();
+                  check = 1;  
+                }
+            }
+        });
+        if(check == 0)
+        {
+            $("#billinfo").addClass("focusout_anime");
+            $("#logininfo").addClass("focusin_anime");
+            $("#personinfo").hide();        
+            $("#billinfo").hide();
+            $("#progressbar li").addClass('yelwcolor');     
+            $("#username").val($("#email").val());
+            $("#logininfo").show();
+            setTimeout(function()
+             { 
+                 $("#billinfo").removeClass("focusout_anime");
+                 $("#logininfo").removeClass("focusin_anime"); 
+             }, 800);
+        }
+    });
+
+    $(document).on("click","#submitbtnreg",function()
+    {    
+        var check = 0;
+        $("#logininfo .reqfled").each(function(i) 
+        {
+            var ids = $(this).attr('id');
+            if($.trim($(this).val()) == "")
+            {
+                $('div[data-error='+ids+']').show();
+                check = 1;
+            }
+            else
+            {
+               $('div[data-error='+ids+']').hide(); 
+            }
+            if(ids == 'reg-password' && $.trim($(this).val()) != "")
+            {                       
+                if($(this).val().length < 6)
+                {
+                    $('div[data-error='+ids+']').show();
+                    $('.passmsg1').show();
+                    check = 1;
+                }
+                else { $('.passmsg1').hide(); }
+            }
+            if(ids == 'reg-repassword' && $.trim($(this).val()) != "")
+            {
+                var cp = $("#reg-password").val();
+                var rcp = $("#reg-repassword").val();            
+                if($.trim(cp) != $.trim(rcp))
+                {
+                    $('div[data-error='+ids+']').show();
+                    $('.passmsg2').show();
+                    check = 1;
+                }
+                else { $('.passmsg2').hide(); }
+            }
+            if(ids == 'terms_all')
+            {
+                if($(this).prop("checked") !== true)
+                {
+                    $('div[data-error='+ids+']').show();
+                    $('.termmsg').show();
+                    check = 1;
+                }
+                else { $('.termmsg').hide(); }
+            }
+        });
+        if(check == 0)
+        {
+            $("#msform").submit();
+        }
+    });
+
+    $(document).on('click',"#backbtn2",function()
+    {       
+        $("#billinfo").removeClass("focusin_anime").addClass("focusout_anime");
+        $("#personinfo").removeClass("focusout_anime").addClass("focusin_anime");        
+        $("#progressbar li:nth-child(2)").removeClass('yelwcolor');        
+        $("#billinfo").hide();
+        $("#logininfo").hide();
+        $("#personinfo").show();  
+        setTimeout(function()
+        { 
+            $("#personinfo").removeClass("focusin_anime");
+            $("#billinfo").removeClass("focusout_anime");
+        }, 800);
+    });
+
+    $(document).on('click',"#backbtn3",function()
+    {               
+        $("#billinfo").removeClass("focusout_anime").addClass("focusin_anime"); 
+        $("#logininfo").removeClass("focusin_anime").addClass("focusout_anime");
+        $("#progressbar li:nth-child(3)").removeClass('yelwcolor');
+        $("#logininfo").hide();
+        $("#personinfo").hide(); 
+        $("#billinfo").show();
+        setTimeout(function()
+        { 
+            $("#billinfo").removeClass("focusin_anime");
+            $("#logininfo").removeClass("focusout_anime"); 
+        }, 800);
+    });
+    </script>
+    <% include layout/footer %>

@@ -1,0 +1,166 @@
+<% include layout/header %>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+    <div class="login_pg content_login">
+        <div id="login_bx">
+            <div class="login_register_heading">
+                <div style="margin-bottom: 0px;">
+                    <span>New User?</span> Create an account: <a href="/register"><button type="button">Register Now!</button></a>
+                </div>
+                <!--<div>
+                    <span>Sync Exchange?</span> Sync now: <a href=""><button type="button">Sync Now!</button></a>
+                </div>-->
+            </div>            
+
+            <div class="login_box_area">
+                <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
+                <div class="alert alert-danger"><%=err_msg%></div>
+                <%}%>
+                <%if(typeof succ_msg != 'undefined' && succ_msg != ''){%>
+                <div class="alert alert-success"><%=succ_msg%></div>
+                <%}%>
+                <form action="/login" method="post" id="shopper_form">
+                    <div class="uname_box">
+                        <input type="text" class="input wid100imp" id="username" required name="username" placeholder="EMAIL ADDRESS">
+                    </div>
+                    <div class="uname_box">
+                        <input type="password" class="input wid100imp" id="password" required name="password" placeholder="PASSWORD">
+                    </div>
+                    <div class="txtcenter padtop10">
+                        <input type="submit" class="login_site_button" value="Login" id="login">
+                    </div>
+                    <input type="hidden" name="shopper_login" value="1"/>
+                    <input type="hidden" name="open_brow" value="1"/>
+                </form>
+
+                <!--<div class="row">
+                    <div class="col col-12 col-md-4 col-lg-4 col-xl-4 loginsec1">
+                        <h1 class="mtop0 txtcenter">SHOPPERS</h1>
+                        <form action="/login" method="post" id="shopper_form">
+                            <div class="uname_box">
+                                <input type="text" class="input wid100imp" id="username" required name="username" placeholder="EMAIL ADDRESS">
+                            </div>
+                            <div class="uname_box">
+                                <input type="password" class="input wid100imp" id="password" required name="password" placeholder="PASSWORD">
+                            </div>
+                            <div class="txtcenter padtop10">
+                                <input type="submit" class="login_site_button" value="Login" id="login">
+                            </div>
+                            <input type="hidden" name="shopper_login" value="1"/>
+                            <input type="hidden" name="open_brow" value="1"/>
+                        </form>
+                    </div>
+                    <div class="col col-12 col-md-4 col-lg-4 col-xl-4 loginsec2">
+                        <h1 class="mtop0 txtcenter">MERCHANTS</h1>
+                        <form action="/login" method="post" id="merchant_form">
+                            <div class="uname_box">
+                                <input type="text" class="input wid100imp" id="username" required name="username" placeholder="EMAIL ADDRESS">
+                            </div>
+                            <div class="uname_box">
+                                <input type="password" class="input wid100imp" id="password" required name="password" placeholder="PASSWORD">
+                            </div>
+                            <div class="txtcenter padtop10">
+                                <input type="button" class="login_site_button" value="Login" id="login2">
+                            </div>
+                            <input type="hidden" name="merchant_login" value="1"/>
+                        </form>
+                    </div>
+                    <div class="col col-12 col-md-4 col-lg-4 col-xl-4 loginsec3">
+                        <h1 class="mtop0 txtcenter">PARTNERS</h1>
+                        <form action="/login" method="post" id="partner_form">
+                            <div class="uname_box">
+                                <input type="text" class="input wid100imp" id="username" required name="username" placeholder="EMAIL ADDRESS">
+                            </div>
+                            <div class="uname_box">
+                                <input type="password" class="input wid100imp" id="password" required name="password" placeholder="PASSWORD">
+                            </div>
+                            <div class="txtcenter padtop10">
+                                <input type="button" class="login_site_button" value="Login" id="login3">
+                            </div>
+                            <input type="hidden" name="partner_login" value="1"/>
+                        </form>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+    <style type="text/css">
+    .login_register_heading {font-size: 22px;width: 65%;margin: 3% auto 0% auto;text-align: center;border-bottom: 2px solid #dfdfdf;padding-bottom: 4%;}
+    .login_register_heading span{font-weight:bold;}
+    .login_register_heading button {
+        background: #55cac2;
+        color:#fff;
+        text-transform: uppercase;
+        border: none;
+        padding: 5px 0px;
+        font-family: Montserrat-SemiBoldItalic;
+        font-size: 22px;
+        cursor: pointer;
+        display: inline;
+        min-width: 300px;
+        margin-left: 20px;
+        font-weight: bold;
+    }
+    .login_site_button {
+        background: #55cac2;
+        color:#fff;
+        width: 100%;
+        text-transform: uppercase;
+        border: none;
+        padding: 5px 0px;
+        font-family: Montserrat-SemiBoldItalic;
+        font-size: 22px;
+        cursor: pointer;
+        display: inline;
+        font-weight: bold;
+    }
+    .login_box_area{
+        width:350px;margin: 5% auto 0 auto;padding-bottom: 10%;
+    }
+    .login_box_area h1{
+        color:#55cac2;font-size: 24px;font-family: Montserrat-SemiBoldItalic;margin-bottom: 20px;
+    }
+    .login_box_area input[type="text"],.login_box_area input[type="password"] {
+        padding: 10px 15px !important;
+        border: 1px solid #ccc !important;
+        border-radius: 50px;
+        margin-bottom: 15px !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        color: #2C3E50;
+        font-size: 16px !important;
+        background: #fff !important;
+    }
+    .loginsec1,.loginsec2{
+        border-right: 2px solid #dfdfdf;padding-bottom: 8%;
+    }
+    @media (min-width: 320px) and (max-width: 774px){
+        .login_register_heading{
+            width: 85% !important;
+        }
+        .login_box_area{
+            width: 300px !important;
+        }
+        .loginsec1, .loginsec2 {
+            border-right: none !important;
+            border-bottom: 2px solid #dfdfdf;
+            margin-bottom: 8%;
+        }
+    }
+    @media (min-width: 775px) and (max-width: 1200px){
+        .login_register_heading{
+            width: 85% !important;
+        }
+        .login_box_area{
+            width: 350px !important;
+        }
+    }
+    </style>
+    <script>
+    jQuery(document).on("click","#login",function(){
+        var valid = $("#shopper_form").valid();
+        if(valid){
+            $("#shopper_form").submit();
+        }
+    });
+    </script>
+<% include layout/footer %>

@@ -1,0 +1,88 @@
+<% include layout/header %>
+
+<div id="homepayalt-contner" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paylt-padlr0">
+    <section id="sechome-payalt-a" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paylt-padlr0">
+        <div class="col-lg-12 secbannr-payaltbg paylt-padlr0">
+            <div class='container'>
+            <div class='pyltbnnrcont col-lg-12 col-md-12 col-sm-12 col-xs-12 paylt-padlr0'> <div class="pltinrcnt">The Evolution of Crypto Bill Pay<br>Crypto, now accepted everywhere!</div> </div>
+            <div class='pyltbnnr-bttn'>
+                <a class="shopnow_lnk" href='https://somiworks.cameyo.com/apps/11026488070783/play'><button class='btnn1'>Shop/Bill Pay</button></a>
+                <a href="/how-payalt-works"><button class="btnn2">Learn More</button></a>
+            </div>
+            </div>
+        </div>        
+    </section>
+</div>
+<style>
+    #homepayalt-contner .secbannr-payaltbg
+    {
+        min-height: 500px;
+        height:529px;
+        background-image: url('images/banner-image-.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    .socifoterbttm img
+    {
+        margin-bottom: 15px;
+    }        
+    .paylt-padlr0
+    {
+        padding-left:0px;
+        padding-right:0px;
+    }
+    #homepayalt-contner .pyltxtcentr
+    {
+        text-align:center;
+    }
+    #homepayalt-contner .pyltbnnrcont
+    {
+        padding-top: 11%;
+        padding-bottom: 4%;
+        text-align: center;
+        font-size: 40px;        
+    }
+    #homepayalt-contner .pltinrcnt
+    {
+        display: inline-block;
+        text-align: left;
+        color: #23fbeb;
+        font-family: Montserrat-SemiBoldItalic;
+    }    
+    #homepayalt-contner .pyltbnnr-bttn
+    {
+        text-align: center;
+        padding-top: 9%;
+    }
+    #homepayalt-contner .pyltbnnr-bttn button
+    {
+        background:#55cac2;
+        color: #fff;
+        text-transform: uppercase;
+        border: none;
+        width: 290px;
+        padding: 11px 0px;
+        font-size: 25px;
+        font-weight: 600;
+        font-family: Montserrat-SemiBoldItalic;
+        cursor: pointer;
+    }
+    #homepayalt-contner .pyltbnnr-bttn button.btnn1
+    {
+        margin-right: 23%;
+    }
+    
+</style>
+<script>
+    $(document).ready(function()
+    {
+    var hdrheg = $('#headerdiv').outerHeight();
+    var foterheg = $('#footer-widget').outerHeight();
+    var innrmdheg = $(".secbannr-payaltbg").outerHeight();
+    var windwheg = $(window).height();
+    var tothei;
+    tothei = windwheg - (hdrheg + foterheg);    
+    $("#homepayalt-contner .secbannr-payaltbg").css('height', tothei);
+    });
+</script>
+<% include layout/footer %>

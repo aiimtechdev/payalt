@@ -1,0 +1,641 @@
+<% include layout/webportal_header %>
+    <script src="js/jquery.mask_new.js"></script>
+    <link rel="stylesheet" href="js/sweetalert.min.css">
+    <script src="js/sweetalert.js"></script>
+    <link rel="stylesheet" href="js/select2.min.css">
+    <script src="js/select2.min.js"></script>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+    <style>
+        .paginate_content
+        {
+            text-align: right;
+            //padding-top: 10px;
+            //float: right;
+        }
+        .checkbox_td
+        {
+            width: 3% !important;
+        }
+        .username_td, .user_type_td, .user_status_td
+        {
+            width: 10% !important;
+        }
+        .user_type_td{text-transform: Capitalize}
+        .email_td, .phone_number_td
+        {
+            width: 15% !important;
+        }
+        .password_td, .phone_number_update_td
+        {
+            text-align: center !important;
+        }
+        .clickable_sort
+        {
+            cursor: pointer;
+        }
+        #tabs .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+            color: #f3f3f3;
+            background-color: transparent;
+            border-color: transparent transparent #f3f3f3;
+            border-bottom: 4px solid #55cac2 !important;
+        }
+        #tabs .nav-tabs .nav-link {
+            border: 1px solid transparent;
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+            color: #333;
+            padding: 20px;
+        }
+        .transtbl.table thead th{
+            padding: 1.3em;
+            text-align: center;
+            color: #55cac2;
+            background: #fff;
+            border: none;
+        }
+        .transtbl.table td, .transtbl.table th{
+            padding:1.3em;
+            text-align:center;
+            border-top: 1px solid #dee2e6;
+            font-size:14px;
+        }
+        @media only screen and (max-width: 1206px) {
+            .paginate_content
+            {
+                text-align: center;
+            }
+            .checkbox_td, .username_td, .user_type_td, .user_status_td, .email_td, .phone_number_td
+            {
+                width: 100% !important;
+                text-align: center !important;
+            }
+            .top_head
+            {
+                float: none;padding-bottom: 25px;
+            }
+            .no-more-tables table,
+            .no-more-tables thead,
+            .no-more-tables tbody,
+            .no-more-tables th,
+            .no-more-tables td,
+            .no-more-tables tr {
+                display: block;
+            }
+            .no-more-tables thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            .no-more-tables tr {
+                border: 1px solid #ccc;
+            }
+
+            .no-more-tables td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%;
+                white-space: normal;
+                text-align:left;
+                padding-top: 30px !important;
+            }
+
+            .no-more-tables td:before {
+                width: 100%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: center;
+                font-weight: bold;
+                display: block;
+            }
+
+            .no-more-tables td:before {
+                content: attr(data-title);
+            }
+            table.paleBlueRows
+            {
+                height: auto;
+            }
+            table.paleBlueRows tbody td
+            {
+                width: 100%;
+            }
+            .paginate_content
+            {
+                text-align: center;
+            }
+            .for_min_height
+            {
+                height: auto;
+                min-height: 100vh;
+				padding-top: 100px !important;
+            }
+            .no_transactions
+            {
+                height: auto;
+            }
+        }
+        @media only screen and (max-width: 1206px) {
+            .bottom_support_content
+            {
+                text-align: center;
+            }
+            .paginate_content
+            {
+                text-align: center;
+                float: none;
+                //padding: 20px 0px;
+            }
+        }
+		@media only screen and (max-width: 991px) {
+			.mbottom_mob{margin-bottom: 20px;}
+		}
+    </style>
+    <div class="update_notifications" <%if(update_process == 1){%>style="display:block;"<%}%>>
+        Updated Successfully.
+    </div>
+    <div style="min-height: 700px; padding: 20px; background: #EEE;" class="for_min_height">
+        <div class="full_body_parts">
+            <div class="top_head">
+                <a href="add_user" class="content_button">Add User</a>
+            </div>
+        </div>
+        <div class="no-more-tables" style="padding-bottom: 10px; background: #fff;">
+        <div>
+            <table class="table table-striped transtbl paleBlueRows" id="listPage">
+                <thead>
+                <tr>
+                    <th>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="user_all" data-id="all_users">
+                            <label class="custom-control-label" for="user_all"></label>
+                        </div>
+                    </th>
+                    <th>Name <span class="clickable_sort" data-type="Name"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                    <th>Email address <span class="clickable_sort" data-type="email"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                    <th>Phone number</th>
+                    <!--<th>User type  <span class="clickable_sort" data-type="user_type"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>-->
+                    <th>User status</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>                
+				<tbody class="user_management_field">
+					<%if(typeof user_data !="undefined" && user_data != ''){%>
+						<%user_data.forEach(function(result, index) {%>
+							<%
+							if (typeof result.first_name == 'undefined') {
+								result.first_name = '-';
+							}
+							if (typeof result.last_name == 'undefined') {
+								result.last_name = '-';
+							}
+							if (typeof result.email == 'undefined') {
+								result.email = '-';
+							}
+							if (typeof result.phone_number == 'undefined') {
+								result.phone_number = '-';
+							}
+							if (typeof result.user_type == 'undefined') {
+								result.user_type = '-';
+							}
+							%>
+							<tr>
+								<td class="checkbox_td">
+									<div class="custom-control custom-checkbox">
+										<input type="checkbox" class="custom-control-input" id="user_<%=index%>" data-id="<%=result._id%>">
+										<label class="custom-control-label" for="user_<%=index%>"></label>
+									</div>
+								</td>
+								<td class="username_td" data-title="User name: "><%=result.first_name%>&nbsp;<%=result.last_name%></td>
+								<td class="email_td" data-title="Email: "><%=result.email%></td>
+								<td class="phone_number_td" data-title="Phone number: "><%=result.phone_number%></td>
+								<!--<td class="user_type_td" data-title="User type: " style="text-transform: capitalize;">
+									<%if(result.user_type == 'va'){%>
+										VA
+									<%} else {%>
+										<%=result.user_type%>
+									<%}%>
+								</td>-->
+								<td class="user_status_td txtcenter">
+									<a class="status_update" rel="tooltip" data-toggle="tooltip" title="User Status" data-placement="top" data-id="<%=result._id%>">
+										<%if(result.active == 1){%>
+											<div class="green"></div>
+										<%} else{%>
+											<div class="red"></div>
+										<%}%>
+									</a>
+								</td>
+								<!--<td class="password_td"><a class="chng_pass" data-toggle="modal" data-target="#password_change" data-id="<%=result._id%>">Change password</a></td>-->
+                                                                <td class="password_td"><a class="chng_pass" data-id="<%=result._id%>">Change password</a></td>
+								<td class="phone_number_update_td"><a class="chng_phne" data-toggle="modal" data-target="#phone_number_change" data-id="<%=result._id%>">Update Phone number</a></td>
+							</tr>
+						<%})%>
+					<%} else {%>
+					<tr>
+						<td colspan="7" style="background: #55cac2;color:#fff;">
+							<i class="not_found">No Users found!</i>
+						</td>
+					</tr>
+					<%}%>
+				</tbody>
+                
+            </table>
+            <input type="hidden" class="userm_name" value="">
+            <input type="hidden" class="userm_type" value="asc">
+        </div>
+        <div class="bottom_support_content row col-12" style="background: #fff; padding: 10px;">
+			<div class="col col-12 col-lg-6 col-sm-12 col-xl-6 mbottom_mob">
+				<select class="soperation">
+					<option value="no_value">SELECT FUNCTION</option>
+					<option value="delete">Delete User</option>
+				</select>
+			</div>
+			<div class="col col-12 col-lg-6 col-sm-12 col-xl-6">
+				<%if(typeof user_data !="undefined" && user_data != ''){%>
+					<div class="paginate_content">
+						<a class="paginate_page" page="first"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
+						<a class="paginate_page" page="previous_one"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+						<%for(count = 0; count < Math.ceil(user_data_count/10); count++){%>
+							<a class="paginate_page page_<%=count+1%>
+							<%if(count == 0){%>
+								active first
+							<%}%>
+							" page="<%=count+1%>"><%=count+1%></a>
+						<%}%>
+						<a class="paginate_page" page="next_one"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+						<a class="paginate_page last" page="<%=Math.ceil(user_data_count/10)%>">
+							<i class="fa fa-angle-double-right" aria-hidden="true"></i>
+						</a>
+						<input type="hidden" class="pending_transaction_total_count" value="<%=Math.ceil(user_data_count/10)%>">
+					</div>
+				<%}%>
+			</div>
+        </div>
+    </div>
+    <div class="modal" id="password_change" role="dialog">
+        <div class="modal-header">
+            <h4 class="modal-title"><i class="fa fa-key" aria-hidden="true" style="margin-right: 5px;"></i>Change Password</h4>
+            <button type="button" class="close close_password" data-dismiss="modal" style="padding: 20px 15px;">&times;</button>
+        </div>
+        <div class="content" id="updateuserm_bx">
+            <form action="/user_management" id="update_password" method="post">
+                <div style="text-align: left; position: relative;">
+                    <label for="current_password">Current Password:</label>
+                    <input type="password" name="current_password" id="current_password" placeholder="Current Password" required>
+                </div>
+                <div style="text-align: left; position: relative;">
+                    <label for="password">New Password:</label>
+                    <input type="password" name="password" id="password" placeholder="New Password" required>
+                </div>
+                <div style="text-align: left; position: relative;">
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm New Password" required>
+                </div>
+                <div style="margin-top: 25px;">
+                        <a id="change_password" class="site_button">Change password</a>
+                </div>
+                <input type="hidden" name="form_value" value="password_change">
+                <input type="hidden" name="form_record_id_pass" class="form_record_id_class" value="">
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="phone_number_change" role="dialog">
+        <div class="modal-header">
+            <h4 class="modal-title"><i class="fa fa-phone" aria-hidden="true" style="margin-right: 5px;"></i>Change Phone number</h4>
+            <button type="button" class="close close_phone_number" data-dismiss="modal" style="padding: 20px 15px;">&times;</button>
+        </div>
+        <div class="content" id="updatephone_bx">
+            <form action="/user_management" id="update_phone_number" method="post">
+                <div style="text-align: left; position: relative;">
+                    <label for="new_phone_number">Enter the new number:</label>
+                    <input type="text" id="new_phone_number" name="new_phone_number" placeholder="(XXX) XXX-XXXX" onkeypress="return isNumber(event)" required>
+                </div>
+                <div style="margin-top: 25px;">
+                    <a id="change_phone_number" class="site_button">Update</a>
+                </div>
+                <input type="hidden" name="form_value" value="phone_number_change">
+                <input type="hidden" name="form_record_id_phone" class="form_record_id_class" value="">
+            </form>
+        </div>
+    </div>
+    </div>
+
+    <form action="/user_management" id="reset_password" method="post">
+        <input type="hidden" name="form_value" value="reset_password">
+        <input type="hidden" name="form_rec_id_pass" class="form_rec_id_class" value="">
+    </form>
+    <script>
+    jQuery(document).ready(function(){
+        jQuery("#new_phone_number").mask('(999) 999-9999');
+
+        jQuery(document.body).on('change', "#user_all", function(){
+            if(this.checked) {
+                jQuery(".custom-control-input").prop('checked', true);
+            }
+            else
+            {
+                jQuery(".custom-control-input").prop('checked', false);
+            }
+        });
+        jQuery(document.body).on('click', ".paginate_page", function(){
+            var page = jQuery(this).attr("page");
+            var class_name = jQuery(this);
+            var flag = 0;
+            if(page == "next_one")
+            {
+                page = parseInt(jQuery(".paginate_page.active").attr("page")) + 1;
+                if(page > jQuery(".pending_transaction_total_count").val())
+                {
+                    page = jQuery(".pending_transaction_total_count").val();
+                    flag = 1;
+                }
+                jQuery(".paginate_page").removeClass("active");
+                jQuery(".page_" + page).addClass("active");
+            }
+            else if(page == "previous_one")
+            {
+                page = jQuery(".paginate_page.active").attr("page") - 1;
+                if(page == 0)
+                {
+                    page = 1;
+                    flag = 1;
+                }
+                jQuery(".paginate_page").removeClass("active");
+                jQuery(".page_" + page).addClass("active");
+            }
+            else if(page == "first")
+            {
+                if(jQuery(".paginate_page.active").attr("page") == 1)
+                {
+                    flag = 1;
+                }
+                page = 1;
+                jQuery(".paginate_page").removeClass("active");
+                jQuery(".paginate_page.first").addClass("active");
+            }
+            else if(class_name.hasClass("last"))
+            {
+                if(jQuery(".paginate_page.active").attr("page") == jQuery(".pending_transaction_total_count").val())
+                {
+                    flag = 1;
+                }
+                jQuery(".paginate_page").removeClass("active");
+                jQuery(".page_" + page).addClass("active");
+            }
+            else
+            {
+                if(jQuery(".paginate_page.active").attr("page") == jQuery(this).attr("page"))
+                {
+                    flag = 1;
+                }
+                jQuery(".paginate_page").removeClass("active");
+                jQuery(this).addClass("active");
+            }
+            var userm_name = jQuery(".userm_name").val();
+            var userm_type = jQuery(".userm_type").val();
+            var parameters = {page: page, column_name : userm_name, sort_type : userm_type};
+            if(flag == 0)
+            {
+                call_func(parameters);
+            }
+        });
+
+        jQuery('.soperation').select2({ minimumResultsForSearch: -1 });
+
+        jQuery(document.body).on('change', ".soperation", function(){
+            if(jQuery(this).val() == 'delete')
+            {
+                var id_record = [];
+                $(".custom-control-input:checked").each(function(){
+                    if($(this).attr("data-id") != "all_users" && $(this).attr("data-id") != "undefined")
+                    {
+                        id_record.push($(this).attr("data-id"));
+                    }
+                });
+                if(id_record != '')
+                {
+                    swal({
+                        title: "Are you sure?",
+                        text: "You are attempting to delete user(s) record!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, delete user!",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: true,
+                        showLoaderOnConfirm: true
+                        },
+                        function(isConfirm) {
+                            if (isConfirm) {
+                                setTimeout(function () {
+                                    console.log(id_record);
+                                    var parameters = { id_value: id_record };
+                                    $.get( '/api/delete_operation',parameters, function(data) {
+                                        swal ({ title: "Deleted", text: "User record(s) deleted", type: "success", timer: 1500, showConfirmButton: false });
+                                    });
+                                }, 2000);
+                            }
+                        }
+                    );  
+                }
+                else
+                {
+                    swal("No records selected", "Select the user record(s) to delete", "");
+                }
+            }
+        });
+        jQuery(document.body).on('click', ".status_update", function(){
+            var id_value = jQuery(this).attr("data-id");
+            var value = 1;
+            var class_value = jQuery(this).find("div");
+            var text_content = "", update_status_class = "";
+            if(class_value.attr("class") == "green")
+            {
+                text_content = "Change to inactive";
+                update_status_class = "to_red";
+            }
+            else if(class_value.attr("class") == "red")
+            {
+                text_content = "Change to active";
+                update_status_class = "to_green";
+            }
+            swal({
+                title: "Change User status?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: update_status_class,
+                confirmButtonText: text_content,
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true,
+                showLoaderOnConfirm: true
+                },
+                function(isConfirm) {
+                    if (isConfirm) {
+
+                        setTimeout(function () {
+                            if(class_value.attr("class") == "green")
+                            {
+                                console.log("Green to red");
+                                class_value.removeClass("green");
+                                class_value.addClass("red");
+                                value = 0;
+
+                            }
+                            else if(class_value.attr("class") == "red")
+                            {
+                                console.log("Red to green");
+                                class_value.removeClass("red");
+                                class_value.addClass("green");
+                                value = 1;
+                            }
+
+                            var parameters = { id_value: id_value, active_value: value };
+                            $.get( '/api/status_update',parameters, function(data) {
+                                swal ({ title: "Updated", text: "User status updated!", type: "success", timer: 1500, showConfirmButton: false });
+                            });
+                        },1200);
+                    }
+                }
+            );            
+        });
+        jQuery(document.body).on('click', ".chng_pass", function(){
+            var thiss = jQuery(this);
+            swal({
+                title: "Reset User Password?",
+                text: "This will send reset password email to the user.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "to_green",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true,
+                showLoaderOnConfirm: true
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    var id_value = thiss.attr("data-id");
+                    var parameters = {id_value: id_value};
+                    $.get( '/api/reset_password',parameters, function(data) {
+                        if(data.msg == "success"){
+                            swal ({ title: "Success", text: data.succ_msg, type: "success", timer: 1500, showConfirmButton: false });
+                        } else if(data.msg == "error"){
+                            swal ({ title: "Error", text: data.error_msg, type: "error", timer: 1500, showConfirmButton: false });
+                        }
+                    });
+                }
+            });
+        });
+        jQuery(document.body).on('click', "#change_password", function(){
+            var valid = jQuery("#update_password").valid();
+            if(valid)
+            {
+                jQuery("#password").removeClass("error_box");
+                jQuery("#current_password").removeClass("error_box");
+                jQuery("#confirm_password").removeClass("error_box");
+
+                if(jQuery("#password").val() != jQuery("#confirm_password").val())
+                {
+                    swal ( "" , "Password not matching" , "error" );
+                    jQuery("#password").addClass("error_box");
+                    jQuery("#confirm_password").addClass("error_box");
+                }
+                else
+                {
+                    var parameters = { id_value: jQuery(".form_record_id_class").val(), old_password: jQuery("#current_password").val() };
+                    $.get( '/api/password_validation',parameters, function(data) {
+                        if(data == 'valid')
+                        {
+                            jQuery("#update_password").submit();
+                            console.log(data);
+                            swal ( "Updated" ,  "Password Changed" ,  "success" );
+                        }
+                        else if(data == 'password_not_matched')
+                        {
+                            swal ({ title: "Incorrect Current Password" , text: "Enter correct Password" , type: "error", timer: 1500, showConfirmButton: false });
+                            jQuery("#current_password").addClass("error_box");
+                        }
+                    });
+                }
+                console.log("Checked ranges");
+            }
+            else
+            {
+                console.log("Wrong values");
+            }
+        });
+        jQuery(document.body).on('click', ".close_password", function(){
+            jQuery("#password").val("");
+            jQuery("#current_password").val("");
+            jQuery("#confirm_password").val("");
+            jQuery("#password").removeClass("error_box");
+            jQuery("#current_password").removeClass("error_box");
+            jQuery("#confirm_password").removeClass("error_box");
+        });
+        jQuery(document.body).on('click', ".chng_phne", function(){
+            console.log("Arrives");
+            jQuery("#phone_number_change .form_record_id_class").val(jQuery(this).attr("data-id"));
+        });
+        jQuery(document.body).on('click', "#change_phone_number", function(){
+
+            var valid = jQuery("#update_phone_number").valid();
+            if(valid)
+            {
+                jQuery("#update_phone_number").submit();
+            }
+
+        });
+        jQuery(document.body).on('click', ".close_phone_number", function(){
+            jQuery("#new_phone_number").val("");
+            jQuery("#new_phone_number").removeClass("error_box");
+        });
+    });
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
+    jQuery(".clickable_sort").click(function(){
+        var column = jQuery(this).attr("data-type");
+        var type = jQuery(this).find(".fa").attr("class");
+        var sort_type;
+        if(jQuery(this).find(".fa").hasClass("fa-angle-down")){
+            jQuery(this).find(".fa").removeClass("fa-angle-down");
+            jQuery(this).find(".fa").addClass("fa-angle-up");
+            sort_type = "asc";
+        }
+        else if(jQuery(this).find(".fa").hasClass("fa-angle-up")){
+            jQuery(this).find(".fa").removeClass("fa-angle-up");
+            jQuery(this).find(".fa").addClass("fa-angle-down");
+            sort_type = "desc";
+        }
+        paginate_field_class = 1;
+        jQuery(".paginate_page").removeClass("active");
+        jQuery(".page_1").addClass("active");
+        var parameters = {column_name: column, sort_type: sort_type, page: paginate_field_class};
+        call_func(parameters);
+        jQuery(".userm_name").val(column);
+        jQuery(".userm_type").val(sort_type);
+    });
+
+    function call_func(parameters)
+    {
+        $.get( '/api/sortable_user_management',parameters, function(data) {
+            if(data != "")
+            {
+                jQuery(".user_management_field").html(data);                
+            }
+        });
+    }
+
+    </script>
+<% include layout/footer %>

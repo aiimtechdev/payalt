@@ -1,0 +1,63 @@
+<% include layout/header %>
+<div class="thnkpagehegi">
+    <div id="thankyou-payalt" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paylt-padlr0">
+        <div class="container">
+            <!--<p>Thanks for joining  PayAlt! <u>Sync your Exchange for instant payments now.</u> Then start shopping!</p>
+            <a href=""><button type="button" class="syncwallet">Sync Your Wallet</button></a>-->
+            <p>Thanks for joining  PayAlt!</p>
+            <a class="shopnow_lnk" href="https://somiworks.cameyo.com/apps/11026488070783/play"><button type="button" class="startshopg">Start Shopping</button></a>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        var hdrheg = $('#headerdiv').outerHeight();
+        var foterheg = $('#footer-widget').outerHeight();
+        var innrmdheg = $(".secbannr-payaltbg").outerHeight();
+        var windwheg = $(window).height();
+        var tothei;
+        tothei = windwheg - (hdrheg + foterheg);        
+        $(".thnkpagehegi").css('height', tothei);
+    });
+</script>
+<style>
+    .thnkpagehegi
+    {
+        min-height: 528px;
+    }
+    #thankyou-payalt
+    {
+        text-align: center;
+    }
+    #thankyou-payalt p
+    {
+        font-family: Montserrat-SemiBoldItalic;
+        font-size: 28px;
+        font-weight: normal;
+        color: #464646 !important;
+        padding-top: 6%;
+    }
+    .startshopg, .syncwallet
+    {
+        border: none;
+        padding: 10px 60px;
+        background: #55cac2;
+        color: #fff;
+        text-transform: uppercase;
+        font-family: Montserrat-SemiBoldItalic;
+        font-size: 22px;
+        margin-top: 30px;
+        cursor: pointer;
+    }
+    @media(min-width:992px)
+    {
+        .syncwallet{ margin-right:2em; }
+    }
+    @media(max-width:575px){
+        .syncwallet{ 
+            padding: 10px 43px !important;
+            font-size: 19px !important; 
+        }        
+    }
+</style>
+<% include layout/footer %>

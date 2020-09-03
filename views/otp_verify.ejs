@@ -1,0 +1,47 @@
+<% include layout/header %>
+    <div class="content_login">
+        <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+            <h1 class="txtcenter">OTP Verification</h1>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+            <div class="white-box">
+                <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
+                <div class="error"><%-err_msg%></div>
+                <%}%>
+
+                <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+                    <h5 class="txtcenter">Enter the 6 Digit Code Received by Text Message</h5>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 padtop20 padbottom20 padleft0 padright0">
+                    <form action="" method="post" class="confirm_box">
+                        <div class="subwhite-box col-md-12">
+                            <div id="divOuter">
+                                <div id="divInner">
+                                    <input id="otp_code" name="otp_code" type="text" maxlength="6" class="partitioned"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 padtop20 rxstxtcenter">
+                            <input type="button" name="lgn-btn" id="lgn-btn" value="Confirm & Login">
+                        </div>
+                        <input type="hidden" name="otp_verify" value="1"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        jQuery(document).ready(function(){
+            jQuery("#lgn-btn").click(function(){
+                if(jQuery("#otp_code").val().length <= 0)
+                {
+                    jQuery("#otp_code").addClass("error");
+                }
+                else
+                {
+                    jQuery(".confirm_box").submit();
+                }
+            });
+        });
+    </script>
+  <% include layout/footer %>

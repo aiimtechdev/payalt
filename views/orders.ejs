@@ -1,0 +1,477 @@
+<% include layout/webportal_header %>
+<link rel="stylesheet" href="js/sweetalert.min.css">
+<script src="js/sweetalert.js"></script>
+<style>
+section .section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+}
+#tabs .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #f3f3f3;
+    background-color: transparent;
+    border-color: transparent transparent #f3f3f3;
+    border-bottom: 4px solid #55cac2 !important
+}
+#tabs .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    color: #333;
+}
+.transtbl.table thead th{
+    padding: 1.3em;
+    text-align: center;
+    color: #55cac2;
+    background: #fff;
+    border: none;
+}
+.transtbl.table td, .transtbl.table th{
+    padding:1.3em;
+    text-align:center;
+    border-top: 1px solid #dee2e6;
+    font-size:14px;
+}
+#nav-tabContent
+{
+    background: #fff;
+}
+.clickable_sort
+{
+    cursor: pointer;
+}
+.not_found
+{
+    color: #FFF;
+    font-weight: 600;
+    font-size: 17px;
+}
+.paginate_content
+{
+    text-align: right;
+}
+.for_min_height
+{
+    min-height: calc(100vh - 200px);
+    height: auto;
+    padding: 20px;
+    background: #EEE;
+}
+.no_transactions
+{
+    height: 20px;
+}
+#nav-home-tab
+{
+    width: 22%;
+}
+
+@media only screen and (max-width: 800px) {
+
+    .no-more-tables table,
+    .no-more-tables thead,
+    .no-more-tables tbody,
+    .no-more-tables th,
+    .no-more-tables td,
+    .no-more-tables tr {
+        display: block;
+    }
+    .no-more-tables thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .no-more-tables tr {
+        border: 1px solid #ccc;
+    }
+    .no-more-tables td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        white-space: normal;
+        text-align:left;
+        padding-top: 30px !important;
+    }
+    .no-more-tables td:before {
+        /*position: absolute;
+        top: 5px;
+        left: 6px;*/
+        width: 100%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: center;
+        font-weight: bold;
+        display: block;
+    }
+    .no-more-tables td:before {
+        content: attr(data-title);
+    }
+    table.paleBlueRows
+    {
+        height: auto;
+    }
+    table.paleBlueRows tbody td
+    {
+        width: 100%;
+    }
+    .paginate_content
+    {
+        text-align: center;
+    }
+    .for_min_height
+    {
+        height: auto;
+        min-height: 100vh;
+    }
+    .no_transactions
+    {
+        height: auto;
+    }
+    #nav-home-tab
+    {
+        width: 100%;
+    }
+}
+</style>
+<div class="for_min_height">
+    <section id="tabs">
+        <div class="">
+            <div class="">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <nav class="resp_top50" style="background: #fff;">
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <%if(typeof content_type !="undefined" && content_type != ""){%>
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" style="flex: unset; padding: 20px;"><%=content_type%></a>
+                            <%} else {%>
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true" style="flex: unset; padding: 20px;">Recent Orders</a>
+                            <%}%>
+                        </div>
+                    </nav>
+                    <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                        <div class="tab-pane fade show active no-more-tables" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div>                                
+                                <table class="table table-striped transtbl paleBlueRows" id="recent_trans">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col"><%if(page_type == "processed" || page_type == "failed"){%>Created Date <%} else {%>Date-Time <%}%><span class="clickable_sort" data-type="date"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                        <th scope="col">CC <span class="clickable_sort" data-type="cc"><i class="fa fa-angle-down" aria-hidden="true"></i></th>
+                                        <th scope="col">Billing Details </th>
+                                        <%if(page_type == "processed" || page_type == "failed"){%>
+                                            <th scope="col">Processed Date </th>
+                                        <%}%>                                        
+                                        <th scope="col">Action </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="recent_orders">
+                                        <%if(typeof transaction_data !="undefined" && transaction_data != ''){%>
+                                            <%transaction_data.forEach(function(result, index) {%>
+                                                <tr>
+                                                    <%if(page_type == "processed" || page_type == "failed"){%>
+                                                    <td data-title="Created Date:">
+                                                    <%} else {%>
+                                                    <td data-title="Date Time:">
+                                                    <%}%>
+                                                        <%if(typeof result.date == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%= new Date(result.date).getMonth() + 1; %>/<%= new Date(result.date).getDate(); %>/<%= new Date(result.date).getFullYear(); %>
+                                                            <%= new Date(result.date).getHours(); %>:<%= new Date(result.date).getMinutes(); %>:<%= new Date(result.date).getSeconds(); %>
+                                                        <%}%>                                                        
+                                                    </td>
+                                                    <td data-title="CC:">
+                                                        <%if(typeof result.cc == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%=result.cc%>
+                                                        <%}%>
+                                                    </td>
+                                                    <td data-title="Billing Details:">
+                                                        <%if(typeof result.billing_details.first_name == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                        <%=result.billing_details.first_name%>
+                                                        <%}%>
+                                                        <%if(typeof result.billing_details.last_name == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                        <%=result.billing_details.last_name%>
+                                                        <%}%>
+                                                        <%if(typeof result.billing_details.street == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                        <%=result.billing_details.street%>
+                                                        <%}%>
+                                                        <%if(typeof result.billing_details.city == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                        <%=result.billing_details.city%>
+                                                        <%}%>
+                                                        <%if(typeof result.billing_details.state == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                        <%=result.billing_details.state%>
+                                                        <%}%>
+                                                        <%if(typeof result.billing_details.zipcode == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                        <%=result.billing_details.zipcode%>
+                                                        <%}%>
+                                                    </td>
+                                                    <%if(page_type == "processed" || page_type == "failed"){%>
+                                                        <td data-title="Processed Date:">
+                                                            <%if(typeof result.processed_date == "undefined"){%>
+                                                                -
+                                                            <%}else{%>
+                                                                <%= new Date(result.processed_date).getMonth() + 1; %>/<%= new Date(result.processed_date).getDate(); %>/<%= new Date(result.processed_date).getFullYear(); %>
+                                                                <%= new Date(result.processed_date).getHours(); %>:<%= new Date(result.processed_date).getMinutes(); %>:<%= new Date(result.processed_date).getSeconds(); %>
+                                                            <%}%>                                                        
+                                                        </td>
+                                                    <%}%>
+                                                    <td data-title="Action:">
+                                                        <a href="javascript:void(0);" class="alert alert-info view_order" data-id="<%=result._id%>" data-toggle="modal" data-target="#view_order"><i class="fa fa-eye"></i> View</a>
+                                                        <%if(page_type == "pending"){%>
+                                                            <% if(typeof result.virtual_assistant_trans != 'undefined'){ %>
+                                                                <a href="javascript:void(0);" class="alert alert-success processing_payment" id="<%=result._id%>"><i class="fa fa-spinner fa-spin"></i> In Process</a>
+                                                            <% } else { %>
+                                                                <a href="javascript:void(0);" class="alert alert-warning process_payment" id="<%=result._id%>"><i class="fa fa-gears"></i> Process</a>
+                                                            <% } %>
+                                                        <%}%>
+                                                    </td>                                                    
+                                                </tr>
+                                            <%})%>
+                                        <%} else {%>
+                                            <tr>
+                                                <%if(page_type == "pending"){%>
+                                                <td class="no_transactions" colspan="5" style="background: #55cac2;">
+                                                <%} else {%>
+                                                <td class="no_transactions" colspan="5" style="background: #55cac2;">
+                                                <%}%>
+                                                    <i class="not_found">No Order's found!</i>
+                                                </td>
+                                            </tr>
+                                        <%}%>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <input type="hidden" class="order_name" value="">
+                            <input type="hidden" class="order_type" value="asc">
+                            <div class="modal" id="view_order" role="dialog">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">View Order</h4>
+                                    <button type="button" class="close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+                                </div>
+                                <div class="content" style="padding: 5%;">
+                                    <div class="view_order_content" style="border: 1px solid #ccc; padding: 20px;">
+                                        <!--Display the content-->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <%if(typeof transaction_data !="undefined" && transaction_data != ''){%>
+                                <div class="paginate_content">
+                                    <a class="recent_paginate_page" recent_page="first"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
+                                    <a class="recent_paginate_page" recent_page="previous_one"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+                                    <%for(count = 0; count < Math.ceil(recent_count/10); count++){%>
+                                        <a class="recent_paginate_page recent_page_<%=count+1%>
+                                        <%if(count == 0){%>
+                                            active first
+                                        <%}%>
+                                        " recent_page="<%=count+1%>"><%=count+1%></a>
+                                    <%}%>
+                                    <a class="recent_paginate_page" recent_page="next_one"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                    <a class="recent_paginate_page last" recent_page="<%=Math.ceil(recent_count/10)%>">
+                                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                    </a>
+                                    <input type="hidden" class="recent_transaction_total_count" value="<%=Math.ceil(recent_count/10)%>">
+                                </div>
+                            <%}%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="overlayloading" style="display:none;">
+    <div class="overlay-loading-container">
+        <img src="images/ajax-loader.gif" width="150" height="150">
+    </div>
+</div>
+<div class="overlaymain" style="display:none;"></div>
+
+<script>
+jQuery(document.body).on("click", ".view_order", function (){
+    var id_value = jQuery(this).attr("data-id");
+    var parameters = {id_value: id_value};
+    modal_content(parameters, 'recent');
+});
+function modal_content(parameters, trans_name)
+{
+    $.get('/api/order_modal_view', parameters, function(data) {
+        if(data != "")
+        {
+            jQuery(".view_order_content").html(data);
+        }
+    });
+}
+jQuery(document).on("click",".process_payment",function(){
+    var trans_id = jQuery(this).attr("id");
+    var thiss = $(this);
+    swal({
+        title: "Are you sure",
+        text: "You want to process this transaction?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        confirmButtonText: "Yes",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false,
+        closeOnCancel: true,
+        showLoaderOnConfirm: true
+    },function(isConfirm) {
+        if (isConfirm) {
+
+            if(typeof trans_id != 'undefined' && trans_id != ''){
+                $(".overlaymain,.overlayloading").show();
+                $.get('/api/process_trans', {trans_id:trans_id}, function(data) {
+                    $(".overlaymain,.overlayloading").hide();
+                    if(typeof data != "undefined" && data != "")
+                    {
+                        var code = data.code;
+                        if(code == "error"){
+                            swal("","Error in Processing.Try again later","error");
+                        } else if(code == "success"){
+                            swal("","Transaction added for Processing.Continue in the external app","success");
+                            $(".processing_payment").html("<i class='fa fa-gears'></i> Process");
+                            thiss.html('<i class="fa fa-spinner fa-spin"></i> In Process');
+                            $(".processing_payment").attr("class","alert alert-warning process_payment");
+                            thiss.attr("class","alert alert-success processing_payment");                    
+
+                        } else if(code == "already_processing"){
+                            swal("","The Transaction has already been added for processing","error");
+                        } else if(code == "another_processing"){
+                            swal({
+                                title: "Confirmation?",
+                                text: "Another pending transaction is assigned for processing by you.Would you like to overwrite that?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-danger",
+                                confirmButtonText: "Yes",
+                                cancelButtonText: "Cancel",
+                                closeOnConfirm: false,
+                                closeOnCancel: true,
+                                showLoaderOnConfirm: true
+                            },function(isConfirm) {
+                                if (isConfirm) {
+                                    $(".overlaymain,.overlayloading").show();
+                                    $.get( '/api/overwrite_process_trans',{trans_id:trans_id}, function(data2) {
+                                        $(".overlaymain,.overlayloading").hide();
+                                        if(typeof data2 != "undefined" && data2 != "")
+                                        {
+                                            var code2 = data2.code;
+                                            if(code2 == "error"){
+                                                swal("","Error in Processing.Try again later","error");
+                                            } else if(code2 == "success"){
+                                                swal("","Transaction added for Processing.Continue in the external app","success");
+                                                $(".processing_payment").html("<i class='fa fa-gears'></i> Process");
+                                                thiss.html('<i class="fa fa-spinner fa-spin"></i> In Process');
+                                                $(".processing_payment").attr("class","alert alert-warning process_payment");                                        
+                                                thiss.attr("class","alert alert-success processing_payment");                                        
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    } else {
+                        swal("","Error in Processing.Try again later","error");
+                    }
+                });
+            }
+        }
+    });
+});
+jQuery(".recent_paginate_page").click(function(){
+    var page = jQuery(this).attr("recent_page");
+    //console.log(page);
+    var class_name = jQuery(this);
+    if(page == "next_one")
+    {
+        page = parseInt(jQuery(".recent_paginate_page.active").attr("recent_page")) + 1;
+        if(page >= jQuery(".recent_transaction_total_count").val())
+        {
+            page = jQuery(".recent_transaction_total_count").val();
+        }
+        jQuery(".recent_paginate_page").removeClass("active");
+        jQuery(".recent_page_" + page).addClass("active");
+    }
+    else if(page == "previous_one")
+    {
+        page = jQuery(".recent_paginate_page.active").attr("recent_page") - 1;
+        if(page == 0)
+        {
+            page = 1;
+        }
+        jQuery(".recent_paginate_page").removeClass("active");
+        jQuery(".recent_page_" + page).addClass("active");
+    }
+    else if(page == "first")
+    {
+        page = 1;
+        jQuery(".recent_paginate_page").removeClass("active");
+        jQuery(".recent_paginate_page.first").addClass("active");
+    }
+    else if(class_name.hasClass("last"))
+    {
+        jQuery(".recent_paginate_page").removeClass("active");
+        jQuery(".recent_page_" + page).addClass("active");
+    }
+    else
+    {
+        jQuery(".recent_paginate_page").removeClass("active");
+        jQuery(this).addClass("active");
+    }
+    var order_name = jQuery(".order_name").val();
+    var order_type = jQuery(".order_type").val();
+    var selected_transaction = jQuery(".nav-item.nav-link.active").text();
+    var parameters = {transaction_type: selected_transaction, page: page, sort_name : order_name, sort_type : order_type};
+    call_sync(parameters, selected_transaction);
+});
+jQuery(".clickable_sort").click(function(){
+    var column = jQuery(this).attr("data-type");
+    var type = jQuery(this).find(".fa").attr("class");
+    var sort_type;
+    var selected_transaction = jQuery(".nav-item.nav-link.active").text();
+    if(jQuery(this).find(".fa").hasClass("fa-angle-down")){
+        jQuery(this).find(".fa").removeClass("fa-angle-down");
+        jQuery(this).find(".fa").addClass("fa-angle-up");
+        sort_type = "asc";
+    }
+    else if(jQuery(this).find(".fa").hasClass("fa-angle-up")){
+        jQuery(this).find(".fa").removeClass("fa-angle-up");
+        jQuery(this).find(".fa").addClass("fa-angle-down");
+        sort_type = "desc";
+    }
+    //var parameters = {column_name: column, sort_type: sort_type, transaction_content: jQuery(".nav-item.nav-link.active").text(), page: jQuery(".recent_paginate_page.active").attr("recent_page")};
+    var parameters = {sort_name: column, sort_type: sort_type, transaction_type: selected_transaction, page: jQuery(".recent_paginate_page.active").attr("recent_page")};
+    call_sync(parameters, selected_transaction);
+    jQuery(".order_name").val(column);
+    jQuery(".order_type").val(sort_type);
+});
+
+function call_sync(parameters, selected_transaction)
+{
+    $.get('/api/paginate_orders', parameters, function(data) {
+        if(data != "")
+        {
+            //console.log(data);
+            jQuery(".recent_orders").html(data);
+        }
+    });
+}
+
+</script>
+
+<% include layout/footer %>

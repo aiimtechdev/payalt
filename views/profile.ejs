@@ -1,0 +1,272 @@
+<% include layout/webportal_header %>
+    <link rel="stylesheet" href="js/sweetalert.min.css">
+    <script src="js/sweetalert.js"></script>
+
+    <link rel="stylesheet" href="js/select2.min.css">
+    <script src="js/select2.min.js"></script>
+
+    <script type="text/javascript" src="js/jquery.mask.js"></script>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+
+    <div class="update_notifications">Updated Successfully.</div>
+
+    <div class="content_login">
+        <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+            <h1 class="txtcenter">My Profile</h1>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+            <div class="white-box pad0 cuswid550">
+                <div class="col-md-12 col-sm-12 col-xs-12 headpro"><i class="fa fa-user"></i><span class="padleft10">Profile Information</span>
+                    <a title="Edit Profile Information" href="javascript:void(0);" class="edit_profile_info" style="color:#fff;"><i style="min-width: 30px;" class="fa fa-pencil-square-o fright curpoint padright10 padtop5"></i></a>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyodd row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-user"></i><span class="padleft10">First Name</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%=result.first_name%></div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyeven row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-user-plus"></i><span class="padleft10">Last Name</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%=result.last_name%></div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyeven row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-user-plus"></i><span class="padleft10">DOB</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%=result.dob%></div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyodd row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-envelope"></i><span class="padleft10">Email</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%=result.email%></div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyeven row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-phone"></i><span class="padleft10">Phone</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%=result.phone_number%></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 padtop20 mbottom20">
+            <div class="white-box pad0 cuswid550">
+                <div class="col-md-12 col-sm-12 col-xs-12 headpro"><i class="fa fa-lock"></i><span class="padleft10">Account Information</span>
+                    <a title="Change Password" href="javascript:void(0);" class="change_password" style="color:#fff;"><i style="min-width: 30px;" class="fa fa-pencil-square-o fright curpoint padright10 padtop5"></i></a>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyodd row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-user-secret"></i><span class="padleft10">User Name</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%=result.username%></div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyeven row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-lock"></i><span class="padleft10">Password</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6">*********</div>
+                </div>
+            </div>
+        </div>
+        <% if(result.user_type == "shopper") {%>
+        <div class="col-md-12 col-sm-12 col-xs-12 padtop20 mbottom20">
+            <div class="white-box pad0 cuswid550">
+                <div class="col-md-12 col-sm-12 col-xs-12 headpro"><i class="fa fa-credit-card"></i><span class="padleft10">Billing Information</span>
+                    <a title="Update Billing Information" href="javascript:void(0);" class="change_billing" style="color:#fff;"><i style="min-width: 30px;" class="fa fa-pencil-square-o fright curpoint padright10 padtop5"></i></a>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyodd row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-home"></i><span class="padleft10">Address</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%if(typeof result.address == "undefined"){%>-<%}else{%><%=result.address%><%}%></div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyeven row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-map-marker"></i><span class="padleft10">City</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%if(typeof result.city == "undefined"){%>-<%}else{%><%=result.city%><%}%></div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyeven row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-map"></i><span class="padleft10">State</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%if(typeof result.state == "undefined"){%>-<%}else{%><%=result.state%><%}%></div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 clsstyeven row rxstxtcenter">
+                    <div class="col-md-4 col-sm-4 col-xs-6 fweight"><i style="min-width: 30px;" class="fa fa-hashtag"></i><span class="padleft10">Zipcode</span></div>
+                    <div class="col-md-8 col-sm-8 col-xs-6"><%if(typeof result.zipcode == "undefined"){%>-<%}else{%><%=result.zipcode%><%}%></div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    
+    <div class="modal" id="profile_info" role="dialog" style="background: #fff; height: auto; width: auto; left: 0;right:0px;margin:0 auto; top: 10px;min-width: 400px;">
+        <div class="modal-header">
+            <h4 class="modal-title">Update Profile Info</h4>
+            <button type="button" class="close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+        </div>
+        <div class="content" id="register_bx">
+            <form action="" method="post" id="register_form">
+                <div class="uname_box">
+                    <label for="firstname" class="txtleft displayblock">First Name: </label>
+                    <input type="text" class="input wid100imp" id="firstname" name="firstname" placeholder="First name" value="<%=result.first_name%>" required>
+                </div>
+                <div class="uname_box">
+                    <label for="lastname" class="txtleft displayblock">Last Name: </label>
+                    <input type="text" class="input wid100imp" id="lastname" name="lastname" placeholder="Last name" value="<%=result.last_name%>" required>
+                </div>
+                <div class="uname_box">
+                    <label for="lastname" class="txtleft displayblock">DOB: </label>
+                    <input type="text" class="input wid100imp" id="dob" name="dob" placeholder="DOB" value="<%=result.dob%>" required>
+                </div>
+                <div class="uname_box">
+                    <label for="firstname" class="txtleft displayblock">Email: </label>
+                    <input type="email" class="input wid100imp" id="email" name="email" placeholder="Email" value="<%=result.email%>" disabled="true">
+                </div>
+                <div class="uname_box">
+                    <label for="phone" class="txtleft displayblock">Phone number: </label>
+                    <input type="text" class="input wid100imp" id="phone" name="phone" placeholder="Phone #" value="<%=result.phone_number%>" required>
+                </div>
+                <input type="hidden" name="update_profile" value="1"/>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn" style="border-color: #afafaf;line-height: 30px;" data-dismiss="modal">Close</button>
+            <button type="button" class="site_button" id="update_info">Update</button>
+        </div>
+    </div>
+
+    <div class="modal" id="password_change" role="dialog" style="background: #fff; height: auto; width: auto; left: 0;right:0px;margin:0 auto; top: 10px;">
+        <div class="modal-header">
+            <h4 class="modal-title"><i class="fa fa-key" aria-hidden="true" style="margin-right: 5px;"></i>Change Password</h4>
+            <button type="button" class="close close_password" data-dismiss="modal" style="padding: 20px 15px;">&times;</button>
+        </div>
+        <div class="content" id="register_bx">
+            <form action="" id="update_password" method="post">
+                <div class="uname_box" style="text-align: left;">
+                    <label for="current_password">Current Password:</label>
+                    <input type="password" class="input wid100imp" name="current_password" id="current_password" placeholder="Current Password" required>
+                </div>
+                <div class="uname_box" style="text-align: left;">
+                    <label for="password">New Password:</label>
+                    <input type="password" class="input wid100imp" name="password" id="password" placeholder="New Password" required>
+                </div>
+                <div class="uname_box" style="text-align: left;">
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" class="input wid100imp" name="confirm_password" id="confirm_password" placeholder="Confirm New Password" equalto="#password" required>
+                </div>
+                <div style="margin-top: 25px;">
+                    <a id="change_password" class="site_button">Change password</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="billing_info" role="dialog" style="background: #fff; height: auto; width: auto; left: 0;right:0;margin:0 auto;top: 10px;min-width: 400px;">
+        <div class="modal-header">
+            <h4 class="modal-title">Update Billing Info</h4>
+            <button type="button" class="close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+        </div>
+        <div class="content" id="register_bx">
+            <form action="" method="post" id="billing_form">
+                <div class="uname_box">
+                    <label for="address" class="txtleft displayblock">Address: </label>
+                    <input type="text" class="input wid100imp" id="address" name="address" placeholder="Address" value="<%=result.address%>" required>
+                </div>
+                <div class="uname_box">
+                    <label for="city" class="txtleft displayblock">City: </label>
+                    <input type="text" class="input wid100imp" id="city" name="city" placeholder="City" value="<%=result.city%>" required>
+                </div>
+                <div class="uname_box">
+                    <label for="state" class="txtleft displayblock">State: </label>
+                    <select name="state" id="state" required class="">
+                        <option value="">Choose State</option>
+                        <%us_states.forEach(function(rslt, index) {%>
+                        <option value="<%=rslt%>" <%if(result.state == rslt){%>selected<%}%>><%=rslt%></option>
+                        <%})%>
+                    </select>
+                </div>
+                <div class="uname_box">
+                    <label for="zipcode" class="txtleft displayblock">Zipcode: </label>
+                    <input type="text" class="input wid100imp" id="zipcode" name="zipcode" placeholder="Zipcode" value="<%=result.zipcode%>" required>
+                </div>
+                <input type="hidden" name="update_billing" value="1"/>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn" style="border-color: #afafaf;line-height: 30px;" data-dismiss="modal">Close</button>
+            <button type="button" class="site_button" id="update_billing_info">Update</button>
+        </div>
+    </div>
+
+    <style type="text/css">
+    .select2.select2-container{width:100% !important;margin-bottom: 20px;}
+    </style>
+
+    <script>
+    jQuery(document).ready(function(){
+        jQuery("#phone").mask('(000) 000-0000');
+        jQuery("#dob").mask("00/00/0000", {placeholder: 'MM/DD/YYYY'});
+        jQuery('#state').select2({ minimumResultsForSearch: -1 });
+    });
+    jQuery(document).on("click","#update_info",function(){
+        var valid = $("#register_form").valid();
+        if(valid){
+            $.ajax({
+                url: '/api/update_profile',
+                data: $("#register_form").serialize(),
+                type: 'POST',
+                success: function (data) {
+                    swal ("Updated","Profile Information Updated","success");
+                    jQuery("#profile_info").modal("hide");
+                    setTimeout(function(){window.location.reload();},2000);
+                },
+                error: function (err) {
+                    swal("","Error in Processing.Try again later","error");
+                    jQuery("#profile_info").modal("hide");
+                    setTimeout(function(){window.location.reload();},2000);
+                }
+            })
+        }
+    });
+    jQuery(document).on("click","#change_password",function(){
+        var valid = $("#update_password").valid();
+        if(valid){
+            $.ajax({
+                url: '/api/password_set',
+                data: $("#update_password").serialize(),
+                type: 'POST',
+                success: function (data) {
+                    if(typeof data.error != "undefined" && data.error == "1"){
+                        swal("","Error in Processing.Try again later","error");
+                        setTimeout(function(){window.location.reload();},2000);
+                    } else if(typeof data.error != "undefined" && data.error == "2"){
+                        swal("","Incorrect Current Password","error");
+                    } else {
+                        swal("","Password Changed","success");
+                        jQuery("#password_change").modal("hide");
+                        setTimeout(function(){window.location.reload();},2000);
+                    }
+                },
+                error: function (err) {
+                    swal("","Error in Processing.Try again later","error");
+                    jQuery("#password_change").modal("hide");
+                    setTimeout(function(){window.location.reload();},2000);
+                }
+            })
+        }
+    });
+    jQuery(document).on("click","#update_billing_info",function(){
+        var valid = $("#billing_form").valid();
+        if(valid){
+            $.ajax({
+                url: '/api/update_billing',
+                data: $("#billing_form").serialize(),
+                type: 'POST',
+                success: function (data) {
+                    swal ("Updated","Billing Information Updated","success");
+                    jQuery("#billing_info").modal("hide");
+                    setTimeout(function(){window.location.reload();},2000);
+                },
+                error: function (err) {
+                    swal("","Error in Processing.Try again later","error");
+                    jQuery("#billing_info").modal("hide");
+                    setTimeout(function(){window.location.reload();},2000);
+                }
+            })
+        }
+    });
+    jQuery(document).on("click",".edit_profile_info",function(){
+        jQuery("#profile_info").modal("show");
+    });
+    jQuery(document).on("click",".change_password",function(){
+        jQuery("#password_change").modal("show");
+    });
+    jQuery(document).on("click",".change_billing",function(){
+        jQuery("#billing_info").modal("show");
+    });
+    </script>
+<% include layout/footer %>

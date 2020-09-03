@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PayAlt - Shop online, anytime with Cryptocurrency</title>
+        <base href="https://payalt.com"/>
+        <link rel="icon" href="images/Payalt.ico">
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <script src="js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="row pad20 mar0 flexrowalign responsivenone menu_on_top" style="background: transparent; padding: 0px; position: relative; z-index: 5; width: 100%;">
+            <div class="row pad20 mar0 flexrowalign responsivenone" id="headerdiv">
+                <div class="col-lg-4 col-md-4 col-sm-3 col-6 resp_txtcenter" style="padding: 0px;"></div>
+                <div class="col-lg-4 col-md-4 col-sm-3 col-6 resp_txtcenter txtcenter" style="padding: 0px;">
+                    <a href="https://payalt.com">
+                        <img class="logosty" src="https://payalt.com/images/logo.png">
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 col-12 tab_right txtright resp_txtcenter" style="padding: 0px;display:none;"></div>
+            </div>
+        </div>
+        <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+
+        <div style="max-width:400px;min-height:500px;margin:5% auto;">
+            <div class="pymt_select col-md-10 col-sm-10 col-xs-12" id="coinbase_select" style="margin: 0 auto;" data-value="coinbase">
+                <form action="" method="post" id="billing_form" style="min-width: 400px;">
+                    <h2>Bitcoin Payment</h2>
+                    <div class="uname_box">
+                        <p class="mbottom5 txtleft" style="font-weight: bold;font-size: 18px;">Payment Amount</p>
+                        <div class="input-group mbottom10">
+                            <input type="text" class="input wid100imp" id="pay_amt" name="pay_amt" placeholder="Enter Amount" required>
+                        </div>
+                    </div>
+                    <button type="button" class="site_button" id="make_payment">Make Payment</button>
+                </form>
+            </div>
+        </div>
+        <style type="text/css">
+            html,body{
+                font-family: Helvetica !important;
+            }
+        </style>
+        <script>
+            jQuery(document).on("click", "#make_payment", function () {
+                var valid = $("#billing_form").valid();
+                if (valid) {
+                    var billing_amount = $("#pay_amt").val();
+                    billing_amount = billing_amount.replace(/,/g, '');
+                    
+                    var coinbase_oauth_client_id = "d973b14905c4cf90dae0782bb5147a1cb7c9e701103e6bf82359b97efecba1b4";
+                    var coinbase_oauth_redirect_url = "https://payalt.com/coinbase_oauth";
+                    var coinbase_oauth_scope = "wallet%3Auser%3Aread,wallet%3Aaccounts%3Acreate,wallet%3Aaccounts%3Aread,wallet%3Atransactions%3Aread,wallet%3Atransactions%3Asend,wallet%3Atransactions%3Atransfer,wallet%3Aaddresses%3Aread,wallet%3Aaddresses%3Acreate";
+                    
+                    var oauth_url = 'https://www.coinbase.com/oauth/authorize?client_id=' + coinbase_oauth_client_id + '&redirect_uri=' + coinbase_oauth_redirect_url + '&response_type=code&scope=' + coinbase_oauth_scope + '&meta[send_limit_amount]=' + billing_amount + '&meta[send_limit_currency]=USD';
+                    window.open(oauth_url, "Coinbase OAuth2");
+                }
+            });
+        </script>
+        <style type="text/css">
+            label.error{
+                display:none !important;
+            }
+        </style>
+    </body>
+</html>

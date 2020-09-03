@@ -1,0 +1,80 @@
+@media (max-width:991px){
+    .resmenuhead{
+        background: #fff !important;
+        width: 100% !important;
+        opacity: 1;
+        color: #333 !important;
+        left:0 !important;
+        box-shadow: 0 8px 6px -6px #333;
+        height:65px !important;
+        position: fixed;
+        top:0;
+        visibility: visible;
+        z-index: 1;
+    }
+    .adaptive-menu ul:first-of-type li a {
+        color: #000 !important;
+    }
+    .adaptive-menu ul:first-of-type li a:hover {
+        background: #fff !important;
+        color: #000 !important;
+        text-decoration: none !important;
+    }
+    .adaptive-menu ul:first-of-type li {
+        background: #fff !important;
+        border-bottom: 1px solid #fcfcfc !important;
+    }
+    .adaptive-menu__close::before, .adaptive-menu__close::after {
+        background: #333 !important;
+    }
+}
+@media (max-width:767px){
+    #adminsigninbox{max-width:450px;}
+    .signinbck{height:300px;}
+    .resprofilergtmnu{position: fixed;right:15px;z-index: 1000;margin:20px 0;}
+    .resmenuhead{
+        background: #fff !important;
+        width: 100% !important;
+        opacity: 1;
+        color: #333 !important;
+        left:0 !important;
+        box-shadow: 0 8px 6px -6px #333;
+        height:65px !important;
+        position: fixed;
+        top:0;
+        visibility: visible;
+        z-index: 5;
+    }
+    .cuspadtop3em{padding-top:3em;}
+    .adaptive-menu ul:first-of-type li{
+        background: #fff !important;
+        border-bottom: 1px solid #fcfcfc !important;
+    }
+    .adaptive-menu ul:first-of-type li a {
+        color: #000 !important;
+    }
+    .adaptive-menu ul:first-of-type li a:hover {
+        background: #fff !important;
+        color: #000 !important;
+        text-decoration: none !important;
+    }
+    .adaptive-menu__close::before, .adaptive-menu__close::after {
+        background: #333 !important;
+    }
+}
+@media (max-width:575px){
+    #adminsigninbox{max-width:300px;}
+    #passbox{max-width:300px;}
+}
+
+
+.resmenuhead{height:0px;}
+@media (max-width:767px){
+    .content_login{margin-top: 100px;}    
+}
+@media (max-width:836px){
+    #register_bx #box_register{max-width: 90% !important;}
+}
+@media (min-width:1850px){
+    .login_pg.content_login{min-height: calc(100vh - 300px);}
+}

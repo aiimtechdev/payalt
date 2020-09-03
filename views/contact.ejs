@@ -1,0 +1,198 @@
+<% include layout/header %>
+<section class="contact-secn col-md-12 col-sm-12 col-xs-12 paylt-padlr0">
+    <div class="contact-payaltbanr col-md-12 col-sm-12 col-xs-12 paylt-padlr0"></div>
+    <div class="contact-payalt col-md-12 col-sm-12 col-xs-12">
+        <div class="container">
+            <div class='col-md-12 col-sm-12 contact-cont'>Got a Question? Send us a message – We'd love to hear from you.</div>
+            <%if(typeof succ_msg != 'undefined' && succ_msg != ''){%>
+                <div class="alert alert-success">Your Information has been submitted successfully</div>
+            <%}%>
+            <div class="row contactpy-grp">
+                <div class="col-md-6 col-sm-12 contactpay-left"></div>
+                <div class="col-md-6 col-sm-12 contactpay-right">
+                    <div class="col-md-12 col-sm-12 contact-payfrmtit">Contact Us</div>
+                    <form name="contact_payalt" id="contact_payalt" method="post">
+                        <div class="col-md-12 col-sm-12 contact-name">
+                            <div style="display:none;" data-error="cntpy-nameval" class="cntpyerror"><i class="fa fa-exclamation-circle"></i></div>
+                            <div class="col-md-12 col-sm-12 contact-name-label cpylabl">Name</div>
+                            <input id="cntpy-nameval" type="text" class="contact-nameval reqfds txtOnly" name="contactnameval" />
+                        </div>
+                        <div class="col-md-12 col-sm-12 contact-email">
+                            <div style="display:none;" data-error="cntpy-emailval" class="cntpyerror"><i class="fa fa-exclamation-circle"></i></div>
+                            <div class="col-md-12 col-sm-12 contact-email-label cpylabl">Email</div>
+                            <input id="cntpy-emailval" type="text" class="contact-emailval reqfds" name="contactemailval" />
+                        </div>
+                        <div class="col-md-12 col-sm-12 contact-subject">
+                            <div style="display:none;" data-error="cntpy-subjectval" class="cntpyerror"><i class="fa fa-exclamation-circle"></i></div>
+                            <div class="col-md-12 col-sm-12 contact-subject-label cpylabl">Subject</div>
+                            <input id="cntpy-subjectval" type="text" class="contact-subjectval reqfds" name="contactsubjectval" />
+                        </div>
+                        <div class="col-md-12 col-sm-12 contact-message">
+                            <div style="display:none;" data-error="cntpy-messageval" class="cntpyerror"><i class="fa fa-exclamation-circle"></i></div>
+                            <div class="col-md-12 col-sm-12 contact-message-label cpylabl">Message</div>                            
+                            <textarea id="cntpy-messageval" class="contact-messageval reqfds" name="contactmessageval"></textarea>
+                        </div>
+                        <div class="col-md-12 col-sm-12 contact-submit">
+                            <button type='button' class='submitcontact-btn'>Send Message</button>
+                        </div>
+                        <input type="hidden" name="contact_submit" value="1"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function(){
+        $( ".txtOnly" ).keydown(function(e) {               
+            var key = e.keyCode;        
+            if(!((key == 8) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90)) && (key != 9) && (key != 32)) 
+            {        
+                e.preventDefault();            
+            }
+        }); 
+    });
+    $(document).on("click",".submitcontact-btn",function(){
+        var check = 0;
+        $("#contact_payalt .reqfds").each(function(i) 
+        {
+            var ids = $(this).attr('id');
+            if($.trim($(this).val()) == "")
+            {
+                $('div[data-error='+ids+']').show();
+                check = 1;
+            }
+            else
+            {
+               $('div[data-error='+ids+']').hide(); 
+            }
+            if(ids == 'cntpy-emailval' && $.trim($(this).val()) != "")
+            {            
+                var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+                var emailres = pattern.test($(this).val());
+                if(emailres == false)
+                {
+                  $('div[data-error='+ids+']').show();
+                  check = 1;  
+                }
+            }
+        });
+        if(check == 0)
+        {
+            $("#contact_payalt").submit();
+        }
+    });
+</script>
+<style>    
+    .cntpyerror i
+    {
+        position: absolute;
+        top: 41px;
+        right: 6%;
+        font-size: 24px;
+        color: #be1931;
+        background: #fff;        
+    }
+    /*.contact-payfrmtit:after
+    {
+        content: '';
+        position: absolute;
+        width: 207px;
+        height: 50px;
+        background-image: url('/images/underln.png');
+        background-size: cover;
+        left: 0px;
+        right: 0px;
+        margin: auto;
+        top: 65px;
+    }*/
+    .contactpay-left
+    {
+        background-image: url('/images/cryptbuy.jpg');
+        height: 718px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        background-position-x: center;
+        background-position-x: -407px;
+    }
+    .contactpay-right
+    {
+        background: #efefef;        
+    }
+    .paylt-padlr0
+    {
+        padding-left:0px;
+        padding-right:0px;
+    }
+    .contact-cont
+    {        
+        font-size: 28px;
+        padding-top: 40px;
+        padding-bottom: 30px;
+        text-align: center;
+    }
+    .contact-payfrmtit
+    {
+        text-align: center;
+        font-family: Montserrat-SemiBoldItalic;
+        font-size: 32px;
+        text-transform: uppercase;
+        padding-top: 40px;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+    .cpylabl
+    {
+        font-family: Montserrat-SemiBoldItalic;
+        padding-left:0px;
+        padding-right:0px;
+        margin-bottom:8px;
+    }
+    #contact_payalt input
+    {
+        width:100%;
+        border:1px solid #ddd;
+        height: 43px;
+        background: #fff;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .contact-subject,.contact-name,.contact-email,.contact-message
+    {
+        margin-bottom: 15px;
+    }
+    .contact-submit
+    {
+        padding-top:30px;
+        text-align:center;
+        margin-bottom: 35px;
+    }
+    .submitcontact-btn
+    {
+        background:#55cac2;
+        color: #fff;
+        text-transform: uppercase;
+        border: none;
+        width: 290px;
+        padding: 11px 0px;
+        font-size: 25px;        
+        font-family: Montserrat-SemiBoldItalic;
+        cursor: pointer;
+    }
+    .contact-messageval
+    {
+        width: 100%;
+        border:1px solid #ddd;
+        height: 150px;
+        padding: 10px 15px;
+    }
+    .contactpy-grp
+    {
+        background:#efefef;
+        display: flex;
+        align-items: end;
+    }
+</style>
+<% include layout/footer %>

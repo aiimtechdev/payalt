@@ -1,0 +1,662 @@
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block
+}
+
+body {
+    line-height: 1
+}
+
+ol,
+ul {
+    list-style: none
+}
+
+blockquote,
+q {
+    quotes: none
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+body {
+    font-family: monospace;
+    height: 100%;
+    display: block
+}
+
+.common-buttons,
+#navigation #back,
+#navigation #forward,
+#navigation #refresh,
+#navigation #fave,
+#navigation #list,
+#navigation #console {
+    float: left;
+    display: block;
+    width: 30px;
+    font-size: 20px;
+    color: #eee
+}
+
+.common-buttons i,
+#navigation #back i,
+#navigation #forward i,
+#navigation #refresh i,
+#navigation #fave i,
+#navigation #list i,
+#navigation #console i {
+    cursor: pointer
+}
+
+#navigation {
+    width: 100%;
+    background: #070F4E;
+    display: block;
+    top: 0;
+    padding: 10px;
+    left: 0;
+    box-sizing: border-box;
+}
+
+#navigation #omnibox {
+    display: block;
+    width: 100%;
+    color: #333333;
+}
+
+#navigation #omnibox input {
+    border: none;
+    outline: none;
+    text-indent: 10px;
+    height: 30px;
+    width: 100%;
+    border-radius: 2px;
+    color: #333;
+    font-family: monospace;
+}
+
+#navigation #fave-popup {
+    display: none;
+    position: fixed;
+    right: 1px;
+    color: #eee;
+    top: 29px;
+    width: 180px;
+    height: 200px;
+    z-index: 20;
+    padding: 1px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: #070F4E;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)
+}
+
+#navigation #fave-popup .link {
+    width: 100%;
+    height: 32px;
+    color: #eee;
+    font-family: monospace;
+    font-size: 13px;
+    text-decoration: none;
+    text-align: left;
+    display: block;
+    line-height: 32px
+}
+
+#navigation #fave-popup .link .favicon {
+    width: 32px;
+    height: 32px;
+    float: left;
+    background: #eee
+}
+
+#tabs {
+    width: 100%;
+    left: 0;
+    display: block;
+    overflow-y: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    background: rgba(7, 15, 78, 0.7)
+}
+
+#tabs::-webkit-scrollbar {
+    background: red;
+    outline: none;
+    border: none;
+    height: 3px
+}
+
+#tabs::-webkit-scrollbar-thumb {
+    background: white
+}
+
+#tabs .tab {
+    margin: 0;
+    width: 100px;
+    background: #070F4E;
+    display: inline-block;
+    height: 40px;
+    margin-left: -4px;
+    color: #eee;
+    text-align: left;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-right: #eee 1px solid;
+    line-height: 32px
+}
+
+#tabs .tab .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 20px;
+    width: 20px;
+    text-align: right;
+    font-size: 14px;
+    line-height: 0;
+    font-family: monospace;
+    background: #070F4E
+}
+
+#tabs .tab .close:hover {
+    color: darkred
+}
+
+#tabs .tab:first-of-type {
+    margin-left: 0
+}
+
+#views {
+    position: relative
+}
+
+.page{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: calc(100vh - 120px)
+}
+.pymt_page{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    //height: calc(100vh - 120px)
+}
+
+.content_top{
+    text-align: right;
+    /*position: absolute;
+    right: 0;*/
+}
+.content_top button{
+    background-color: #4285f4;
+    border-radius: 2px;
+    box-shadow: 0 0 2px 0 rgba(0,0,0,0.10), 0 2px 2px 0 rgba(0,0,0,0.23);
+    font-weight: 500;
+    text-transform: uppercase;
+    border-color: #4285f4;
+    border-style: solid;
+    padding: 10px 20px;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+.closesrch {
+    position: absolute;
+    right: 1em;
+    cursor: pointer;
+    font-size: 1.6em;
+    top: 1em;
+    border: 2px solid #5f5959;
+    z-index: 3000;
+    color: #5f5959;
+    padding: 5px 15px;
+    border-radius: 50%;
+}
+.overlaybck {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    z-index: 2000;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.8);
+}
+.overlaymain {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    z-index: 2000;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.8);
+}
+.overlayloading{
+    display: block;position: fixed;left: 0;z-index: 3000;top: 0;right: 0;width: 100%;height: 100%;
+}
+.overlayloading .overlay-loading-container {
+    width: 100%;
+    position: absolute;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    left: 45%;
+    top: 40%;
+}
+.overlay-container {
+    width: 100%;
+    position: absolute;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    top: 20%;
+}
+.overlayautomation{
+    display: block;position: fixed;left: 0;z-index: 3000;top: 0;right: 0;width: 100%;height: 100%;
+}
+.overlayautomation .overlay-loading-container {
+    position: absolute;
+    padding: 15px;
+    text-align: center;
+    background: #fff;
+    border-radius: 10px;
+    z-index: 3000;
+    margin-right: auto;
+    min-width: 500px;
+    margin: 0 auto;
+    left: 35%;
+    top: 40%;
+    box-shadow: 1px 1px 6px 4px rgba(100,100,100,0.5);
+}
+.srchh1 {
+    text-align: center;    
+    font-size: 3em;
+}
+#paywithcryto{
+    background: #a9a7a7;color: #635b5b;padding: 15px;width: 70%;text-align: center;display: table-cell;cursor: pointer;
+}
+#forcecheckout{
+    background: #0a9a0e;padding: 10px;display: table-cell;text-align: center;width: 30%;color: #fff;cursor: pointer;
+}
+.paywithcrytoactive{
+    background: #000 !important;color: #fff !important;
+}
+
+/** MODAL BOX **/
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  text-align: center;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  padding: 0px;
+  width: auto !important;
+  border: 1px solid #888 !important;
+  max-width: 100% !important;
+  display: inline-block !important;
+  position: relative;
+  margin: auto;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+ /* Modal Header */
+.modal-header {
+  padding: 2px 16px;
+  background-color: #1884AB;
+  color: white;
+}
+
+/* Modal Body */
+.modal-body {padding: 2px 16px;}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 2px 16px;
+  background-color: #1884AB;
+  color: white;
+}
+
+/* Add Animation */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+} 
+
+/* The Close Button */
+.billing_popup_close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.billing_popup_close:hover,
+.billing_popup_close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} 
+/** MODAL BOX **/
+
+#billing_form input[type="text"],#billing_form input[type="password"],#billing_form input[type="email"]
+,#pymt_form input[type="text"],#pymt_form input[type="password"],#pymt_form input[type="email"]
+,#login_form input[type="text"],#login_form input[type="password"],#login_form input[type="email"]
+{
+    padding:10px;
+    font-size:14px;
+    border:1px solid #999999;
+    width: 93%;
+    margin-bottom:10px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    box-shadow: inset 1px 1px 2px rgba(200,200,200,0.2);
+}
+.cus-select {
+  position: relative;text-align: left;
+}
+
+.cus-select select {
+  display: none; /*hide original SELECT element: */
+}
+
+.select-selected {
+  background-color: #f3f3f3;
+}
+
+/* Style the arrow inside the select element: */
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 18px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #312e2e transparent transparent transparent;
+}
+
+/* Point the arrow upwards when the select box is open (active): */
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent #fff transparent;
+  top: 7px;
+}
+
+/* style the items (options), including the selected item: */
+.select-items div,.select-selected {
+  color: #423e3e;
+  padding: 8px 16px;
+  border: 1px solid #e6e2e2;
+  cursor: pointer;
+}
+.select-selected{
+    border-radius: 5px;position: relative;
+}
+
+/* Style items (options): */
+.select-items {
+  position: absolute;
+  background-color: #fdfdfd;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+/* Hide the items when the select box is closed: */
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+.site_button{
+    background-color: #1884ab;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0,0,0,0.10), 0 2px 2px 0 rgba(0,0,0,0.23);
+    font-weight: 500;
+    border-color: #1884ab;
+    border-style: solid;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #fff !important;
+    width: 100%;
+    cursor: pointer;
+}
+.error {
+    box-shadow: 2px 2px 2px 2px rgba(0,0,0,0.5);
+    padding: 10px;
+    color: red;
+}
+#register_bx .uname_box,#login_bx .uname_box{
+    position: relative;
+}
+#register_bx label.error{
+    background-color: #ea7a77;
+    padding: .2em .6em .3em;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}
+#register_bx label.error,#login_bx label.error,#contact-form label.error {
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    bottom: 60px;
+    font-size: 14px;
+    background-color: #c94040 !important;
+    font-weight: normal !important;
+}
+#register_bx input.error{
+    border-color: #c94040; 
+}
+#register_bx label.error,#login_bx label.error,#contact-form label.error {
+    position: absolute;
+    right: 0;
+    padding: .5em 1em .4em;
+    background-color: #f66;
+    border: 1px solid #f00;
+    border-radius: 5px;
+    color: #fff;
+}
+#register_bx label.error::after,
+#register_bx label.error::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 15px;
+    border: solid transparent;
+}
+#register_bx label.error::after {
+    margin-left: 1px;
+    border-top-color: #c94040;
+    border-width: 7px;
+}
+#register_bx label.error::before {
+    border-top-color: #c94040;
+    border-width: 8px;
+}
+.txtcenter{text-align:center;}
+.txtright{text-align:right;}
+.txtleft{text-align:left;}
+.mtop0{margin-top:0;}
+.mbottom0{margin-bottom:0;}
+.mbottom10{margin-bottom:10px;}
+.mbottom5{margin-bottom:5px;}
+.wid100imp{width:100% !important;}
+.padtop20{padding-top: 20px;}
+.padtop30{padding-top: 30px;}
+.padbottom20{padding-bottom: 20px;}
+.padleft0{padding-left:0 !important;}
+.padright0{padding-right:0 !important;}
+.lhgt2{line-height:2;}
+.wid250{width:250px;}
+.padleft10{padding-left: 10px;}
+.processtitle {
+    font-size: 2em;
+    font-weight: 400;
+}
+.loadicon {
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+.mtop4em {
+    margin-top: 4em;
+}
+.site-bckcolor {
+    background: #1884ab;
+}
+.colorwhite {
+    color: #fff !important;
+}
+#coin_type-error{bottom: 50px !important;}

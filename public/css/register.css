@@ -1,0 +1,502 @@
+#personinfo .fs-title
+{
+    margin-bottom: 44px;
+}
+#logininfo .fs-title
+{
+    margin-bottom: 44px;
+}
+.stepsheight1
+{
+    min-height: 180px;
+}
+.stepsheight3
+{
+    min-height: 180px;
+}
+.overeight
+{
+    position: relative;
+    top: -8px;
+    font-size: 13px;
+    color: #be1931;
+    text-align: center;
+}
+.passmsg1
+{
+   position: relative;
+    top: -28px;
+    font-size: 12px;
+    color: #be1931; 
+}
+.passmsg2
+{
+   position: relative;
+    top: -28px;
+    font-size: 12px;
+    color: #be1931; 
+}
+.termmsg
+{
+    position: relative;
+    top: 5px;
+    left: -20px;
+    font-size: 13px;
+    color: #be1931;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.error{
+    border: 1px solid;
+    border-radius: 10px;
+    background-image: url('/images/error_icon.png');
+    background-repeat: no-repeat;
+    background-position: 10px center;    
+    margin-top: 30px;
+}
+.errorfld
+{
+    position: relative;
+    right: 0px;
+}
+.clrbt
+{
+    clear: both;
+}
+.errorfld i
+{
+    position: absolute;
+    top: 12px;
+    right: 6%;
+    font-size: 24px;
+    color: #be1931;
+    background: #fff;
+}
+select 
+{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;  
+  background: url("/images/down-arrow.png"); 
+  background-repeat: no-repeat;
+  background-position: 94% 18px;
+}
+
+.stateselfrm:after
+{
+    content:'▼';
+    position: absolute;
+}
+.stateselfrm
+{
+   height: 47px;
+   border-radius: 50px; 
+   margin-bottom: 35px;
+}
+.next.action-button i,
+.submit.action-button i
+{
+    margin-left: 5px;
+}
+
+.previous.action-button-previous i
+{
+    margin-right: 10px;
+}
+.pdrmove
+{
+    padding-left:0px;
+    padding-right:0px;
+}
+
+.register-button {
+    background: #55cac2;
+    color: #fff;
+    text-transform: uppercase;
+    border: none;
+    padding: 11px 0px;
+    width: 90%;
+    margin-top: 8%;
+    font-family: Montserrat-SemiBoldItalic;
+    font-size: 22px;
+}
+
+fieldset .fs-title
+{
+    margin-top:20px;
+    margin-bottom:15px;
+    font-size: 22px;
+}
+.ovreigtn
+{
+    display: inline-block;
+    margin-right: 20px;
+    padding-top: 5px;
+    font-size: 18px;
+    padding-left: 8px;
+}
+.ovregtndiv
+{
+    padding-top: 5px;
+    font-weight: normal;
+    text-align: left;
+}
+
+#progressbar li
+{
+    width: 50px;
+    height: 50px;   
+    border-radius: 50%;
+    display: inline-block;    
+    border: 2px solid #464646;
+    position: relative;
+    z-index: 1;
+    background: #fff;
+}
+
+.yelwcolor
+{
+    background:#fff800 !important;
+}
+
+.regsteps #progressbar li:nth-child(1)
+{
+    float: left;
+}
+
+.regsteps #progressbar li:nth-child(2)
+{
+    margin-right: 10%;
+    margin-left: 10%;
+}
+
+.regsteps #progressbar li:nth-child(3)
+{
+    float: right;
+}
+
+.brderline
+{
+    width: 100%;
+    border-top: 2px solid #464646;
+    position: relative;
+    top: -27px;
+}
+
+.regsteps
+{
+    display: inline-flex;
+    width: 420px;
+    align-items: center;
+}
+#progressbar
+{
+    width: 100%;
+}
+
+.register-payalt
+{
+    min-height: 498px;    
+}
+/****** radio *******/
+
+/* The container */
+.radiocontainer {
+  display: inline-block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position: relative;
+  top: 3px;
+}
+
+/* Hide the browser's default radio button */
+.radiocontainer input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.radiocheckmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.radiocontainer:hover input ~ .radiocheckmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.radiocontainer input:checked ~ .radiocheckmark {
+  background-color: #55cac2;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.radiocheckmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radiocontainer input:checked ~ .radiocheckmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.radiocontainer .radiocheckmark:after {
+    top: 8px;
+    left: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: white;
+}
+
+.radiocotone
+{
+    margin-right: 15px;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #2C3E50;
+  opacity: 1; /* Firefox */
+  text-transform: uppercase;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #2C3E50;
+  text-transform: uppercase;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #2C3E50;
+  text-transform: uppercase;
+}
+
+::-webkit-placeholder
+{
+    color: #2C3E50;
+    opacity: 1; /* Firefox */
+    text-transform: uppercase;
+}
+
+/*************************************/
+
+/*form styles*/
+#msform {
+    text-align: center;
+    position: relative;
+    margin-top: 30px;
+}
+
+/*inputs*/
+#msform input, #msform textarea {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    margin-bottom: 35px;
+    width: 100%;
+    box-sizing: border-box;    
+    color: #2C3E50;
+    font-size: 16px;
+    background: #fff;
+    /*font-family: Montserrat-SemiBoldItalic;*/
+    font-weight: normal;    
+}
+
+#msform input:focus, #msform textarea:focus {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc;
+    outline-width: 0;
+    transition: All 0.5s ease-in;
+    -webkit-transition: All 0.5s ease-in;
+    -moz-transition: All 0.5s ease-in;
+    -o-transition: All 0.5s ease-in;
+}
+
+/*buttons*/
+#msform .action-button,
+#msform .action-button:hover
+{
+    background: #55cac2;
+    color: #fff;
+    text-transform: uppercase;
+    border: none;
+    padding: 11px 0px;
+    width: 180px;
+    margin-top: 10px;
+    font-family: Montserrat-SemiBoldItalic;
+    font-size: 22px;
+    border-radius: 0px;
+    box-shadow: none !important;
+    cursor: pointer;
+    float: right;
+}
+
+#msform .action-button:hover, #msform .action-button:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #ee0979;
+}
+
+#msform .action-button-previous,
+#msform .action-button-previous:hover
+{
+    background: #55cac2;
+    color: #fff;
+    text-transform: uppercase;
+    border: none;
+    padding: 11px 0px;
+    width: 180px;
+    margin-top: 10px;
+    font-family: Montserrat-SemiBoldItalic;
+    font-size: 22px;
+    border-radius: 0px;
+    box-shadow: none !important;
+    cursor: pointer;
+    float: left;
+}
+
+/*headings*/
+.fs-title {
+    font-size: 18px;
+    text-transform: uppercase;
+    color: #2C3E50;
+    margin-bottom: 10px;
+    letter-spacing: 2px;    
+    font-family: Montserrat-SemiBoldItalic;
+}
+
+.fs-subtitle {
+    font-weight: normal;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 30px;
+    font-family: Montserrat-SemiBoldItalic;
+}
+
+.next.register-button
+{
+    width: 180px !important;
+    background: #55cac2 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 0px !important;
+    position: relative;
+    /*padding-right: 15px;*/
+    cursor: pointer;
+    margin-top: 10px;   
+}
+
+.next.register-button i
+{
+    margin-left: 5px;
+}
+.nextbttnregtr
+{
+    text-align:right;    
+}
+#progressbar li span
+{
+    position: relative;
+    top: 11px;
+    font-weight: 600;
+}
+#personinfo,#billinfo,#logininfo
+{
+    margin-bottom:30px;
+}
+.stateselfrm:focus
+{
+    border-color: none;
+    box-shadow: none;
+}
+.socifoterbttm a img
+{
+    margin-bottom: 15px;
+}
+.animate {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+@-webkit-keyframes focusin_anime {
+  from {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes focusin_anime {
+  from {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.focusin_anime {
+  -webkit-animation-name: focusin_anime;
+  animation-name: focusin_anime;
+}
+
+@-webkit-keyframes focusout_anime {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes focusout_anime {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.focusout_anime {
+  -webkit-animation-name: focusout_anime;
+  animation-name: focusout_anime;
+}

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">        
+        <title>Shop Now</title>
+        <link rel="stylesheet" href="css/font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/electron-tabs.css">
+        
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <style type="text/css">
+            webview {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body id="browser">
+        <div class="overlaymain" style="display:none;"></div>
+        <div class="overlaybck" style="display:none;">
+            <div class="closesrch"><a class="curpoint">X</a></div>
+            <div class="overlay-container">
+                <div style="width: 40%;margin: auto;">
+                    <h1 class="srchh1">Enter a URL or Search as Normal with Google</h1>
+                    <img src="images/down_arrow.png" style="margin-left: 15%;width: 30px;">
+                </div>
+            </div>
+        </div>
+        <div class="content_top">
+            <div id="show_logged_users" style="display:none;">
+                <button type="button" name="myaccount" id="myaccount" style="height: 50px;">My Account</button>
+                <button type="button" name="logout" id="logout" style="height: 50px;">Log Out</button>
+            </div>
+            <div id="show_notlogged_users" style="display:none;">
+                <button type="button" name="signup" id="signup" style="height: 50px;">Sign Up</button>
+            </div>
+        </div>
+        
+        <div class="etabs-tabgroup">
+            <div class="etabs-tabs"></div>
+            <div class="etabs-buttons"></div>
+        </div>
+        <nav id="navigation">
+            <div id="back" style="display:none;">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </div>
+            <div id="forward" style="display:none;">
+                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </div>
+            <div id="refresh" style="display:none;">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+            </div>
+            <div id="omnibox">
+                <input type="text" id="url" placeholder="Google Address bar">
+            </div>
+        </nav>
+        
+        <div class="etabs-views"></div>
+        <!--<div id="views">
+            <webview id="view" class="page" src="https://www.google.com/" autosize="on"></webview>
+        </div>-->
+        <div id="bottom_buttons" style="display: table;position: absolute;bottom: 0;width: 100%;">
+            <a id="paywithcryto" class=""><div>Click Here to Pay with Crypto</div></a>
+            <a id="forcecheckout"><div>I am on a checkout page </div></a>
+        </div>
+        
+        <div class="modal" id="billing_popup" role="dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Billing Details</h4>
+                    <button type="button" class="close billing_popup_close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+                </div>
+                <div class="content modal-body" id="register_bx">
+                    <form action="" method="post" id="billing_form" style="min-width: 400px;">
+                        <div class="uname_box">
+                            <p class="mbottom5 txtleft">Payment Amount</p>
+                            <div class="input-group mbottom10">
+                                <div class="input-group-prepend"><span class="input-group-text">$</span></div>
+                                <input type="text" class="input" id="payment_amount" name="payment_amount" placeholder="Payment Amount" required value="" style="margin: 0;width: calc(100% - 35px);">
+                            </div>
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5 txtleft">First Name</p>
+                            <input type="text" class="input wid100imp" id="first_name" name="first_name" placeholder="First Name" required value="">
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5 txtleft">Last Name</p>
+                            <input type="text" class="input wid100imp" id="last_name" name="last_name" placeholder="Last Name" required value="">
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5 txtleft">Street</p>
+                            <input type="text" class="input wid100imp" id="street" name="street" placeholder="Street Address" required>
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5 txtleft">City</p>
+                            <input type="text" class="input wid100imp" id="city" name="city" placeholder="City" required>
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5 txtleft">State</p>
+                            <input type="text" class="input wid100imp" id="state" name="state" placeholder="State" required value="">
+                        </div>
+                        <div class="uname_box">
+                            <p class="mbottom5 txtleft">Zipcode</p>
+                            <input type="text" class="input wid100imp" id="zipcode" name="zipcode" placeholder="Zipcode" required value="" onkeypress="return isNumber(event)" maxlength="5">
+                        </div>
+                        <br>                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="txtcenter">
+                        <input type="button" class="site_button" value="Submit" id="submit_billing_details" style="border: 1px solid #fff;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal" id="crypto_popup">
+            <div class="vertical-alignment-helper">
+                <div class="modal-dialog modal-lg vertical-align-center">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel"><i class="fa fa-money"></i><span class="padleft10 rsfsize20">Pay now with Crypto</span></h4>
+                            <button type="button" class="close crypto_popup_close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+                        </div>
+                        <div class="modal-body" id="register_bx">
+                            <form action="" method="post" id="pymt_form" style="min-width: 600px;">
+                                <div class="txtcenter" style="margin: 0 auto;width: 50%;">
+                                    <div class="cus-select">
+                                        <select name="coin_type" id="coin_type" style="width:250px;" required>
+                                            <option value="">Select Coin Type</option>
+                                            <option value="BTC">Bitcoin (BTC)</option>
+                                            <option value="ETH">Ethereum (ETH)</option>
+                                            <option value="BCH">Bitcoin Cash (BCH)</option>
+                                            <option value="LTC">Litecoin (LTC)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="txtcenter padtop20 lhgt2 exchange_details" style="display: none;">
+                                    <div>Current Locked Exchange Rate for next <span style="font-weight: bold;">15</span> minutes: <span style="font-weight: bold;">1 coin_type = <span class="usd_bitcoin">$6,636</span> USD</span> <span style="font-size:16px;font-weight:bold;">?</span></div>
+                                    <div>This transaction will take <span style="font-weight: bold;" class="coin_needed"></span> <span style="font-weight: bold;" class="coin_type"></span>.</div>
+                                </div>
+                                <div class="txtcenter padtop20 uname_box" style="margin: 0 auto;width: 50%;">
+                                    <input type="text" name="wallet_id" id="wallet_id" class="exinputsty" placeholder="Enter your wallet ID" style="width: 100%;" required>
+                                </div>
+                                <div class="txtcenter padtop20" style="margin: 0 auto;width: 50%;">
+                                    <button type="button" name="submit_payment" id="submit_payment" class="site_button">Submit Payment</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal" id="processing_popup" tabindex="-1" role="dialog" aria-labelledby="paytransModalLabel" aria-hidden="true">
+            <div class="vertical-alignment-helper">
+                <div class="modal-dialog modal-lg vertical-align-center">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close processing_popup_close" data-dismiss="modal" style="padding: 10px 15px;text-align: right;font-size:30px;">&times;</button>
+                        </div>                        
+                        <div class="modal-body">
+                            <div class="txtcenter">
+                                <div class="processtitle">
+                                    IMPORTANT DO NOT CLOSE THIS WINDOW OR THE TRANSACTION WILL FAIL...
+                                </div>
+                                <div class="loadicon">
+                                    <img src="images/ajax-loader.gif" width="150" height="150">
+                                </div>
+                                <div class="txtcenter">
+                                    Processing Please Wait... This may take up to 5 minutes, thank you for your patience.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer mtop4em txtcenter site-bckcolor colorwhite">
+                            <div class="txtcenter pad5 col-md-12 col-xs-12" id="continue_shopping">Continue Shopping</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="js/jquery.validate.min.js"></script>        
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/sweetalert.js"></script>        
+        <script type="text/javascript">
+            require('dotenv').load();
+            var async = require("async");
+            var dbconnected = false;
+            var dbConn = require('../../db');
+            dbConn.connectToServer(function (err) {
+                //console.log(err);
+                if(!err){
+                    dbconnected = true;
+                }
+            });            
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    return false;
+                }
+                return true;
+            }
+            function numberWithCommas(x) {
+                var parts = x.toString().split(".");
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return parts.join(".");
+            }
+            
+            var $ = require('jquery');            
+            // Get the modal
+            var billing_popup = document.getElementById('billing_popup');
+            var crypto_popup = document.getElementById('crypto_popup');
+            var processing_popup = document.getElementById('processing_popup');
+            //billing_popup.style.display = "block";
+            //processing_popup.style.display = "block";
+            
+            // Get the <span> element that closes the modal
+            var billing_popup_span = document.getElementsByClassName("billing_popup_close")[0];
+            billing_popup_span.onclick = function() {
+                billing_popup.style.display = "none";
+            }
+            
+            var crypto_popup_span = document.getElementsByClassName("crypto_popup_close")[0];
+            crypto_popup_span.onclick = function() {
+                crypto_popup.style.display = "none";
+            }
+            
+            var processing_popup_span = document.getElementsByClassName("processing_popup_close")[0];
+            processing_popup_span.onclick = function() {
+                processing_popup.style.display = "none";
+            }
+            
+            const TabGroup = require("electron-tabs");
+            const cheerio = require('cheerio');
+                        
+            let tabGroup = new TabGroup();
+            let tab = tabGroup.addTab({
+                title: "Google",
+                src: "https://www.google.com",
+                //src: "https://mail.google.com/mail/u/0/?tab=wm#inbox",
+                visible: true,
+                active: true,
+                webviewAttributes: {
+                    "nodeintegration" : "on",
+                    "autosize" : "on",
+                    "allowpopups" : "on",
+                    "preload" : "preloader.js"
+                }
+            });
+            
+            tab.on("webview-ready", (tab) => {
+                //console.log(tab.webview.getURL());
+                var tab_title = tab.webview.getTitle();
+                tab.setTitle(tab_title);
+                
+                /*console.log("WEBVIEW SESSION");
+                var session = tab.webview.getWebContents().session;
+                
+                var dbConn = require( '../../db' );
+                var dbo = dbConn.getDb();
+                var ObjectId = require('mongodb').ObjectId;
+                dbo.collection("cookies_page").findOne({"_id" : new ObjectId("5c51a3b45c334926ae6e880e")} , function(err, result) {
+                    session.cookies.set(result.cookie_data, function(error) {});
+                });*/
+            });
+            
+            tab.webview.addEventListener("ipc-message", function (e) {
+                console.log("INSIDE IP MESSAGE");
+                if (e.channel === "html-content") {
+                    var html_contents = e.args[0];
+                    //console.log(html_contents);
+                    const parse = cheerio.load(html_contents);
+                    //console.log(parse("body").html());
+                    
+                    /*var category = parse('span').filter(function() {
+                        return $(this).text().trim() === 'Price details';
+                    }).next().text();*/
+                    
+                    parse('div').filter(function() {
+                        console.log($(this).text());
+                    });
+                    console.log(parse('div:contains("Amount Payable")'));
+                }
+            });
+            
+            tab.webview.addEventListener('new-window', (e) => {
+                tab.webview.loadURL(e.url);
+                // used url to render new tabs.
+            })
+            
+            tab.on("close", (tab) => {
+                var totalTabs = tabGroup.getTabs();
+                if(totalTabs.length == 0){
+                    window.close();
+                }
+            });
+            
+            $(document).ready(function(){                
+                //$(".overlaybck").show();
+                $('#pymt_form').validate({
+                    ignore: [],
+                    // any other options and/or rules
+                });
+                setTimeout(function(){
+                    $(".overlaybck").hide();
+                },3000);
+                $(document).on("click",".closesrch",function(){
+                    $(".overlaybck").hide();
+                });                
+            });
+            $(document).on("click", "#signup", function(){
+                const { ipcRenderer } = require('electron');
+                ipcRenderer.send('asynchronous-message', 'signup');
+                //window.close();
+            });
+            $(document).on("click", "#myaccount", function(){
+                const { ipcRenderer } = require('electron');
+                ipcRenderer.send('asynchronous-message', 'profile');
+                //window.close();
+            });
+            $(document).on("click", "#logout", function(){
+                const { ipcRenderer } = require('electron');
+                ipcRenderer.send('asynchronous-message', 'logout');
+                //window.close();
+            });
+            
+            $(document).on("click", "#forcecheckout", function(){
+                swal({
+                    title: "Confirm",
+                    text: "Are you able to enter billing info now?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        billing_popup.style.display = "block";
+                    }
+                });
+                //$("#paywithcryto").addClass("paywithcrytoactive");
+            });
+            
+            $(document).on("click", "#submit_billing_details", function(){
+                var valid = $("#billing_form").valid();
+                if(valid == true){
+                    billing_popup.style.display = "none";
+                    crypto_popup.style.display = "block";
+                }
+            });
+            $(document).on("change", "#payment_amount", function(){
+                var val = $(this).val();
+                if(val != ''){
+                    $("#payment_amount").val(numberWithCommas(val));
+                }
+            });            
+            
+            $(document).on("change", "#coin_type", function(){
+                var val = $(this).val();
+                var sel_text = $("#coin_type option:selected").text();
+                console.log(val);
+                if(val != ''){
+                    $(".overlaymain").show();
+                    var Client = require('coinbase').Client;
+                    var client = new Client({'apiKey': process.env.COINBASE_API_KEY, 'apiSecret': process.env.COINBASE_API_SECRET,'strictSSL': false,proxy: process.env.PROXY});
+                    var pay_amt = $("#payment_amount").val();
+                    pay_amt_calc = pay_amt.replace(/,/g, '');
+                    
+                    client.getExchangeRates({'currency': val}, function(err, rates) {
+                        console.log(err);
+                        $(".overlaymain").hide();
+                        if(rates == '' || rates == null){
+                            $(".exchange_details").hide();
+                            $("#submit_payment").attr("disabled",true);
+                            swal("","Error in getting details.Try again later","error");
+                        } else if(typeof rates.data.rates.USD != 'undefined' && rates.data.rates.USD != ''){
+                            $("#submit_payment").removeAttr("disabled");
+                            //console.log(rates.data.rates.USD);
+                            var usd_rate = rates.data.rates.USD;
+                            
+                            //console.log(pay_amt_calc+"/"+usd_rate);
+                            var coin_needed = pay_amt_calc/usd_rate;
+                            //console.log(coin_needed);
+                            $(".coin_needed").html(coin_needed);
+                            $(".coin_type").html(sel_text);
+                            
+                            $("#submit_payment").html("Submit Payment for "+coin_needed+" "+sel_text+" / $"+pay_amt);
+                            
+                            $(".exchange_details").show();
+                            $(".usd_bitcoin").html("$"+numberWithCommas(rates.data.rates.USD));
+                        } else {
+                            $(".exchange_details").hide();
+                            $("#submit_payment").attr("disabled",true);
+                            swal("","Error in getting details.Try again later","error");
+                        }
+                    });
+                }
+            });
+            
+            $(document).on("click", "#submit_payment", function(){
+                var coin_type = $("#coin_type").val();
+                var valid = $("#pymt_form").valid();
+                if(coin_type == ''){
+                    
+                }
+                if(valid && coin_type != ''){
+                    return;
+                    var dbConn = require( '../../db' );
+                    var dbo = dbConn.getDb();
+
+                    var ObjectId = require('mongodb').ObjectId;
+                    var shopper_id = '';
+                    if(typeof parts.query.user_id != 'undefined' && parts.query.user_id != ''){
+                        shopper_id = parts.query.user_id;
+                        shopper_id = new ObjectId(shopper_id);
+                    }
+                    var currency_selected = $("#coin_type option:selected").val();
+                    var billing_amount = $("#billing_form #payment_amount").val();
+                    billing_amount = billing_amount.replace(/,/g, '');
+                    var billing_first_name = $("#billing_form #first_name").val();
+                    var billing_last_name = $("#billing_form #last_name").val();
+                    var billing_street = $("#billing_form #street").val();
+                    var billing_city = $("#billing_form #city").val();
+                    var billing_state = $("#billing_form #state").val();
+                    var billing_zipcode = $("#billing_form #zipcode").val();
+                    var date_today = new Date(Date.now()).toISOString();
+
+                    if(dbconnected == true){
+                        $(".overlaymain").show();
+                        var trans_id = '';
+                        async.waterfall([
+                            function(next) {
+                                dbo.collection("transaction").insertOne({ shopper_id: shopper_id, va_id: "", date: date_today, platform: "Amazon", currency: currency_selected, 
+                                    status: "recent", transaction_amount: billing_amount,billing_details: {first_name : billing_first_name, last_name : billing_last_name, street: billing_street, city: billing_city, state: billing_state,
+                                    zipcode: billing_zipcode} },
+                                function(err,inserted_id){
+                                    if(inserted_id.insertedId != '' && !err){
+                                        trans_id = inserted_id.insertedId;
+                                        next(null);
+                                    } else {
+                                        swal("","Error in processing.Try again later","error");
+                                        return;
+                                    }
+                                });
+                            },function(next) {
+                                var dbo = dbConn.getDb();
+                                dbo.collection("users").find({user_type : "va"}).toArray(function (err, result) {
+                                    if (err){
+                                        swal("","Error in sending notification to VA's.","error");
+                                        next(null);
+                                    }
+                                    
+                                    if(process.env.ENVIRONMENT == 'sandbox'){
+                                        next(null);
+                                    } else {
+                                        const accountSid = process.env.TWILIO_SID;
+                                        const authToken = process.env.TWILIO_TOKEN;
+                                        const twilio_client = require('twilio')(accountSid, authToken);
+                                        
+                                        var total_va = result.length;
+                                        var va_inc = 0;
+                                        if(typeof result != "undefined" && result != null){
+                                            result.forEach(function(resulteach, index) {
+                                                //console.log(resulteach);
+                                                if(typeof resulteach.phone_number != 'undefined' && resulteach.phone_number != '' && resulteach.phone_number != null){
+                                                    var va_id = resulteach._id;
+                                                    phone = resulteach.phone_number;
+                                                    phone = phone.replace("(","");
+                                                    phone = phone.replace(")","");
+                                                    phone = phone.replace(" ","");
+
+                                                    process_link = process.env.SERVER_URL+"/process_order/"+va_id+"/"+trans_id;
+                                                    //console.log(process_link);
+
+                                                    twilio_client.messages.create({
+                                                        body: 'New Order has been placed in '+process.env.SITE_NAME+'. Click the link to process it. '+process_link,
+                                                        from: process.env.TWILIO_FROM,
+                                                        to: process.env.TWILIO_COUNTRYCODE+phone
+                                                    }).then((message) => {
+                                                        va_inc++;
+                                                        if(va_inc == total_va){
+                                                            next(null);
+                                                        }
+                                                    }).catch((error) => {
+                                                        va_inc++;
+                                                        if(va_inc == total_va){
+                                                            next(null);
+                                                        }
+                                                    });
+                                                }                                            
+                                            });
+                                        }
+                                    }
+                                });
+                            },function(next) {
+                                $("#billing_form input").val("");
+                                $("#pymt_form input").val("");
+                                
+                                $(".select-selected").html("Select Coin Type");
+                                $("#coin_type").val("");
+                                $(".exchange_details").hide();
+                                $(".overlaymain").hide();
+                                crypto_popup.style.display = "none";
+                                processing_popup.style.display = "block";
+                            }
+                        ]);
+                    } else {
+                        swal("","Error in processing.Try again later","error");
+                    }
+                }
+            });
+            
+            var url = require('url');
+            var qs = require('querystring');
+            var parts = url.parse(window.location.href, true);
+            //parts.query = qs.stringify(parts.query);
+            if(typeof parts.query.user_id != 'undefined' && parts.query.user_id != ''){
+                var user_id = parts.query.user_id;
+                $("#show_logged_users").show();
+                $("#show_notlogged_users").hide();
+            } else {
+                $("#show_logged_users").hide();
+                $("#show_notlogged_users").show();
+            }
+            
+            //console.log(window.location.href);
+            // You can also require other files to run in this process
+            require('./renderer.js');
+        </script>
+</html>

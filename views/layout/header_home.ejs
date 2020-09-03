@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayAlt - Shop online, anytime with Cryptocurrency</title>
+    <base href="<%=process.env.SERVER_URL%>"/>
+    <link rel="icon" href="images/Payalt.ico">
+    <link rel="stylesheet" href="css/window/css/font-awesome.css">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/responsive.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="js/bootstrap.min.js"></script>
+    <link href="js/owlcarousel/dist/assets/owl.carousel.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="js/owlcarousel/dist/assets/owl.theme.default.min.css">
+    <script src="js/owlcarousel/dist/owl.carousel.min.js"></script>
+    <link href="js/adaptivemenu/css/adaptive-menu.default.css" rel="stylesheet" type="text/css">
+    <script src="js/adaptivemenu/js/jquery.adaptive-menu.js"></script>
+    <script src="js/site.js"></script>
+    <link rel="stylesheet" href="js/float_social/css/contact-buttons.css">
+  </head>
+  <body>
+    <div class="row pad20 mar0 flexrowalign responsivenone menu_on_top" style="background: transparent; padding: 0px; position: relative; z-index: 5; width: 100%;">
+        <div class="row pad20 mar0 flexrowalign responsivenone" id="headerdiv" style="background: #fff !important;">
+            <div class="col-lg-4 col-md-4 col-sm-3 col-6 resp_txtcenter" style="padding: 0px;"></div>
+            <div class="col-lg-4 col-md-4 col-sm-3 col-6 resp_txtcenter txtcenter" style="padding: 0px;">
+                <a href="<%=process.env.SERVER_URL%>">
+                <img class="logosty" src="<%=process.env.SERVER_URL%>/images/logo_black.png">
+                </a>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 col-12 tab_right txtright resp_txtcenter" style="padding: 0px;display:none;">
+                <%if(typeof sessionval.logged_user_id != 'undefined' && sessionval.logged_user_id != ''){ %>
+                <%} else {%>
+                    <div class="resp_fright_login resp_padtop10 login_butt_div txtright" style="display: none;">
+                        <a class="login_butt scroll_white tab_righta" href="/login">Login</a>
+                    </div>
+                <%}%>
+                <div class="resp_padtop10" style="display: inline-block;">
+                    <a href="<%=process.env.SERVER_URL%>" class="scroll_white tab_righta active">Home</a>
+                    <a href="javascript:void(0)"  style="cursor: pointer;" class="scroll_white tab_righta" data-toggle="modal" data-target="#myModal">Shop Now</a>
+                    <!--<a id="howtoshop_link" class="scroll_white tab_righta" href="#how-to-shop">How to Shop</a>-->
+                    <!--<a id="howitwork_link" class="scroll_white tab_righta" href="#how-it-works2">How it works</a>-->
+                    <!--<a id="whatcurrency_link" class="scroll_white tab_righta" href="#what-cryptocurrency-to-use">What Cryptocurrency can I use</a>-->
+                    <!--<a id="whatcurrency_link" class="scroll_white tab_righta" href="#merchant_and_partner">Partners & Merchants</a>-->
+                </div>
+                <%if(typeof sessionval.logged_user_id != 'undefined' && sessionval.logged_user_id != ''){ %>
+                    <div class="fright resp_padtop10" style="display: inline-block;">
+                        <a href="/profile" class="tab_righta scroll_white">Profile</a>
+                        <a href="/logout" class="tab_righta scroll_white">Logout</a>
+                    </div>
+                <%} else {%>
+                    <div class="resp_fright resp_padtop10" style="display: inline-block;">
+                        <!--resp_disp_login -->
+                        <a class="login_butt scroll_white tab_righta" href="/login">Login</a>
+                        <!--site_button site_buttona  style="color: #fff !important; padding: 6px 20px;" -->
+                        <a href="/register" class="tab_righta">Sign up</a>
+                    </div>
+                <%}%>
+            </div>
+        </div>
+    </div>
+    <div class="wrapmenu notdisplay xsshow">
+        <nav>
+            <ul class="nav menu topmenu">
+                <!--<li>
+                    <a id="responsive_howitwork_link" href="#how-it-works2">How it works</a>
+                </li>-->
+                <li>
+                    <a style="cursor: pointer;" data-toggle="modal" data-target="#myModal">Shop Now</a>
+                </li>
+                <!--<li>
+                    <a href="/about">About</a>
+                </li>-->
+                <%if(typeof sessionval.logged_user_id != 'undefined' && sessionval.logged_user_id != ''){ %>
+                    <li>
+                        <a href="/profile">Profile</a>
+                    </li>
+                    <li>
+                        <a href="/logout">Logout</a>
+                    </li>
+                <%} else {%>
+                    <li>
+                        <a href="/login">Login</a>
+                    </li>
+                    <li>
+                        <a href="/register">Sign up</a>
+                    </li>
+                <%}%>
+            </ul>
+        </nav>
+    </div>
+    <div class="resmenuhead" style="background: #fff !important; text-align: center;">
+        <a href="#" id="open_menu" class="adaptive-menu__open" style="display:none;">
+            <span></span>
+        </a>
+        <a href="<%=process.env.SERVER_URL%>">
+            <img class="logosty logosty_resp" src="<%=process.env.SERVER_URL%>/images/logo_black.png">
+        </a>
+    </div>

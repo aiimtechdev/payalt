@@ -1,0 +1,706 @@
+<% include layout/webportal_header %>
+<style>
+section {
+    /* padding: 60px 0; */
+}
+section .section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+}
+#tabs .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #f3f3f3;
+    background-color: transparent;
+    border-color: transparent transparent #f3f3f3;
+    border-bottom: 4px solid #55cac2 !important
+}
+#tabs .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    color: #333;
+    padding: 20px;
+}
+.transtbl.table thead th{
+    padding: 1.3em;
+    text-align: center;
+    color: #55cac2;
+    background: #fff;
+    border: none;
+}
+.transtbl.table td, .transtbl.table th{
+    padding:1.3em;
+    text-align:center;
+    border-top: 1px solid #dee2e6;
+    font-size:14px;
+}
+#nav-tabContent
+{
+    background: #fff;
+}
+.clickable_sort
+{
+    cursor: pointer;
+}
+.not_found
+{
+    color: #FFF;
+    font-weight: 600;
+    font-size: 17px;
+}
+.paginate_content
+{
+    text-align: right;
+}
+.for_min_height
+{
+    min-height: calc(100vh - 200px);
+    height: auto;
+    padding: 100px 20px 20px 20px;
+    background: #EEE;
+}
+.no_transactions
+{
+    height: 20px;
+}
+#pending_transaction, #failed_transaction, #recent_transaction
+{
+    padding-right: 0px !important;
+}
+.recent_orders td:nth-child(1), .pending_recent_orders td:nth-child(1), .failed_recent_orders td:nth-child(1)
+{
+    width: 15%;
+}
+.recent_orders td:nth-child(2), .pending_recent_orders td:nth-child(2), .failed_recent_orders td:nth-child(2)
+{
+    width: 15%;
+}
+.recent_orders td:nth-child(3), .pending_recent_orders td:nth-child(3), .failed_recent_orders td:nth-child(3)
+{
+    width: 10%;
+}
+.recent_orders td:nth-child(4), .pending_recent_orders td:nth-child(4), .failed_recent_orders td:nth-child(4)
+{
+    width: 20%;
+}
+.recent_orders td:nth-child(5), .pending_recent_orders td:nth-child(5), .failed_recent_orders td:nth-child(5)
+{
+    width: 15%;
+}
+.recent_orders td:nth-child(6), .pending_recent_orders td:nth-child(6), .failed_recent_orders td:nth-child(6)
+{
+    width: 15%;
+}
+.recent_orders td:nth-child(7), .pending_recent_orders td:nth-child(7), .failed_recent_orders td:nth-child(7)
+{
+    width: 10%;
+}
+.img_fancybox{
+    display:block !important;
+}
+@media only screen and (max-width: 1206px) {
+	.for_min_height
+	{
+		height: auto;
+		min-height: 100vh;
+		padding-top: 100px !important;
+	}
+}
+@media only screen and (max-width: 800px) {
+	.recent_orders td, .pending_recent_orders td, .failed_recent_orders td{width:100% !important;}
+    .no-more-tables table,
+    .no-more-tables thead,
+    .no-more-tables tbody,
+    .no-more-tables th,
+    .no-more-tables td,
+    .no-more-tables tr {
+        display: block;
+    }
+    .no-more-tables thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    .no-more-tables tr {
+        border: 1px solid #ccc;
+    }
+    .no-more-tables td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        white-space: normal;
+        text-align:left;
+        padding-top: 30px !important;
+    }
+    .no-more-tables td:before {
+        /*position: absolute;
+        top: 5px;
+        left: 6px;*/
+        width: 100%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: center;
+        font-weight: bold;
+        display: block;
+    }
+    .no-more-tables td:before {
+        content: attr(data-title);
+    }
+    table.paleBlueRows
+    {
+        height: auto;
+    }
+    table.paleBlueRows tbody td
+    {
+        width: 100%;
+    }
+    .paginate_content
+    {
+        text-align: center;
+    }
+    .for_min_height
+    {
+        height: auto;
+        min-height: 100vh;
+    }
+    .no_transactions
+    {
+        height: auto;
+    }
+}
+</style>
+<div class="for_min_height">
+    <section id="tabs">
+        <div class="">
+            <div class="">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <nav class="resp_top50" style="background: #fff;">
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Completed Transactions</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Pending Transactions</a>
+                            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Failed or User Cancelled transactions</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                        <div class="tab-pane fade show active no-more-tables" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div>
+                                <table class="table table-striped transtbl paleBlueRows" id="recent_trans">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date Time <span class="clickable_sort" data-type="date"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <th scope="col">Platform Purchase <span class="clickable_sort" data-type="platform"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <th scope="col">Transaction ID <span class="clickable_sort" data-type="bitcoin_sale_id"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <!--<th scope="col">Screenshot Confirmation Page </th>-->
+                                            <%/*if(user_type != 'shopper'){%>
+                                                <th>Virtual Assistant</th>
+                                            <%}*/%>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="recent_orders">
+                                        <%if(typeof recent_transaction_data !="undefined" && recent_transaction_data != ''){%>
+                                            <%recent_transaction_data.forEach(function(result, index) {%>
+                                                <tr>
+                                                    <td data-title="Date Time: ">
+                                                        <%if(typeof result.date == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%= new Date(result.date).getMonth() + 1;%>/<%= new Date(result.date).getDate();%>/<%= new Date(result.date).getFullYear();%>
+                                                            <%= new Date(result.date).getHours();%>:<%= new Date(result.date).getMinutes();%>:<%= new Date(result.date).getSeconds();%>
+                                                        <%}%>
+                                                    </td>
+                                                    <td data-title="Platform Purchase: ">
+                                                        <%if(typeof result.platform == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%=result.platform%>
+                                                        <%}%>
+                                                    </td>
+                                                    <td data-title="Transaction ID: ">
+                                                        <%if(typeof result.bitcoin_sale_id == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%=result.bitcoin_sale_id%>
+                                                        <%}%>
+                                                    </td>
+                                                    <!--<td data-title="Screenshot Page: ">
+                                                        <%if(typeof result.screenshot_link !== "undefined" && result.screenshot_link != '' && result.screenshot_link != null){%>
+                                                            <a class="img_fancybox" style="display:block !important;"  href="<%=result.screenshot_link%>">View Image</a>
+                                                        <%}else{%>
+                                                            No Image
+                                                        <%}%>
+                                                    </td>-->
+                                                    <%/*if(user_type != 'shopper'){%>
+                                                        <td data-title='Virtual Assistant User: '>
+                                                            <%if(result.virtual_assistant_id.length == 0){%>
+                                                                -
+                                                            <%}else{%>
+                                                                <%=result.virtual_assistant_id[0].first_name%>
+                                                                <%=result.virtual_assistant_id[0].last_name%>
+                                                            <%}%>   
+                                                        </td>
+                                                    <%}*/%>
+                                                    <td data-title="Amount: ">
+                                                        <%if(typeof result.transaction_amount == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            $<%=Number( parseFloat(result.transaction_amount).toFixed(2)).toLocaleString()%>
+                                                        <%}%>
+                                                    </td>                                                                                                       
+                                                    <td>
+                                                        <a class="view_recent" data-id="<%=result._id%>" data-toggle="modal" data-target="#recent_transaction">View</a>
+                                                    </td>
+                                                </tr>
+                                            <%})%>
+                                        <%} else {%>
+                                            <tr>
+                                                <td colspan="6" class="no_transactions" style="background: #55cac2;">
+                                                    <i class="not_found">No Transaction's found!</i>
+                                                </td>
+                                            </tr>
+                                        <%}%>
+                                    </tbody>
+                                </table>
+                                <input type="hidden" class="recent_name" value="">
+                                <input type="hidden" class="recent_type" value="asc">
+                                <div class="modal" id="recent_transaction" role="dialog">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">View Transaction</h4>
+                                        <button type="button" class="close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+                                    </div>
+                                    <div class="content" style="padding: 5%;">
+                                        <div class="recent_transaction_content" style="border: 1px solid #ccc; padding: 20px;">
+                                            <!--Display the content-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <%if(typeof recent_transaction_data !="undefined" && recent_transaction_data != ''){%>
+                                <div class="paginate_content" name="recent">
+                                    <a class="recent_paginate_page" recent_page="first"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
+                                    <a class="recent_paginate_page" recent_page="previous_one"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+                                    <%for(count = 0; count < Math.ceil(recent_count/5); count++){%>
+                                        <a class="recent_paginate_page recent_page_<%=count+1%>
+                                        <%if(count == 0){%>active first<%}%>
+                                        " recent_page="<%=count+1%>"><%=count+1%></a>
+                                    <%}%>
+                                    <a class="recent_paginate_page" recent_page="next_one"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                    <a class="recent_paginate_page last" recent_page="<%=Math.ceil(recent_count/5)%>">
+                                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                    </a>
+                                    <input type="hidden" class="recent_transaction_total_count" value="<%=Math.ceil(recent_count/5)%>">
+                                </div>
+                            <%}%>
+                        </div>
+                        <div class="tab-pane fade no-more-tables" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div>
+                                <table class="table table-striped transtbl paleBlueRows" id="pending_trans">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date Time <span class="clickable_sort" data-type="date"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <th scope="col">Platform Purchase <span class="clickable_sort" data-type="platform"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <th scope="col">Transaction ID <span class="clickable_sort" data-type="bitcoin_sale_id"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <!--<th scope="col">Screenshot Confirmation Page </th>-->
+                                            <%/*if(user_type != 'shopper'){%>
+                                                <th>Virtual Assistant</th>
+                                            <%}*/%>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="pending_recent_orders">
+                                        <%if(typeof pending_transaction_data !="undefined" && pending_transaction_data != ''){%>
+                                            <%pending_transaction_data.forEach(function(result, index) {%>
+                                                <tr>
+                                                    <td data-title="Date Time: ">
+                                                        <%if(typeof result.date == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%= new Date(result.date).getMonth() + 1;%>/<%= new Date(result.date).getDate();%>/<%= new Date(result.date).getFullYear();%>
+                                                            <%= new Date(result.date).getHours();%>:<%= new Date(result.date).getMinutes();%>:<%= new Date(result.date).getSeconds();%>
+                                                        <%}%> 
+                                                    </td>
+                                                    <td data-title="Platform Purchase: ">
+                                                        <%if(typeof result.platform == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%=result.platform%>
+                                                        <%}%>
+                                                    </td>
+                                                    <td data-title="Transaction ID: ">
+                                                        <%if(typeof result.bitcoin_sale_id == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%=result.bitcoin_sale_id%>
+                                                        <%}%>
+                                                    </td>
+                                                    <!--<td data-title="Screenshot Page: ">
+                                                        <%if(typeof result.screenshot_link !== "undefined" && result.screenshot_link != '' && result.screenshot_link != null){%>
+                                                            <a class="img_fancybox" style="display:block !important;"  href="<%=result.screenshot_link%>">View Image</a>
+                                                        <%}else{%>
+                                                            No Image
+                                                        <%}%>
+                                                    </td>-->
+                                                    <%/*if(user_type != 'shopper'){%>
+                                                        <td data-title='Virtual Assistant User: '>
+                                                            <%if(result.virtual_assistant_id.length == 0){%>
+                                                                -
+                                                            <%}else{%>
+                                                                <%=result.virtual_assistant_id[0].first_name%>
+                                                                <%=result.virtual_assistant_id[0].last_name%>
+                                                            <%}%>   
+                                                        </td>
+                                                    <%}*/%>
+                                                    <td data-title="Amount: ">
+                                                        <%if(typeof result.transaction_amount == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            $<%=Number( parseFloat(result.transaction_amount).toFixed(2)).toLocaleString()%>
+                                                        <%}%>
+                                                    </td>                                                                                                       
+                                                    <td>
+                                                        <a class="view_pending" data-id="<%=result._id%>" data-toggle="modal" data-target="#pending_transaction">View</a>
+                                                    </td>
+                                                </tr>
+                                            <%})%>
+                                        <%} else {%>
+                                            <tr>
+                                                <td colspan="7" style="background: #55cac2;">
+                                                    <i class="not_found">No Transaction's found!</i>
+                                                </td>
+                                            </tr>
+                                        <%}%>
+                                    </tbody>
+                                </table>
+                                <input type="hidden" class="pending_name" value="">
+                                <input type="hidden" class="pending_type" value="asc">
+                                <div class="modal" id="pending_transaction" role="dialog">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">View Transaction</h4>
+                                        <button type="button" class="close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+                                    </div>
+                                    <div class="content" style="padding: 5%;">
+                                        <div class="pending_transaction_content" style="border: 1px solid #ccc; padding: 20px;">
+                                            <!--Display the content-->
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <%if(typeof pending_transaction_data !="undefined" && pending_transaction_data != ''){%>
+                                <div class="paginate_content" name="pending">
+                                    <a class="pending_paginate_page" pending_page="first"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
+                                    <a class="pending_paginate_page" pending_page="previous_one"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+                                    <%for(count = 0; count < Math.ceil(pending_count/5); count++){%>
+                                        <a class="pending_paginate_page pending_page_<%=count+1%>
+                                        <%if(count == 0){%>
+                                            active first
+                                        <%}%>
+                                        " pending_page="<%=count+1%>"><%=count+1%></a>
+                                    <%}%>
+                                    <a class="pending_paginate_page" pending_page="next_one"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                    <a class="pending_paginate_page last" pending_page="<%=Math.ceil(pending_count/5)%>">
+                                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                    </a>
+                                    <input type="hidden" class="pending_transaction_total_count" value="<%=Math.ceil(pending_count/5)%>">
+                                </div>
+                            <%}%>
+                        </div>
+                        <div class="tab-pane fade no-more-tables" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                            <div>
+                                <table class="table table-striped transtbl paleBlueRows" id="failed_trans">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date Time <span class="clickable_sort" data-type="date"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <th scope="col">Platform Purchase <span class="clickable_sort" data-type="platform"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <th scope="col">Transaction ID <span class="clickable_sort" data-type="bitcoin_sale_id"><i class="fa fa-angle-down" aria-hidden="true"></i></span></th>
+                                            <!--<th scope="col">Screenshot Confirmation Page </th>-->
+                                            <%/*if(user_type != 'shopper'){%>
+                                                <th>Virtual Assistant</th>
+                                            <%}*/%>
+                                            <th>Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="failed_recent_orders">
+                                        <%if(typeof failed_transaction_data !="undefined" && failed_transaction_data != ''){%>
+                                            <%failed_transaction_data.forEach(function(result, index) {%>
+                                                <tr>
+                                                    <td data-title="Date Time: ">
+                                                        <%if(typeof result.date == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%= new Date(result.date).getMonth() + 1;%>/<%= new Date(result.date).getDate();%>/<%= new Date(result.date).getFullYear();%>
+                                                            <%= new Date(result.date).getHours();%>:<%= new Date(result.date).getMinutes();%>:<%= new Date(result.date).getSeconds();%>
+                                                        <%}%> 
+                                                    </td>
+                                                    <td data-title="Platform Purchase: ">
+                                                        <%if(typeof result.platform == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%=result.platform%>
+                                                        <%}%>
+                                                    </td>
+                                                    <td data-title="Transaction ID: ">
+                                                        <%if(typeof result.bitcoin_sale_id == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            <%=result.bitcoin_sale_id%>
+                                                        <%}%>
+                                                    </td>
+                                                    <!--<td data-title="Screenshot Page: ">
+                                                        <%if(typeof result.screenshot_link !== "undefined" && result.screenshot_link != '' && result.screenshot_link != null){%>
+                                                            <a class="img_fancybox" style="display:block !important;"  href="<%=result.screenshot_link%>">View Image</a>
+                                                        <%}else{%>
+                                                            No Image
+                                                        <%}%>
+                                                    </td>-->
+                                                    <%/*if(user_type != 'shopper'){%>
+                                                        <td data-title='Virtual Assistant User: '>
+                                                            <%if(result.virtual_assistant_id.length == 0){%>
+                                                                -
+                                                            <%}else{%>
+                                                                <%=result.virtual_assistant_id[0].first_name%>
+                                                                <%=result.virtual_assistant_id[0].last_name%>
+                                                            <%}%>   
+                                                        </td>
+                                                    <%}*/%>
+                                                    <td data-title="Amount: ">
+                                                        <%if(typeof result.transaction_amount == "undefined"){%>
+                                                            -
+                                                        <%}else{%>
+                                                            $<%=Number( parseFloat(result.transaction_amount).toFixed(2)).toLocaleString()%>
+                                                        <%}%>
+                                                    </td>  
+                                                    <td>
+                                                        <a class="view_failed" data-id="<%=result._id%>" data-toggle="modal" data-target="#failed_transaction">View</a>
+                                                    </td>
+                                                </tr>
+                                            <%})%>
+                                        <%} else {%>
+                                            <tr>
+                                                <td colspan="7" style="background: #55cac2;">
+                                                    <i class="not_found">No Transaction's found!</i>
+                                                </td>
+                                            </tr>
+                                        <%}%>
+                                    </tbody>
+                                </table>
+                                <input type="hidden" class="failed_name" value="">
+                                <input type="hidden" class="failed_type" value="asc">
+                                <div class="modal" id="failed_transaction" role="dialog">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">View Transaction</h4>
+                                        <button type="button" class="close" data-dismiss="modal" style="padding: 22px 16px;">&times;</button>
+                                    </div>
+                                    <div class="content" style="padding: 5%;">
+                                        <div class="failed_transaction_content" style="border: 1px solid #ccc; padding: 20px;">
+                                            <!--Display the content-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <%if(typeof failed_transaction_data !="undefined" && failed_transaction_data != ''){%>
+                                <div class="paginate_content" name="failed">
+                                    <a class="failed_paginate_page" failed_page="first"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
+                                    <a class="failed_paginate_page" failed_page="previous_one"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+                                    <%for(count = 0; count < Math.ceil(failed_count/5); count++){%>
+                                        <a class="failed_paginate_page failed_page_<%=count+1%>
+                                        <%if(count == 0){%>
+                                            active first
+                                        <%}%>
+                                        " failed_page="<%=count+1%>"><%=count+1%></a>
+                                    <%}%>
+                                    <a class="failed_paginate_page" failed_page="next_one"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                    <a class="failed_paginate_page last" failed_page="<%=Math.ceil(failed_count/5)%>">
+                                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                    </a>
+                                    <input type="hidden" class="failed_transaction_total_count" value="<%=Math.ceil(failed_count/5)%>">
+                                </div>
+                            <%}%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<link rel="stylesheet" href="js/fancybox/jquery.fancybox.css" />
+<script src="js/fancybox/jquery.fancybox.js"></script>
+
+<script>
+jQuery(document).ready(function(){
+    jQuery(".img_fancybox").fancybox();
+});
+jQuery(document.body).on("click", ".view_pending", function (){
+    var id_value = jQuery(this).attr("data-id");
+    var parameters = {id_value: id_value};
+    modal_content(parameters, 'pending');
+});
+jQuery(document.body).on("click", ".view_failed", function (){
+    var id_value = jQuery(this).attr("data-id");
+    var parameters = {id_value: id_value};
+    modal_content(parameters, 'failed');
+});
+jQuery(document.body).on("click", ".view_recent", function (){
+    var id_value = jQuery(this).attr("data-id");
+    var parameters = {id_value: id_value};
+    modal_content(parameters, 'recent');
+});
+
+function modal_content(parameters, trans_name)
+{
+    $.get('/api/modal_view', parameters, function(data) {
+        if(data != "")
+        {
+            jQuery("." + trans_name + "_transaction_content").html(data);
+            jQuery(".img_fancybox").fancybox();
+        }
+    });
+}
+
+jQuery(".paginate_content a").click(function(){
+    var page_type = jQuery(this).parent().attr("name");
+    var page = jQuery(this).attr(page_type + "_page");
+    var class_name = jQuery(this);
+    var flag = 0;
+    if(page == "next_one")
+    {
+        page = parseInt(jQuery("." + page_type + "_paginate_page.active").attr(page_type + "_page")) + 1;
+        if(page > jQuery("." + page_type + "_transaction_total_count").val())
+        {
+            page = jQuery("." + page_type + "_transaction_total_count").val();
+            flag = 1;
+        }
+        jQuery("." + page_type + "_paginate_page").removeClass("active");
+        jQuery("." + page_type + "_page_" + page).addClass("active");
+    }
+    else if(page == "previous_one")
+    {
+        page = jQuery("." + page_type + "_paginate_page.active").attr(page_type + "_page") - 1;
+        if(page == 0)
+        {
+            page = 1;
+            flag = 1;
+        }
+        jQuery("." + page_type + "_paginate_page").removeClass("active");
+        jQuery("." + page_type + "_page_" + page).addClass("active");
+    }
+    else if(page == "first")
+    {
+        if(jQuery("." + page_type + "_paginate_page.active").attr(page_type + "_page") == 1)
+        {
+            flag = 1;
+        }
+        page = 1;
+        jQuery("." + page_type + "_paginate_page").removeClass("active");
+        jQuery("." + page_type + "_paginate_page.first").addClass("active");
+    }
+    else if(class_name.hasClass("last"))
+    {
+        if(jQuery("." + page_type + "_paginate_page.active").attr(page_type + "_page") == jQuery("." + page_type + "_transaction_total_count").val())
+        {
+            flag = 1;
+        }
+        jQuery("." + page_type + "_paginate_page").removeClass("active");
+        jQuery("." + page_type + "_page_" + page).addClass("active");
+    }
+    else
+    {
+        if(jQuery("." + page_type + "_paginate_page.active").attr(page_type + "_page") == jQuery(this).attr(page_type + "_page"))
+        {
+            flag = 1;
+        }
+        jQuery("." + page_type + "_paginate_page").removeClass("active");
+        jQuery(this).addClass("active");
+    }
+    var selected_transaction = jQuery(".nav-item.nav-link.active").text();
+    var given_name = jQuery("." + page_type + "_name").val();
+    var given_type = jQuery("." + page_type + "_type").val();
+    var parameters = {selected_transaction : selected_transaction, page : page, column_name : given_name, sort_type : given_type, transaction_content: jQuery(".nav-item.nav-link.active").text()};
+    
+    if(flag == 0)
+    {
+        call_func(parameters, selected_transaction);
+    }
+});
+jQuery(".clickable_sort").click(function(){
+    var column = jQuery(this).attr("data-type");
+    var type = jQuery(this).find(".fa").attr("class");
+    var sort_type;
+    if(jQuery(this).find(".fa").hasClass("fa-angle-down")){
+        jQuery(this).find(".fa").removeClass("fa-angle-down");
+        jQuery(this).find(".fa").addClass("fa-angle-up");
+        sort_type = "asc";
+    }
+    else if(jQuery(this).find(".fa").hasClass("fa-angle-up")){
+        jQuery(this).find(".fa").removeClass("fa-angle-up");
+        jQuery(this).find(".fa").addClass("fa-angle-down");
+        sort_type = "desc";
+    }
+    var selected_transaction = jQuery(".nav-item.nav-link.active.show").text();
+    var paginate_field_class = "";
+    if(selected_transaction == 'Pending Transactions')
+    {
+        jQuery(".pending_paginate_page").removeClass("active");
+        jQuery(".pending_page_1").addClass("active");
+    }
+    else if(selected_transaction == 'Failed or User Cancelled transactions')
+    {
+        jQuery(".failed_paginate_page").removeClass("active");
+        jQuery(".failed_page_1").addClass("active");
+    }
+    else
+    {
+        jQuery(".recent_paginate_page").removeClass("active");
+        jQuery(".recent_page_1").addClass("active");
+    }
+    paginate_field_class = 1;
+    
+    var parameters = {column_name: column, sort_type: sort_type, transaction_content: jQuery(".nav-item.nav-link.active").text(), selected_transaction: selected_transaction, page: paginate_field_class};
+    call_func(parameters, selected_transaction);
+    if(selected_transaction == 'Pending Transactions')
+    {
+        jQuery(".pending_name").val(column);
+        jQuery(".pending_type").val(sort_type);
+    }
+    else if(selected_transaction == 'Failed or User Cancelled transactions')
+    {
+        jQuery(".failed_name").val(column);
+        jQuery(".failed_type").val(sort_type);
+    }
+    else
+    {
+        jQuery(".recent_name").val(column);
+        jQuery(".recent_type").val(sort_type);
+    }
+});
+
+function call_func(parameters, selected_transaction)
+{
+    $.get('/api/sortable_transactions', parameters, function(data) {
+        if(data != "")
+        {
+            if(selected_transaction == 'Pending Transactions')
+            {
+                jQuery(".pending_recent_orders").html(data);
+                jQuery(".img_fancybox").fancybox();
+            }
+            else if(selected_transaction == 'Failed or User Cancelled transactions')
+            {
+                jQuery(".failed_recent_orders").html(data);
+                jQuery(".img_fancybox").fancybox();
+            }
+            else
+            {
+                jQuery(".recent_orders").html(data);
+                jQuery(".img_fancybox").fancybox();
+            }
+        }
+    });
+}
+</script>
+<% include layout/footer %>

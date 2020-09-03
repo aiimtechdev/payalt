@@ -1,0 +1,48 @@
+<% include layout/admin_header %>
+    <script type="text/javascript" src="js/jquery.validate.min.js"></script>
+    <div class="content_login">
+        <div id="login_bx">
+            <div id="adminsigninbox">                
+                <div class="col-md-12 col-sm-12 col-xs-12 row mar0 padleft0 padright0">
+                    <div class="col-md-6 col-sm-12 col-xs-12 padleft0 padright0">
+                        <div class="signinbck"></div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
+                        <div class="alert alert-danger" style="margin: 20px 0 0 0;"><%=err_msg%></div>
+                        <%}%>
+                        <%if(typeof succ_msg != 'undefined' && succ_msg != ''){%>
+                        <div class="alert alert-success" style="margin: 20px 0 0 0;"><%=succ_msg%></div>
+                        <%}%>
+                        <div class="cuspad3em">
+                            <h1 class="mtop0 txtcenter">Sign In</h1>
+                            <form action="" method="post" id="login_form">
+                                <div class="uname_box">
+                                    <p class="mbottom5">Username</p>
+                                    <input type="text" class="input wid100imp" id="username" required name="username">
+                                </div>
+                                <div class="uname_box">
+                                    <p class="mbottom5">Password</p>
+                                    <input type="password" class="input wid100imp" id="password" required name="password">
+                                </div>
+                                <div class="txtcenter padtop10">
+                                    <input type="submit" class="site-btn" value="Sign In" id="login">
+                                </div>
+                                <input type="hidden" name="open_brow" value="1"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    jQuery(document).on("click","#login",function(){
+        var valid = $("#login_form").valid();
+        if(valid){
+            $("#login_form").submit();
+        }
+    });
+    </script>
+</body>
+</html>
