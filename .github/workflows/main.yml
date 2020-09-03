@@ -20,16 +20,13 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v1
         
-      - name: Initialize Google Cloud SDK
+      - name: Publish app to Google App Engine
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
             version: latest
             service_account_email: ${{ secrets.GCP_SA_EMAIL }}
             service_account_key: ${{ secrets.GCP_SA_KEY }}
             project_id: ${{ secrets.PROJECT_ID }}
-
-           
-      - name: Publish app to Google App Engine
       - run: |   
             # This client-secret.json is converted by GCP_SA_KEY.
             gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=client-secret.json
