@@ -3469,7 +3469,7 @@ exports = module.exports = function (req, res, next) {
     }
     /** CHECK CARD BALANCE WITH CHECKOUT AMOUNT **/
 
-    /** GET USER TRANSACTIONS  **/
+    /** GET USER TRANSACTIONS **/
     if(action == "get_user_transactions"){
         var shopper_id = req.body.logged_user_id;
         var condition = {shopper_id: ObjectId(shopper_id),status:"processed"};

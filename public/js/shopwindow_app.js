@@ -1645,7 +1645,7 @@ $(document).on("click", "#currencyselect_payment_back", function(e){
     }
 });
 $(document).on("click", ".fullscreen", function(e){
-     toggleFullScreen();
+    toggleFullScreen();
 });
 function toggleFullScreen() {
   if ((document.fullScreenElement && document.fullScreenElement !== null) ||    
