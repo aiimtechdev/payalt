@@ -17,9 +17,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v1
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-           
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+        
+      - name: Initialize Google Cloud SDK
+        
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
             version: latest
             service_account_email: ${{ secrets.GCP_SA_EMAIL }}
