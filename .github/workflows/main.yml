@@ -21,7 +21,6 @@ jobs:
         uses: actions/checkout@v1
         
       - name: Initialize Google Cloud SDK
-        
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
             version: latest
