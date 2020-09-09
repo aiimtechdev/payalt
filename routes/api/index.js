@@ -1682,7 +1682,7 @@ exports = module.exports = function (req, res, next) {
             }
         ]);
     }
-    /** COINBASE OAUTH START **/
+    /** COINBASE OAUTH START  **/
     
     /** COINBASE SUCCESS AFTER OAUTH **/
     if(action == 'coinbase_oauth'){
