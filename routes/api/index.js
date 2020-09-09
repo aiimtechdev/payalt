@@ -504,7 +504,7 @@ exports = module.exports = function (req, res, next) {
                     url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
                 },function(error, resp, body){
                     dbo.collection("transaction").updateOne({"_id": new ObjectId(transaction_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                        return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay\" again."});
+                        return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
                     });
                 });
             }
@@ -1390,14 +1390,14 @@ exports = module.exports = function (req, res, next) {
                                 console.log(ret_data);
                                 console.log("/SEE SALE");
                                 dbo.collection("transaction").updateOne({"_id": new ObjectId(transaction_id)}, {$set: {"status": "cancelled"}}, function (err, result) {
-                                    return res.send({msg:"expired",txt:"This transaction has been expired. There have been no charges. In order to make a purchase, click \"Pay\" again."});
+                                    return res.send({msg:"expired",txt:"This transaction has been expired. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
                                 });
                             } else if(typeof sale_status != 'undefined' && (sale_status == 'cancelled' || sale_status == 'refunded')){
                                 console.log("SEE SALE");
                                 console.log(ret_data);
                                 console.log("/SEE SALE");
                                 dbo.collection("transaction").updateOne({"_id": new ObjectId(transaction_id)}, {$set: {"status": "cancelled"}}, function (err, result) {
-                                    return res.send({msg:"cancelled",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay\" again."});
+                                    return res.send({msg:"cancelled",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
                                 });
                             } else {
                                 return res.send({msg:"continue"});
@@ -1569,7 +1569,7 @@ exports = module.exports = function (req, res, next) {
                         resulteach = result[0];
                         coinbase_api_key = resulteach.coinbase_api_key;
                         coinbase_api_secret = resulteach.coinbase_api_secret;
-                        client_obj = new Client({'apiKey': coinbase_api_key,'apiSecret': coinbase_api_secret});                            
+                        client_obj = new Client({'apiKey': coinbase_api_key,'apiSecret': coinbase_api_secret, strictSSL: false});
                         var coinbase_acc_id = '';
                         client_obj.getAccounts({}, function(err, accounts) {
                             if (typeof accounts != 'undefined' && accounts != null && accounts != "" && (err == null || err == "")) {
@@ -1856,7 +1856,7 @@ exports = module.exports = function (req, res, next) {
                 },function(next) {
                     // Get Account Object by Account ID for Sending Money.
                     var Client = require('coinbase').Client;
-                    var client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY});
+                    var client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY,strictSSL: false});
 
                     client.getAccount(coinbase_account_id, function(err, account) {
                         if(err != null){
@@ -1885,7 +1885,7 @@ exports = module.exports = function (req, res, next) {
                                             coinbase_refresh_token = body.refresh_token;                                        
                                             dbo.collection("users").updateOne({"_id": new ObjectId(shopper_id)}, {$set: {"coinbase_access_token": body.access_token,"coinbase_refresh_token": body.refresh_token}}, function (err, resultupdate) {
 
-                                                client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY});
+                                                client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY, strictSSL: false});
                                                 client.getAccount(coinbase_account_id, function(err, account) {
                                                     account_obj = account;
                                                     next(null);
@@ -1930,7 +1930,7 @@ exports = module.exports = function (req, res, next) {
                                                 url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
                                             },function(error, resp, body){
                                                 dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                                                    return res.send({msg:"error",txt:"You do not have enough crypto for this purchase. Please choose another type of crypto or wallet. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay\" again."});
+                                                    return res.send({msg:"error",txt:"You do not have enough crypto for this purchase. Please choose another type of crypto or wallet. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
                                                 });
                                             });
                                         } else if(errmsg.indexOf("don't have that much") >= 0){
@@ -1939,7 +1939,7 @@ exports = module.exports = function (req, res, next) {
                                                 url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
                                             },function(error, resp, body){
                                                 dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                                                    return res.send({msg:"error",txt:"You have insufficient balance in your coinbase account to pay for this transaction. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay\" again."});
+                                                    return res.send({msg:"error",txt:"You have insufficient balance in your coinbase account to pay for this transaction. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
                                                 });
                                             });
                                         } else {
@@ -1948,7 +1948,7 @@ exports = module.exports = function (req, res, next) {
                                                 url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
                                             },function(error, resp, body){
                                                 dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                                                    return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay\" again."});
+                                                    return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
                                                 });
                                             });
                                         }
@@ -1960,7 +1960,7 @@ exports = module.exports = function (req, res, next) {
                                             url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
                                         },function(error, resp, body){
                                             dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                                                return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay\" again."});
+                                                return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
                                             });
                                         });
                                     }
@@ -3261,7 +3261,7 @@ exports = module.exports = function (req, res, next) {
                         resulteach = result[0];
                         coinbase_api_key = resulteach.coinbase_api_key;
                         coinbase_api_secret = resulteach.coinbase_api_secret;
-                        client_obj = new Client({'apiKey': coinbase_api_key,'apiSecret': coinbase_api_secret});
+                        client_obj = new Client({'apiKey': coinbase_api_key,'apiSecret': coinbase_api_secret, strictSSL: false});
                         
                         client_obj.getExchangeRates({'currency': coin_type}, function(err, rates) {
                             if(err){
