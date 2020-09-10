@@ -30,4 +30,4 @@ jobs:
       - run: |   
             # Node engine setup and App Deploy.
             gcloud config set project ${{ secrets.PROJECT_ID }}
-            gcloud -q app deploy app.yaml -v 20200827t143125
+            gcloud app deploy app.yaml -v 20200827t143125
