@@ -12,7 +12,7 @@
 # limitations under the License.
 
 # [START payalt_yaml]
-runtime: nodejs
+runtime: nodejs14
 env: flex
 # This sample incurs costs to run on the App Engine flexible environment.
 # The settings below are to reduce costs during testing and are not appropriate
