@@ -23,7 +23,7 @@ jobs:
       - name: Publish app to Google App Engine
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-            version: 307.0.0
+            version: '308.0.0'
             service_account_email: ${{ secrets.GCP_SA_EMAIL }}
             service_account_key: ${{ secrets.GCP_SA_KEY }}
             project_id: ${{ secrets.PROJECT_ID }}
