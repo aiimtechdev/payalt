@@ -23,11 +23,11 @@ jobs:
       - name: Publish app to Google App Engine
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-            version: 308.0.0
+            version: 307.0.0
             service_account_email: ${{ secrets.GCP_SA_EMAIL }}
             service_account_key: ${{ secrets.GCP_SA_KEY }}
             project_id: ${{ secrets.PROJECT_ID }}
       - run: |   
-            # This client-secret.json is converted by GCP_SA_KEY.
+            # Node engine setup and App Deploy.
             gcloud config set project ${{ secrets.PROJECT_ID }}
             gcloud -q app deploy app.yaml -v 20200827t143125
