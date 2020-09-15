@@ -1672,7 +1672,7 @@ exports = module.exports = function (req, res, next) {
                             transaction_sandbox = resulteach.transaction_sandbox;
                             billing_amount = 0;
                             random_string = makeid(20);
-                            oauth_url = 'https://www.coinbase.com/oauth/authorize?client_id='+coinbase_oauth_client_id+'&redirect_uri='+coinbase_oauth_redirect_url+'&response_type=code&scope='+coinbase_oauth_scope+'&meta[send_limit_amount]='+billing_amount+'&meta[send_limit_currency]=USD&state='+random_string;
+                            oauth_url = 'https://www.coinbase.com/oauth/authorize?client_id='+coinbase_oauth_client_id+'&redirect_uri='+coinbase_oauth_redirect_url+'&response_type=code&scope='+coinbase_oauth_scope+'&meta[send_limit_amount]='+billing_amount+'&meta[send_limit_currency]=USD&account=all&state='+random_string;
                             return res.send({"msg": "noaccount","oauth_url":oauth_url});
                         } else {
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
@@ -1682,7 +1682,7 @@ exports = module.exports = function (req, res, next) {
             }
         ]);
     }
-    /** COINBASE OAUTH START  **/
+    /** COINBASE OAUTH START **/
     
     /** COINBASE SUCCESS AFTER OAUTH **/
     if(action == 'coinbase_oauth'){
@@ -2054,6 +2054,8 @@ exports = module.exports = function (req, res, next) {
                         headers: {'content-type' : 'application/json', 'Authorization' : 'token '+vcard_token},
                         url: api_url+"/Token"
                     },function(error, response, body){
+						console.log("ERROR 1");
+						console.log(error);
                         if(error){
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
                         }
@@ -2102,6 +2104,8 @@ exports = module.exports = function (req, res, next) {
                         url: api_url+"/Token",
                         body: JSON.stringify(auth_req)
                     },function(error, response, body){
+						console.log("ERROR 2");
+						console.log(error);
                         if(error){
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
                         } else {
@@ -2172,7 +2176,11 @@ exports = module.exports = function (req, res, next) {
                                         });
                                     });
                                 } else if(response.statusCode == '403'){
-                                    return res.send({msg:"error",txt:JSON.parse(body).Message});
+									var pexErrMsg = JSON.parse(body).Message;
+									if(pexErrMsg.indexOf("Insufficient funds on business") >= 0){
+										pexErrMsg = "Insufficient funds in PEX business account. Contact Admin for more details!";
+									}
+                                    return res.send({msg:"error",txt:pexErrMsg});
                                 } else {
                                     return res.send({msg:"error",txt:JSON.parse(body).Message});
                                 }
@@ -3303,18 +3311,18 @@ exports = module.exports = function (req, res, next) {
                             }
                         });
                         dropDown += '</select></div>';*/
-                        var dropDown = '', count = 0, firstCode = '';
-                        result.forEach(function (rescoin, resmsg) {
-                            var code = rescoin.code;
-                            if(count == 0){
-                                firstCode = code;
-                            }
-                            if(rescoin.active == "1"){
+						var dropDown = '', count = 0, firstCode = '';
+						result.forEach(function (rescoin, resmsg) {
+							var code = rescoin.code;
+							if(count == 0){
+								firstCode = code;
+							}
+							if(rescoin.active == "1"){
                                 dropDown += '<div id="'+code+'" class="coinlst mr-2 mb-3 '+(count == 0 ? "active" : "")+'"><img src="'+process.env.SERVER_URL+'/images/cryptocurrency/'+code+'.png"></div>';
                             }
-                            count++;
+							count++;
                         });
-                        dropDown += '<input type="hidden" name="coin_type" id="coin_type" value="'+firstCode+'"/>';
+						dropDown += '<input type="hidden" name="coin_type" id="coin_type" value="'+firstCode+'"/>';
                         return res.send({msg:"success",dropDown: dropDown});
                     } else {
                         return res.send({msg:"error",txt:'Error in processing.  Try again later'});
