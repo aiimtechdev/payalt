@@ -1672,7 +1672,7 @@ exports = module.exports = function (req, res, next) {
                             transaction_sandbox = resulteach.transaction_sandbox;
                             billing_amount = 0;
                             random_string = makeid(20);
-                            oauth_url = 'https://www.coinbase.com/oauth/authorize?client_id='+coinbase_oauth_client_id+'&redirect_uri='+coinbase_oauth_redirect_url+'&response_type=code&scope='+coinbase_oauth_scope+'&meta[send_limit_amount]='+billing_amount+'&meta[send_limit_currency]=USD&account=all&state='+random_string;
+                            oauth_url = 'https://www.coinbase.com/oauth/authorize?client_id='+coinbase_oauth_client_id+'&redirect_uri='+coinbase_oauth_redirect_url+'&response_type=code&scope='+coinbase_oauth_scope+'&meta[send_limit_amount]='+billing_amount+'&meta[send_limit_currency]=USD&state='+random_string;
                             return res.send({"msg": "noaccount","oauth_url":oauth_url});
                         } else {
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
