@@ -711,8 +711,8 @@ function checkCardCreated(logged_user_id,trans_id){
         }
     });
 }
-function markFinishTrans(logged_user_id,trans_id,datares,cardtyp){
-	var img = captureCurrPage();
+async function markFinishTrans(logged_user_id,trans_id,datares,cardtyp){
+	var img = await captureCurrPage();
     $.ajax({
 		url: site_url+'/trans/mark_trans_finish',
 		data: {logged_user_id: logged_user_id, transaction_id: trans_id, img: img},
