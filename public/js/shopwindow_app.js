@@ -64,7 +64,7 @@ crypto_popup_span.onclick = function() {
 
 var cryptoselect_popup_span = document.getElementsByClassName("cryptoselect_popup_close")[0];
 cryptoselect_popup_span.onclick = function() {
-    $("#cryptoselect_popup").modal("hide");
+	$("#cryptoselect_popup").modal("hide");
     //cryptoselect_popup.style.display = "none";
 }
 
@@ -135,8 +135,8 @@ oauth_popup_span.onclick = function() {
                 swal("",data.txt,"error");
                 var oauth_view = document.getElementById('oauth_view');
                 oauth_view.remove();
-                
-                $("#oauth_popup").modal("hide");
+				
+				$("#oauth_popup").modal("hide");
                 //oauth_popup.style.display = "none";
                 payment_popup.style.display = "none";
             },
@@ -144,7 +144,7 @@ oauth_popup_span.onclick = function() {
                 $(".overlayloading,.overlaymain").hide();
                 var oauth_view = document.getElementById('oauth_view');
                 oauth_view.remove();
-                $("#oauth_popup").modal("hide");
+				$("#oauth_popup").modal("hide");
                 //oauth_popup.style.display = "none";
                 payment_popup.style.display = "none";
             }
@@ -152,7 +152,7 @@ oauth_popup_span.onclick = function() {
     } else {
         var oauth_view = document.getElementById('oauth_view');
         oauth_view.remove();
-        $("#oauth_popup").modal("hide");
+		$("#oauth_popup").modal("hide");
         //oauth_popup.style.display = "none";
         payment_popup.style.display = "none";
     }
@@ -187,8 +187,14 @@ function getUserTransactions(){
         }
     });
 }
+async function captureCurrPage(){
+	var webview = document.getElementById('view');
+	var capture = await webview.capturePage();
+	var pr = capture.toDataURL();
+	return pr;
+}
 $(document).ready(function(){
-    if(logged_user_id != '' && logged_user_id != null){
+	if(logged_user_id != '' && logged_user_id != null){
         getUserTransactions();
     }
     webview.addEventListener("dom-ready", event => {
@@ -616,7 +622,7 @@ function coinbase_oauth(reauth){
                 exchange_coinbase_transaction();
             }else if(data.msg == "noaccount"){
                 if(data.oauth_url != ''){
-                    $("#oauth_popup").modal("show");
+					$("#oauth_popup").modal("show");
                     //oauth_popup.style.display = "block";
                     oauth_url = data.oauth_url;
                     
@@ -630,7 +636,7 @@ function coinbase_oauth(reauth){
                         let searchParams = new URLSearchParams(url.search);
                         if(searchParams.get('code') != '' && searchParams.get('code') != null){
                             $("#oauth_popup").modal("hide");
-                            //oauth_popup.style.display = "none";
+							//oauth_popup.style.display = "none";
                             oauth_views.remove();
                             $(".overlayloading,.overlaymain").show();
                             var code = searchParams.get('code');
@@ -706,89 +712,86 @@ function checkCardCreated(logged_user_id,trans_id){
     });
 }
 function markFinishTrans(logged_user_id,trans_id,datares,cardtyp){
-    webview.getWebContents().capturePage((img) => {
-        img = img.toDataURL();
-        $.ajax({
-            url: site_url+'/trans/mark_trans_finish',
-            data: {logged_user_id: logged_user_id, transaction_id: trans_id, img: img},
-            type: 'POST',
-            success: function (dataret) {
-                //$(".overlaycardcreation,.overlaymain").hide();
-                $(".overlaycardcreation").modal("hide");
-                $(".overlaymain").hide();
+	var img = captureCurrPage();
+    $.ajax({
+		url: site_url+'/trans/mark_trans_finish',
+		data: {logged_user_id: logged_user_id, transaction_id: trans_id, img: img},
+		type: 'POST',
+		success: function (dataret) {
+			//$(".overlaycardcreation,.overlaymain").hide();
+			$(".overlaycardcreation").modal("hide");
+			$(".overlaymain").hide();
 
-                data_details = datares.dataarray;
-                if(typeof data_details.billing != "undefined" && datares.billing != ""){
-                    var datetime = data_details.pymt.expdt;
-                    var datetm = new Date(datetime);
-                    var ccMonth = datetm.getMonth() + 1;
-                    var ccYear = datetm.getFullYear().toString().substr(-2);
+			data_details = datares.dataarray;
+			if(typeof data_details.billing != "undefined" && datares.billing != ""){
+				var datetime = data_details.pymt.expdt;
+				var datetm = new Date(datetime);
+				var ccMonth = datetm.getMonth() + 1;
+				var ccYear = datetm.getFullYear().toString().substr(-2);
 
-                    var html_popup = '';
-                    html_popup += '<div style="padding: 15px;line-height:25px;">';
-                    html_popup += '<div><span style="font-weight: bold;">CC#:</span> '+data_details.pymt.crdno+'</div>';
-                    html_popup += '<div><span style="font-weight: bold;">Exp:</span> '+ccMonth+'/'+ccYear+'</div>';
-                    html_popup += '<div><span style="font-weight: bold;">CVV:</span> '+data_details.pymt.cvv+'</div>';
+				var html_popup = '';
+				html_popup += '<div style="padding: 15px;line-height:25px;">';
+				html_popup += '<div><span style="font-weight: bold;">CC#:</span> '+data_details.pymt.crdno+'</div>';
+				html_popup += '<div><span style="font-weight: bold;">Exp:</span> '+ccMonth+'/'+ccYear+'</div>';
+				html_popup += '<div><span style="font-weight: bold;">CVV:</span> '+data_details.pymt.cvv+'</div>';
 
-                    html_popup += '<div style="font-weight: bold;font-size: 20px;">Billing Details</div>';
-                    html_popup += '<div><span style="font-weight: bold;">First Name:</span> '+data_details.billing.billing_details.first_name+'</div>';
-                    html_popup += '<div><span style="font-weight: bold;">Last Name:</span> '+data_details.billing.billing_details.last_name+'</div>';
-                    html_popup += '<div><span style="font-weight: bold;">Street:</span> '+data_details.billing.billing_details.street+'</div>';
-                    html_popup += '<div><span style="font-weight: bold;">City / State:</span> '+data_details.billing.billing_details.city+'/'+data_details.billing.billing_details.state+'</div>';
-                    html_popup += '<div><span style="font-weight: bold;">Zipcode:</span> '+data_details.billing.billing_details.zipcode+'</div>';
-                    if(data_details.billing.shopper_data.length > 0 && typeof data_details.billing.shopper_data[0] != "undefined"){
-                        sh_email = data_details.billing.shopper_data[0].email;
-                        sh_phone = data_details.billing.shopper_data[0].phone_number;
-                        html_popup += '<div><span style="font-weight: bold;">Email:</span> '+sh_email+'</div>';
-                        html_popup += '<div><span style="font-weight: bold;">Phone:</span> '+sh_phone+'</div>';
-                    }
-                    html_popup += '</div>';
+				html_popup += '<div style="font-weight: bold;font-size: 20px;">Billing Details</div>';
+				html_popup += '<div><span style="font-weight: bold;">First Name:</span> '+data_details.billing.billing_details.first_name+'</div>';
+				html_popup += '<div><span style="font-weight: bold;">Last Name:</span> '+data_details.billing.billing_details.last_name+'</div>';
+				html_popup += '<div><span style="font-weight: bold;">Street:</span> '+data_details.billing.billing_details.street+'</div>';
+				html_popup += '<div><span style="font-weight: bold;">City / State:</span> '+data_details.billing.billing_details.city+'/'+data_details.billing.billing_details.state+'</div>';
+				html_popup += '<div><span style="font-weight: bold;">Zipcode:</span> '+data_details.billing.billing_details.zipcode+'</div>';
+				if(data_details.billing.shopper_data.length > 0 && typeof data_details.billing.shopper_data[0] != "undefined"){
+					sh_email = data_details.billing.shopper_data[0].email;
+					sh_phone = data_details.billing.shopper_data[0].phone_number;
+					html_popup += '<div><span style="font-weight: bold;">Email:</span> '+sh_email+'</div>';
+					html_popup += '<div><span style="font-weight: bold;">Phone:</span> '+sh_phone+'</div>';
+				}
+				html_popup += '</div>';
 
-                    $(".billing_dollar").show();
-                    $("#paywithcryto span").html('$'+numberWithCommas(data_details.availableBalance));
-                    /*if(cardtyp == "existing"){
-                        swal("","Your crypto has been converted and your money has been loaded to a new crypto credit card. You are ready to pay! Click \"OK\", review and place your order. If your credit card number hasn't been automatically entered into the website, you can manually do so by clicking the \"$\" button on the left to view your card information.","success");
-                    } else {
-                        swal("","Your crypto has been converted and your money has been loaded to a new crypto credit card. You are ready to pay! Click \"OK\", review and place your order. If your credit card number hasn't been automatically entered into the website, you can manually do so by clicking the \"$\" button on the left to view your card information.","success");
-                    }*/
-                    var spantxt = document.createElement("span");
-                    spantxt.innerHTML = "Congratulations, you just added money to a crypto credit card and it's ready to use. Click the <i class='fa fa-credit-card'></i> (\"credit card icon\") to the right to see your card number. You can use the credit card number anywhere VISA is accepted.";
-                    swal({
-                        html: true,
-                        title: "",
-                        content: spantxt,
-                        type: "success",
-                        icon: "success"
-                    });
-                    
-                    $('[data-toggle=popover]').popover({
-                        html : true,
-                        placement: "right",
-                        content: function() {
-                            return html_popup;
-                        }
-                    });
+				$(".billing_dollar").show();
+				$("#paywithcryto span").html('$'+numberWithCommas(data_details.availableBalance));
+				/*if(cardtyp == "existing"){
+					swal("","Your crypto has been converted and your money has been loaded to a new crypto credit card. You are ready to pay! Click \"OK\", review and place your order. If your credit card number hasn't been automatically entered into the website, you can manually do so by clicking the \"$\" button on the left to view your card information.","success");
+				} else {
+					swal("","Your crypto has been converted and your money has been loaded to a new crypto credit card. You are ready to pay! Click \"OK\", review and place your order. If your credit card number hasn't been automatically entered into the website, you can manually do so by clicking the \"$\" button on the left to view your card information.","success");
+				}*/
+				var spantxt = document.createElement("span");
+				spantxt.innerHTML = "Congratulations, you just added money to a crypto credit card and it's ready to use. Click the <i class='fa fa-credit-card'></i> (\"credit card icon\") to the right to see your card number. You can use the credit card number anywhere VISA is accepted.";
+				swal({
+					html: true,
+					title: "",
+					content: spantxt,
+					type: "success",
+					icon: "success"
+				});
+				
+				$('[data-toggle=popover]').popover({
+					html : true,
+					placement: "right",
+					content: function() {
+						return html_popup;
+					}
+				});
 
-                    /** AUTOFILL ADDED ADDITIONAL FOR CARD **/
-                    $.ajax({
-                        url: site_url+'/trans/user_card_details',
-                        data: {logged_user_id: logged_user_id},
-                        type: 'POST',
-                        success: function (data) {
-                            if(data.msg == "success"){
-                                addr_details = data.retarray;
-                                var webview = document.getElementById('view');
-                                autofill_card = "";
-                                webview.send("autofill-info", addr_details);
-                            }
-                        }
-                    });
-                    /** AUTOFILL ADDED ADDITIONAL FOR CARD **/
-                }
-
-            }
-        });
-    });
+				/** AUTOFILL ADDED ADDITIONAL FOR CARD **/
+				$.ajax({
+					url: site_url+'/trans/user_card_details',
+					data: {logged_user_id: logged_user_id},
+					type: 'POST',
+					success: function (data) {
+						if(data.msg == "success"){
+							addr_details = data.retarray;
+							var webview = document.getElementById('view');
+							autofill_card = "";
+							webview.send("autofill-info", addr_details);
+						}
+					}
+				});
+				/** AUTOFILL ADDED ADDITIONAL FOR CARD **/
+			}
+		}
+	});
 }
 function checkTransactionCompleted(trans_id,bitcoin_sale_id){
     
@@ -1170,7 +1173,7 @@ function exchange_coinbase_transaction(){
             type: 'POST',
             success: function (data) {
                 $(".overlaymain,.overlayloading").hide();
-                console.log(data);
+				console.log(data);
                 if(data.msg == "success"){
                     swal("","Coinbase Payment Completed.","success");
                     payment_popup.style.display = "none";
@@ -1191,7 +1194,7 @@ function exchange_coinbase_transaction(){
                 }
             },
             error: function (err) {
-                console.log(err);
+				console.log(err);
                 $(".overlaymain,.overlayloading").hide();
                 swal("","Error in Processing.  Try again later","error");
             }
@@ -1299,7 +1302,7 @@ $(document).on("click", "#preload_payment_amount", function(){
                     $(".coins_dropdown").html(data.dropDown);
                     //callSelectPicker();
                     //cryptoselect_popup.style.display = "block";
-                    $("#cryptoselect_popup").modal("show");
+					$("#cryptoselect_popup").modal("show");
                 } else{
                     swal("",data.txt,"error");
                 }
@@ -1344,8 +1347,8 @@ function paynowPopup(){
     pay_value = parseFloat(pay_value);
     pay_value = pay_value.toFixed(2);
     scrap_title = "Checkout Payment";
-    
-    var info_icon = "images/info_icon.png";
+	
+	var info_icon = "images/info_icon.png";
     
     scrap_txt = '<div class="row"><div class="col-3"><div class="infoIconClass"></div></div><div class="col-9"><div class="txtleft" style="font-size: 16px;">Let\'s convert your crypto to a credit card! Is the payment amount correct? If so, click "Convert". If not, click "Edit" and enter the correct amount.</div>';
     scrap_txt += '<div class="chkamt_txt" style="margin-top: 20px;">'+
@@ -1355,13 +1358,13 @@ function paynowPopup(){
         manualenter: {
             text: "EDIT",
             value: "manualenter",
-            className: "cancel_button"
+			className: "cancel_button"
         },
         confirm: {
             text: "CONVERT",
             confirm: true,
             value: "confirm",
-            className: "swal_buttons"
+			className: "swal_buttons"
         }
     }
     const wrapper = document.createElement('div');
@@ -1399,7 +1402,7 @@ function paynowPopup(){
                                 if(data.msg == "success"){
                                     $(".coins_dropdown").html(data.dropDown);
                                     //callSelectPicker();
-                                    $("#cryptoselect_popup").modal("show");
+									$("#cryptoselect_popup").modal("show");
                                     //cryptoselect_popup.style.display = "block";
                                 } else{
                                     swal("",data.txt,"error");
@@ -1414,7 +1417,7 @@ function paynowPopup(){
                                 data: {logged_user_id: logged_user_id},
                                 type: 'POST',
                                 success: function (data) {
-                                    $(".overlayloading,.overlaymain").hide();
+									$(".overlayloading,.overlaymain").hide();
                                     if(data.msg == "success"){
                                         addr_details = data.retarray;
                                         var webview = document.getElementById('view');
@@ -1606,7 +1609,7 @@ $(document).on("click", "#currencyselect_payment", function(e){
                 $("#preloadHid").val("");
                 billing_popup.style.display = "none";
                 crypto_popup.style.display = "none";
-                $("#cryptoselect_popup").modal("hide");
+				$("#cryptoselect_popup").modal("hide");
                 //cryptoselect_popup.style.display = "none";
                 $(".overlaymain,.overlayloading").show();
                 //bitcoin_transaction("","");   //Aliant Pay Commented
@@ -1619,12 +1622,12 @@ $(document).on("click", "#currencyselect_payment", function(e){
 
 /*COIN SELECTION SCRIPT **/
 $(document).on("click", ".coinlst", function(e){
-    e.stopImmediatePropagation();
-    var thiss = $(this);
-    $(".coinlst").removeClass("active");
-    thiss.addClass("active");
-    var sel = thiss.attr("id");
-    $("input[type='hidden']#coin_type").val(sel);
+	e.stopImmediatePropagation();
+	var thiss = $(this);
+	$(".coinlst").removeClass("active");
+	thiss.addClass("active");
+	var sel = thiss.attr("id");
+	$("input[type='hidden']#coin_type").val(sel);
 });
 $(document).on("click", "#oauth_back", function(e){
     e.stopImmediatePropagation();
@@ -1634,14 +1637,14 @@ $(document).on("click", "#oauth_back", function(e){
     $("#cryptoselect_popup").modal("show");
 });
 $(document).on("click", "#currencyselect_payment_back", function(e){
-    e.stopImmediatePropagation();
+	e.stopImmediatePropagation();
 
     var preloadHid = $("#preloadHid").val();    
-    $("#cryptoselect_popup").modal("hide");
+	$("#cryptoselect_popup").modal("hide");
     if(preloadHid == "preloadcard"){
         $("#preload_amount_popup").modal("show");
     } else {
-       paynowPopup();
+	   paynowPopup();
     }
 });
 $(document).on("click", ".fullscreen", function(e){

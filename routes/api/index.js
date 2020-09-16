@@ -1647,8 +1647,8 @@ exports = module.exports = function (req, res, next) {
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
                         } else {
                             if (typeof result != 'undefined' && result != null && result != "") {
-                                var coinbase_account_id = result.coinbase_account_id;
-                                if(typeof coinbase_account_id != 'undefined' && coinbase_account_id != null && coinbase_account_id != ''){
+                                var coinbase_access_token = result.coinbase_access_token;
+                                if(typeof coinbase_access_token != 'undefined' && coinbase_access_token != null && coinbase_access_token != ''){
                                     return res.send({"msg": "success"});
                                 } else {
                                     next(null);
@@ -1672,7 +1672,7 @@ exports = module.exports = function (req, res, next) {
                             transaction_sandbox = resulteach.transaction_sandbox;
                             billing_amount = 0;
                             random_string = makeid(20);
-                            oauth_url = 'https://www.coinbase.com/oauth/authorize?client_id='+coinbase_oauth_client_id+'&redirect_uri='+coinbase_oauth_redirect_url+'&response_type=code&scope='+coinbase_oauth_scope+'&meta[send_limit_amount]='+billing_amount+'&meta[send_limit_currency]=USD&state='+random_string;
+                            oauth_url = 'https://www.coinbase.com/oauth/authorize?client_id='+coinbase_oauth_client_id+'&redirect_uri='+coinbase_oauth_redirect_url+'&response_type=code&scope='+coinbase_oauth_scope+'&meta[send_limit_amount]='+billing_amount+'&meta[send_limit_currency]=USD&account=all&state='+random_string;
                             return res.send({"msg": "noaccount","oauth_url":oauth_url});
                         } else {
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
@@ -1802,11 +1802,13 @@ exports = module.exports = function (req, res, next) {
         var coinbase_access_token = '';
         var coinbase_refresh_token = '';
         var coinbase_account_id = '';
+		
+		var transaction_currency = '';// (BTC or ETH or ..)
         
         var aliantpay_api_token = '';
         
-        var bitcoin_sale_id = '';
-        var account_obj = '';        
+        var account_obj = '';
+		var all_account_obj = '';
         var transaction_sandbox = '';
         
         if(trans_id != ''){
@@ -1836,7 +1838,7 @@ exports = module.exports = function (req, res, next) {
                         if (typeof result != 'undefined' && result != null && result != "" && (err == null || err == "")) {
                             coinbase_access_token  = result.coinbase_access_token;
                             coinbase_refresh_token  = result.coinbase_refresh_token;
-                            coinbase_account_id  = result.coinbase_account_id;
+                            //coinbase_account_id  = result.coinbase_account_id;
                             next(null);
                         } else {
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
@@ -1847,13 +1849,87 @@ exports = module.exports = function (req, res, next) {
                     dbo.collection("transaction").findOne({"_id": new ObjectId(trans_id)}, function (err, result) {
                         if (typeof result != 'undefined' && result != null && result != "" && (err == null || err == "")) {
                             billing_amount  = result.transaction_amount;
-                            bitcoin_sale_id = result.bitcoin_sale_id;
+							if(typeof result.bitcoin_sale_id != "undefined" && result.bitcoin_sale_id != '' && result.bitcoin_sale_id != null){
+								bitcoin_sale_id = result.bitcoin_sale_id;
+							}
+							transaction_currency = result.currency;
                             next(null);
                         } else {
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
                         }
                     });
                 },function(next) {
+                    // Get All Accounts for fetching apt account for sending.
+                    var Client = require('coinbase').Client;
+                    var client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY,strictSSL: false});
+
+                    client.getAccounts({limit: 50}, function(err, accounts) {
+                        if(err != null){
+                            //console.log(err.statusCode);
+                            //console.log(err.message);
+                            if(err.statusCode == "401"){
+                                console.log("INSIDE Access Token Renew Process");
+                                // Access Token Renew Process
+                                var auth_req = {
+                                    "grant_type": "refresh_token",
+                                    "refresh_token": coinbase_refresh_token,
+                                    "client_id": coinbase_oauth_client_id,
+                                    "client_secret": coinbase_oauth_client_secret
+                                };
+                                request.post({
+                                    headers: {'content-type' : 'application/json'},
+                                    url: coinbase_api_url+"/oauth/token",
+                                    body: JSON.stringify(auth_req)
+                                },function(error, response, body){
+                                    if (error){
+                                        return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                    } else {
+                                        var body = JSON.parse(body);
+                                        if(typeof body != "undefined" && body != null && typeof body.access_token != "undefined" && body.access_token != null && body.access_token != ''){
+                                            coinbase_access_token = body.access_token;
+                                            coinbase_refresh_token = body.refresh_token;                                        
+                                            dbo.collection("users").updateOne({"_id": new ObjectId(shopper_id)}, {$set: {"coinbase_access_token": body.access_token,"coinbase_refresh_token": body.refresh_token}}, function (err, resultupdate) {
+
+                                                client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY, strictSSL: false});
+                                                client.getAccounts({limit: 50}, function(err, accounts) {
+                                                    all_account_obj = accounts;
+                                                    next(null);
+                                                });
+
+                                            });
+                                        } else {
+                                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                        }
+                                    }
+                                });
+                            } else {
+                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                            }
+                        } else {
+                            all_account_obj = accounts;
+                            next(null);
+                        }
+                    });
+                }, function(next) {
+					/** GET SUITABLE WALLET ACCOUNT ID BY CURRENCY CODE **/
+					if(all_account_obj != null && all_account_obj != ''){
+						console.log(all_account_obj);
+						all_account_obj.forEach(function(acct) {
+							if(acct.currency.code == transaction_currency){
+								coinbase_account_id = acct.id;
+							}
+						});
+						if(coinbase_account_id != ''){
+							console.log("COINBASE ACCOUNT ID FOR "+transaction_currency+" is "+coinbase_account_id);
+							next(null);
+						} else {
+							console.log("NO SUITABLE WALLET ACCOUNT FOUND FOR COIN TYPE");
+							return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+						}
+					} else {
+						return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+					}
+				}, function(next) {
                     // Get Account Object by Account ID for Sending Money.
                     var Client = require('coinbase').Client;
                     var client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY,strictSSL: false});
@@ -1906,12 +1982,23 @@ exports = module.exports = function (req, res, next) {
                         }
                     });
                 },function(next) {
-                    //console.log("ACCOUNT OBJECT OF THE PAYER "+account_obj);
-                    if(account_obj != ''){
+                    //console.log("ACCOUNT OBJECT OF THE PAYER");
+					//console.log(account_obj);
+					//return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+                    
+					if(account_obj != ''){
                         //console.log("BILLING AMOUNT "+billing_amount);
+						//console.log("BITCOIN ADDRESS "+bitcoin_address);
                         billing_amount = Math.round(billing_amount,2);
-                        account_obj.sendMoney({'type': "send",'to': bitcoin_address,'amount': billing_amount,'currency':coin_type}, function(err, tx) {
+                        account_obj.sendMoney({
+							'type': "send",
+							'to': bitcoin_address,
+							'amount': billing_amount,
+							'currency':coin_type,
+							'idem': makeid(12)
+						}, function(err, tx) {
                             if(err != null){
+								//console.log(err);
                                 console.log(err.statusCode);
                                 console.log(err.message);
                                 if(transaction_sandbox == 'true'){
@@ -1925,44 +2012,68 @@ exports = module.exports = function (req, res, next) {
                                         } else if(errmsg.indexOf("code was invalid") >= 0){
                                             return res.send({msg:"reenterotp",txt:"OTP you entered was incorrect. Please enter the correct OTP received in your mobile and click \"Ok\" button to process the transaction."});
                                         } else if(errmsg.indexOf("enter a valid email or Bitcoin address") >= 0){
-                                            request.delete({
-                                                headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
-                                                url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
-                                            },function(error, resp, body){
-                                                dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                                                    return res.send({msg:"error",txt:"You do not have enough crypto for this purchase. Please choose another type of crypto or wallet. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
-                                                });
-                                            });
+											if(bitcoin_sale_id != ''){
+												request.delete({
+													headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
+													url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
+												},function(error, resp, body){
+													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+														return res.send({msg:"error",txt:"You do not have enough crypto for this purchase. Please choose another type of crypto or wallet. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+													});
+												});
+											} else {
+												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+													return res.send({msg:"error",txt:"You do not have enough crypto for this purchase. Please choose another type of crypto or wallet. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+												});
+											}
                                         } else if(errmsg.indexOf("don't have that much") >= 0){
-                                            request.delete({
-                                                headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
-                                                url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
-                                            },function(error, resp, body){
-                                                dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                                                    return res.send({msg:"error",txt:"You have insufficient balance in your coinbase account to pay for this transaction. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
-                                                });
-                                            });
+											if(bitcoin_sale_id != ''){
+												request.delete({
+													headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
+													url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
+												},function(error, resp, body){
+													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+														return res.send({msg:"error",txt:"You have insufficient balance in your coinbase account to pay for this transaction. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+													});
+												});
+											} else {
+												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+													return res.send({msg:"error",txt:"You have insufficient balance in your coinbase account to pay for this transaction. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+												});
+											}
                                         } else {
-                                            request.delete({
-                                                headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
-                                                url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
-                                            },function(error, resp, body){
-                                                dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                                                    return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
-                                                });
-                                            });
+											if(bitcoin_sale_id != ''){
+												request.delete({
+													headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
+													url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
+												},function(error, resp, body){
+													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+														return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+													});
+												});
+											} else {
+												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+													return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+												});
+											}
                                         }
                                     } else if(err.statusCode == '402'){
                                         return res.send({msg:"enterotp",txt:err.message});
                                     } else {
-                                        request.delete({
-                                            headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
-                                            url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
-                                        },function(error, resp, body){
-                                            dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
-                                                return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
-                                            });
-                                        });
+										if(bitcoin_sale_id != ''){
+											request.delete({
+												headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
+												url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
+											},function(error, resp, body){
+												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+													return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+												});
+											});
+										} else {
+											dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+												return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+											});
+										}
                                     }
                                 }
                             } else {                            
@@ -3502,5 +3613,180 @@ exports = module.exports = function (req, res, next) {
             }
             res.send({content: send_contents});
         });
+    }
+	if(action == "custom_check"){
+		var coinbase_oauth_client_id = '';
+        var coinbase_oauth_client_secret = '';
+        var coinbase_api_url = '';
+        
+        var coinbase_access_token = '';
+        var coinbase_refresh_token = '';
+        var coinbase_account_id = '';
+		
+		var transaction_currency = 'BTC';// (BTC or ETH or ..)
+		var shopper_id = '5dc1a93697ac771845af564c';
+		
+		var request = require('request');
+		
+        async.waterfall([
+			function(next) {
+				// Get Client ID Client Secret & API URL
+				dbo.collection("site_settings").find({}).toArray(function (err, result) {
+					if (err){
+						return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+					} else {
+						if(typeof result != "undefined" && result != null){
+							resulteach = result[0];
+							coinbase_oauth_client_id  = resulteach.coinbase_oauth_client_id;
+							coinbase_oauth_client_secret  = resulteach.coinbase_oauth_client_secret;
+							coinbase_api_url = resulteach.coinbase_api_url;
+							next(null);
+						} else {
+							return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+						}
+					}
+				});
+			},function(next) {
+				// Get Users Access Token and Refresh Token and Coinbase Account ID
+				dbo.collection("users").findOne({"_id": new ObjectId(shopper_id)}, function (err, result) {
+					if (typeof result != 'undefined' && result != null && result != "" && (err == null || err == "")) {
+						coinbase_access_token  = result.coinbase_access_token;
+						coinbase_refresh_token  = result.coinbase_refresh_token;
+						next(null);
+					} else {
+						return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+					}
+				});
+			},function(next) {
+				// Get All Accounts for fetching apt account for sending.
+				var Client = require('coinbase').Client;
+				var client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY,strictSSL: false});
+
+				client.getAccounts({limit: 50}, function(err, accounts, pagination) {
+					//console.log(pagination);
+					if(err != null){
+						//console.log(err.statusCode);
+						//console.log(err.message);
+						if(err.statusCode == "401"){
+							console.log("INSIDE Access Token Renew Process");
+							// Access Token Renew Process
+							var auth_req = {
+								"grant_type": "refresh_token",
+								"refresh_token": coinbase_refresh_token,
+								"client_id": coinbase_oauth_client_id,
+								"client_secret": coinbase_oauth_client_secret
+							};
+							request.post({
+								headers: {'content-type' : 'application/json'},
+								url: coinbase_api_url+"/oauth/token",
+								body: JSON.stringify(auth_req)
+							},function(error, response, body){
+								if (error){
+									return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+								} else {
+									var body = JSON.parse(body);
+									if(typeof body != "undefined" && body != null && typeof body.access_token != "undefined" && body.access_token != null && body.access_token != ''){
+										coinbase_access_token = body.access_token;
+										coinbase_refresh_token = body.refresh_token;                                        
+										dbo.collection("users").updateOne({"_id": new ObjectId(shopper_id)}, {$set: {"coinbase_access_token": body.access_token,"coinbase_refresh_token": body.refresh_token}}, function (err, resultupdate) {
+
+											client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY, strictSSL: false});
+											client.getAccounts({limit: 50}, function(err, accounts, pagination) {
+												//console.log(pagination);
+												all_account_obj = accounts;
+												next(null);
+											});
+
+										});
+									} else {
+										return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+									}
+								}
+							});
+						} else {
+							return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+						}
+					} else {
+						all_account_obj = accounts;
+						next(null);
+					}
+				});
+			}, function(next) {
+				/** GET SUITABLE WALLET ACCOUNT ID BY CURRENCY CODE **/
+				if(all_account_obj != null && all_account_obj != ''){
+					//console.log(all_account_obj);
+					all_account_obj.forEach(function(acct) {
+						if(acct.currency.code == transaction_currency){
+							coinbase_account_id = acct.id;
+						}
+					});
+					if(coinbase_account_id != ''){
+						console.log("COINBASE ACCOUNT ID FOR "+transaction_currency+" is "+coinbase_account_id);
+						next(null);
+					} else {
+						console.log("NO SUITABLE WALLET ACCOUNT FOUND FOR COIN TYPE");
+						return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+					}
+				} else {
+					return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+				}
+			}, function(next) {
+				// Get Account Object by Account ID for Sending Money.
+				var Client = require('coinbase').Client;
+				var client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY,strictSSL: false});
+
+				client.getAccount(coinbase_account_id, function(err, account) {
+					if(err != null){
+						console.log(err.statusCode);
+						console.log(err.message);
+						if(err.statusCode == "401"){
+							console.log("INSIDE Access Token Renew Process");
+							// Access Token Renew Process
+							var auth_req = {
+								"grant_type": "refresh_token",
+								"refresh_token": coinbase_refresh_token,
+								"client_id": coinbase_oauth_client_id,
+								"client_secret": coinbase_oauth_client_secret
+							};
+							request.post({
+								headers: {'content-type' : 'application/json'},
+								url: coinbase_api_url+"/oauth/token",
+								body: JSON.stringify(auth_req)
+							},function(error, response, body){
+								if (error){
+									return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+								} else {
+									var body = JSON.parse(body);
+									if(typeof body != "undefined" && body != null && typeof body.access_token != "undefined" && body.access_token != null && body.access_token != ''){
+										coinbase_access_token = body.access_token;
+										coinbase_refresh_token = body.refresh_token;                                        
+										dbo.collection("users").updateOne({"_id": new ObjectId(shopper_id)}, {$set: {"coinbase_access_token": body.access_token,"coinbase_refresh_token": body.refresh_token}}, function (err, resultupdate) {
+
+											client = new Client({'accessToken': coinbase_access_token, 'refreshToken': coinbase_refresh_token,proxy: process.env.PROXY, strictSSL: false});
+											client.getAccount(coinbase_account_id, function(err, account) {
+												account_obj = account;
+												next(null);
+											});
+
+										});
+									} else {
+										return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+									}
+								}
+							});
+						} else {
+							return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+						}
+					} else {
+						account_obj = account;
+						next(null);
+					}
+				});
+			},function(next) {
+				console.log("ACCOUNT OBJECT OF THE PAYER");
+				console.log(account_obj);
+				return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
+			}
+		]);
     }
 }
