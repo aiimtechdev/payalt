@@ -14,13 +14,6 @@ var trans_bitcoin_address = '';
 var timeout_aliantpay = '';
 var interval_timer = '';
 
-if(typeof logged_user_id != 'undefined' && logged_user_id != '' && logged_user_id != null){
-    $("#show_logged_users").css("visibility","visible");
-    loadBalance(logged_user_id);
-}else{
-    $("#show_logged_users").css("visibility","hidden");
-    $("#login_box").show();
-}
 function isNumber(evt) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -194,6 +187,18 @@ async function captureCurrPage(){
 	return pr;
 }
 $(document).ready(function(){
+    $('#login_box,#register_box,#forgot_box').modal({
+        backdrop: 'static',
+        keyboard: false,
+        show: false
+    });
+    if(typeof logged_user_id != 'undefined' && logged_user_id != '' && logged_user_id != null){
+        $("#show_logged_users").css("visibility","visible");
+        loadBalance(logged_user_id);
+    }else{
+        $("#show_logged_users").css("visibility","hidden");
+        $("#login_box").modal("show");
+    }
 	if(logged_user_id != '' && logged_user_id != null){
         getUserTransactions();
     }
@@ -202,17 +207,233 @@ $(document).ready(function(){
         webview.focus();
         //webview.openDevTools();
     });
+    $("#phone").mask('(000) 000-0000');
+    $('.datepicker').datepicker();
     $("a.billing_dollar").html('<i class="fa fa-credit-card"></i>').css({"font-size": "2.5em","padding": "20px","line-height": "45px"});
     $("#login_box .modal-title").html("Login to start shopping with crypto.");
     $('#currency_form').validate({
         ignore: [],
-    });
+    });    
     setTimeout(function(){
         $(".overlaybck").hide();
     },3000);
-    $(document).on("click",".closesrch",function(){
-        $(".overlaybck").hide();
+    $(".txtOnly").keydown(function(e) {               
+        var key = e.keyCode;        
+        if(!((key == 8) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90)) && (key != 9) && (key != 32)) 
+        {        
+            e.preventDefault();            
+        }
+    });  
+
+    $(".numOnly").keydown(function(e) {        
+        var key = e.keyCode;             
+        if(!((key == 8) || (key == 46) || (key >= 35 && key <= 40) || (key >= 48 && key <= 57) || (key >= 96 && key <= 105)) && (key != 9)) 
+        {                     
+            e.preventDefault();            
+        }        
     });
+
+    $(".noSpace").keydown(function(e) {
+        var key = e.keyCode;
+        if(key == 32)
+        {
+            e.preventDefault();
+        }        
+    });
+});
+$(document).on("click",".closesrch",function(){
+    $(".overlaybck").hide();
+});
+$(document).on("click","#register_shopping",function(e){
+    $("#login_box").modal("hide");
+    $("#register_box").modal("show");
+});
+$(document).on("click","#back_login",function(e){
+    $("#register_box").modal("hide");
+    $("#login_box").modal("show");
+});
+$(document).on("click","#back_login_forgot",function(e){
+    $("#forgot_box").modal("hide");
+    $("#login_box").modal("show");
+});
+$(document).on("click","#forgot_pwd_click",function(e){
+    $("#login_box").modal("hide");
+    $("#forgot_box").modal("show");
+});
+$(document).on("click","#next_step2",function(e){
+    var valid = $("#register_form").valid();
+    if(valid == true){
+        if($("#over_eighteen").prop("checked") == true){
+            $(".overeight").hide();
+            $(".progressBR1 .progressBR_progress").removeClass("progressBR_progress_half").addClass("progressBR_progress_full");
+            $(".progressBR2 .progressBR_progress").removeClass("progressBR_progress_full").addClass("progressBR_progress_half");
+
+            $(".personal_info_circle,.login_info_circle").removeClass("active");
+            $(".billing_info_circle").addClass("active");
+            $(".personal_info").hide();
+            $(".billing_info").show();
+        } else {
+            $(".overeight").show();
+        }
+    }
+});
+$(document).on("click","#next_step3",function(e){
+    var valid = $("#register_form").valid();
+    if(valid == true){
+        $(".progressBR2 .progressBR_progress").removeClass("progressBR_progress_half").addClass("progressBR_progress_full");
+        
+        $(".billing_info_circle,.personal_info_circle").removeClass("active");
+        $(".login_info_circle").addClass("active");
+        $(".billing_info").hide();
+        $(".login_info").show();
+    }
+});
+$(document).on("click","#finish_registration",function(e){
+    var valid = $("#register_form").valid();
+    if(valid == true){
+        if($("#accept_terms").prop("checked") == true){
+            $('.termmsg').hide();
+
+            $("#finish_registration").html("Processing...").attr("disabled",true);
+            $.ajax({
+                url: site_url+'/trans/app_registration',
+                data: $("#register_form").serialize(),
+                type: 'POST',
+                success: function (data) {
+                    $("#finish_registration").html("SUBMIT").removeAttr("disabled");
+                    if(data.msg == "success"){
+                        swal("",data.succ_msg,"success");
+                        localStorage.setItem('logged_user_id',data.logged_user_id);
+                        setTimeout(function(){
+                            window.location.reload();
+                        },3000);
+                    } else if(data.msg == "error"){
+                        var span = document.createElement("span");
+                        span.innerHTML = data.err_msg;
+                        swal({
+                            title: "",
+                            content: span,
+                            type: "error"
+                        });
+                    }
+                },
+                error: function (err) {
+                    $("#finish_registration").html("SUBMIT").removeAttr("disabled");
+                    swal("","Error in registration.  Try again later","error");
+                }
+            });
+        } else {
+            $('.termmsg').show();
+        }
+    }
+});
+$(document).on("click","#back_step1",function(e){
+    $(".progressBR1 .progressBR_progress").removeClass("progressBR_progress_full").addClass("progressBR_progress_half");
+    $(".progressBR2 .progressBR_progress").removeClass("progressBR_progress_half");
+    
+    $(".billing_info_circle,.login_info_circle").removeClass("active");
+    $(".personal_info_circle").addClass("active");
+    $(".billing_info").hide();
+    $(".personal_info").show();    
+});
+$(document).on("click","#back_step2",function(e){
+    $(".progressBR2 .progressBR_progress").removeClass("progressBR_progress_full").addClass("progressBR_progress_half");
+    
+    $(".personal_info_circle,.login_info_circle").removeClass("active");    
+    $(".billing_info_circle").addClass("active");
+    $(".login_info").hide();
+    $(".billing_info").show();    
+});
+$(document).on("click","#forgot_button",function(e){
+    var valid = $("#forgot_form").valid();
+    if(valid == true){
+        $(".overlayloading,.overlaymain").show();
+        $("#forgot_button").html("Processing...").attr("disabled",true);
+        $.ajax({
+            url: site_url+'/trans/app_forgotpassword',
+            data: $("#forgot_form").serialize(),
+            type: 'POST',
+            success: function (data) {
+                $("#forgot_button").html("Send Code").removeAttr("disabled");
+                $(".overlayloading,.overlaymain").hide();
+                if(data.msg == "success"){
+                    $(".forgot_pass_1").hide();
+                    $(".forgot_pass_2").show();
+                    $("#forgot_id").val(data.record_id);
+                } else if(data.msg == "error"){
+                    swal("",data.err_msg,"error");
+                }
+            },
+            error: function (err) {
+                $("#forgot_button").html("Send Code").removeAttr("disabled");
+                $(".overlayloading,.overlaymain").hide();
+                swal("","Error in resetting password.  Try again later","error");
+            }
+        });
+    }
+});
+$(document).on("click","#forgot_button2",function(e){
+    var valid = $("#forgot_form").valid();
+    if(valid == true){
+        $(".overlayloading,.overlaymain").show();
+        $("#forgot_button2").html("Processing...").attr("disabled",true);
+        $.ajax({
+            url: site_url+'/trans/app_forgotpassword_check',
+            data: $("#forgot_form").serialize(),
+            type: 'POST',
+            success: function (data) {
+                $("#forgot_button2").html("SUBMIT").removeAttr("disabled");
+                $(".overlayloading,.overlaymain").hide();
+                if(data.msg == "success"){
+                    $(".forgot_pass_2").hide();
+                    $(".forgot_pass_3").show();
+                } else if(data.msg == "error"){
+                    swal("",data.err_msg,"error");
+                }
+            },
+            error: function (err) {
+                $("#forgot_button2").html("SUBMIT").removeAttr("disabled");
+                $(".overlayloading,.overlaymain").hide();
+                swal("","Error in resetting password.  Try again later","error");
+            }
+        });
+    }
+});
+$(document).on("click","#forgot_button3",function(e){
+    var valid = $("#forgot_form").valid();
+    if(valid == true){
+        $(".overlayloading,.overlaymain").show();
+        $("#forgot_button3").html("Processing...").attr("disabled",true);
+        $.ajax({
+            url: site_url+'/trans/app_forgotpassword_set',
+            data: $("#forgot_form").serialize(),
+            type: 'POST',
+            success: function (data) {
+                $("#forgot_button3").html("Set Password").removeAttr("disabled");
+                $(".overlayloading,.overlaymain").hide();
+                if(data.msg == "success"){
+                    swal("",data.succ_msg,"success");
+                    setTimeout(function(){
+                        window.location.reload();
+                    },1500);
+                } else if(data.msg == "error"){
+                    swal("",data.err_msg,"error");
+                }
+            },
+            error: function (err) {
+                $("#forgot_button3").html("Set Password").removeAttr("disabled");
+                $(".overlayloading,.overlaymain").hide();
+                swal("","Error in resetting password.  Try again later","error");
+            }
+        });
+    }
+});
+$(document).on("click","#back_forgot1",function(e){
+    $(".forgot_pass_2").hide();
+    $(".forgot_pass_1").show();    
+});
+$(document).on("click","#cancel_forgot",function(e){
+    window.location.reload();
 });
 
 $(document).on("click",".socio_button",function(e){
@@ -712,7 +933,7 @@ function checkCardCreated(logged_user_id,trans_id){
     });
 }
 async function markFinishTrans(logged_user_id,trans_id,datares,cardtyp){
-	var img = await captureCurrPage();
+    var img = await captureCurrPage();
     $.ajax({
 		url: site_url+'/trans/mark_trans_finish',
 		data: {logged_user_id: logged_user_id, transaction_id: trans_id, img: img},
@@ -1390,7 +1611,8 @@ function paynowPopup(){
                         reconvert = 0;
                     }
                     var preloaded = $(".billing_dollar").css("display");
-                    if(preloaded == "none" || reconvert == 1){
+                    //if(preloaded == "none" || reconvert == 1){
+                    if(reconvert == 1){
                         $("#preloadHid").val("");
                         //$(".overlayloading,.overlaymain").show();
                         $.ajax({
@@ -1411,22 +1633,112 @@ function paynowPopup(){
                         });
                     } else {
                         if(reconvert == 0){
-                            /** AUTOFILL ADDED ADDITIONAL FOR CARD **/
-                            $.ajax({
-                                url: site_url+'/trans/user_card_details',
-                                data: {logged_user_id: logged_user_id},
-                                type: 'POST',
-                                success: function (data) {
-									$(".overlayloading,.overlaymain").hide();
-                                    if(data.msg == "success"){
-                                        addr_details = data.retarray;
-                                        var webview = document.getElementById('view');
-                                        autofill_card = "";
-                                        webview.send("autofill-info", addr_details);
+                            if(preloaded == "none"){
+                                $(".overlayloading,.overlaymain").show();
+                                $.ajax({
+                                    url: site_url+'/trans/load_crypto_card',
+                                    data: {logged_user_id: logged_user_id},
+                                    type: 'POST',
+                                    success: function (data) {
+                                        $(".overlayloading,.overlaymain").hide();
+                                        if(data.msg == "success"){
+                                            data_details = data.dataarray;
+                                            if(typeof data_details.billing != "undefined" && data.billing != ""){
+                                                var datetime = data_details.pymt.expdt;
+                                                var datetm = new Date(datetime);
+                                                var ccMonth = datetm.getMonth() + 1;
+                                                var ccYear = datetm.getFullYear().toString().substr(-2);
+
+                                                var html_popup = '';
+                                                html_popup += '<div style="padding: 15px;line-height:25px;">';
+                                                html_popup += '<div><span style="font-weight: bold;">CC#:</span> '+data_details.pymt.crdno+'</div>';
+                                                html_popup += '<div><span style="font-weight: bold;">Exp:</span> '+ccMonth+'/'+ccYear+'</div>';
+                                                html_popup += '<div><span style="font-weight: bold;">CVV:</span> '+data_details.pymt.cvv+'</div>';
+
+                                                html_popup += '<div style="font-weight: bold;font-size: 20px;">Billing Details</div>';
+                                                html_popup += '<div><span style="font-weight: bold;">First Name:</span> '+data_details.billing.billing_details.first_name+'</div>';
+                                                html_popup += '<div><span style="font-weight: bold;">Last Name:</span> '+data_details.billing.billing_details.last_name+'</div>';
+                                                html_popup += '<div><span style="font-weight: bold;">Street:</span> '+data_details.billing.billing_details.street+'</div>';
+                                                html_popup += '<div><span style="font-weight: bold;">City / State:</span> '+data_details.billing.billing_details.city+'/'+data_details.billing.billing_details.state+'</div>';
+                                                html_popup += '<div><span style="font-weight: bold;">Zipcode:</span> '+data_details.billing.billing_details.zipcode+'</div>';
+                                                if(data_details.billing.shopper_data.length > 0 && typeof data_details.billing.shopper_data[0] != "undefined"){
+                                                    sh_email = data_details.billing.shopper_data[0].email;
+                                                    sh_phone = data_details.billing.shopper_data[0].phone_number;
+                                                    html_popup += '<div><span style="font-weight: bold;">Email:</span> '+sh_email+'</div>';
+                                                    html_popup += '<div><span style="font-weight: bold;">Phone:</span> '+sh_phone+'</div>';
+                                                }
+                                                html_popup += '</div>';
+
+                                                $(".billing_dollar").show();
+                                                $("#paywithcryto span").html('$'+numberWithCommas(data_details.availableBalance));
+                                                
+                                                var spantxt = document.createElement("span");
+                                                spantxt.innerHTML = "Click the <i class='fa fa-credit-card'></i> (\"credit card icon\") to the right to see your card number. You can use the credit card number anywhere VISA is accepted.";
+                                                swal({
+                                                    html: true,
+                                                    title: "",
+                                                    content: spantxt,
+                                                    type: "success",
+                                                    icon: "success"
+                                                });
+                                                
+                                                $('[data-toggle=popover]').popover({
+                                                    html : true,
+                                                    placement: "right",
+                                                    content: function() {
+                                                        return html_popup;
+                                                    }
+                                                });
+                                                
+                                                /** AUTOFILL ADDED ADDITIONAL FOR CARD **/
+                                                $.ajax({
+                                                    url: site_url+'/trans/user_card_details',
+                                                    data: {logged_user_id: logged_user_id},
+                                                    type: 'POST',
+                                                    success: function (data) {
+                                                        if(data.msg == "success"){
+                                                            addr_details = data.retarray;
+                                                            var webview = document.getElementById('view');
+                                                            autofill_card = "";
+                                                            webview.send("autofill-info", addr_details);
+                                                        }
+                                                    }
+                                                });
+                                                /** AUTOFILL ADDED ADDITIONAL FOR CARD **/
+                                            }
+                                        } else if(data.msg == "error"){
+                                            swal("",data.txt,"error");
+                                        }
                                     }
-                                }
-                            });
-                            /** AUTOFILL ADDED ADDITIONAL FOR CARD **/
+                                });
+                            } else {
+                                var spantxt = document.createElement("span");
+                                spantxt.innerHTML = "Click the <i class='fa fa-credit-card'></i> (\"credit card icon\") to the right to see your card number. You can use the credit card number anywhere VISA is accepted.";
+                                swal({
+                                    html: true,
+                                    title: "",
+                                    content: spantxt,
+                                    type: "success",
+                                    icon: "success"
+                                });
+                                                                
+                                /** AUTOFILL ADDED ADDITIONAL FOR CARD **/
+                                $.ajax({
+                                    url: site_url+'/trans/user_card_details',
+                                    data: {logged_user_id: logged_user_id},
+                                    type: 'POST',
+                                    success: function (data) {
+    									$(".overlayloading,.overlaymain").hide();
+                                        if(data.msg == "success"){
+                                            addr_details = data.retarray;
+                                            var webview = document.getElementById('view');
+                                            autofill_card = "";
+                                            webview.send("autofill-info", addr_details);
+                                        }
+                                    }
+                                });
+                                /** AUTOFILL ADDED ADDITIONAL FOR CARD **/
+                            }
                         }
                     }
                 }
@@ -1670,3 +1982,33 @@ function toggleFullScreen() {
     }  
   }  
 }
+$("#register_form #email_address").keyup(function(){
+    $("#register_form #username").val($(this).val());
+});
+function is_int(value){ 
+    if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) {
+        return true;
+    } else { 
+        return false;
+    }
+}
+$(document).on("keyup change","#register_form #zipcode",function() {
+    var el = $(this);
+    if ((el.val().length == 5) && (is_int(el.val()))) {
+        $.ajax({
+            url: "http://api.zippopotam.us/US/" + el.val(),
+            cache: false,
+            dataType: "json",
+            type: "GET",
+            success: function(result, success) {
+                var city_abbr = "place name";
+                $("#register_form #city").val(result.places[0][city_abbr]);
+                var state_abbr = "state abbreviation";
+                $("#register_form #state").val(result.places[0][state_abbr]);
+            },
+            error: function(result, success) {
+                
+            }
+        });
+    }
+});

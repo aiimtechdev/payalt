@@ -1,6 +1,7 @@
 exports = module.exports = function (req, res, next) {
     var locals = res.locals;
     
+    var bcrypt = require("bcryptjs");    
     var async = require("async");
     var dbConn = require( '../db' );
     var dbo = dbConn.getDb();
@@ -55,6 +56,15 @@ exports = module.exports = function (req, res, next) {
         }
         return result;
     }
+    function passwordCode(length) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
 
     if (action == "update_profile") {
         if (req.body.update_profile == '1') {
@@ -88,7 +98,7 @@ exports = module.exports = function (req, res, next) {
                         password_reset_code = makeid(20);
                         dbo.collection("users").updateOne({"_id": new ObjectId(record_id)}, {$set: {"password_reset_code": password_reset_code}}, function (err, result) {
                             next(null);
-                        });                        
+                        });
                     } else {
                         return res.send({"msg":"error","error_msg": "Reset Password process failed."});
                     }                    
@@ -685,6 +695,180 @@ exports = module.exports = function (req, res, next) {
                 }
             });
         }
+    }
+    if(action == "app_forgotpassword_set"){
+        var forgot_id = req.body.forgot_id;
+        var password_one = req.body.password_one;
+        var password_two = req.body.password_two;
+        if(password_one != password_two){
+            return res.send({"msg":"error","err_msg": "Passwords don't match"});
+        }
+        var dbConn = require( '../db' );
+        var dbo = dbConn.getDb();
+
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(password_one, salt, function(err, hash) {
+                // Store hash in database
+                password_hash = hash;
+                dbo.collection("users").updateOne({"_id": new ObjectId(forgot_id)}, {$set: {"password": password_hash}}, function (err, result) {
+                    if(!err)
+                        return res.send({"msg":"success","succ_msg": "Password reset done successfully"});
+                    else 
+                        return res.send({"msg":"error","err_msg": "Error in resetting password. Try again later"});
+                });
+            });
+        });
+    }
+    if(action == "app_forgotpassword_check"){
+        var forgot_id = req.body.forgot_id;
+        var forgot_code = req.body.forgot_code;
+        var dbConn = require( '../db' );
+        var dbo = dbConn.getDb();
+        dbo.collection("users").findOne({"_id" : new ObjectId(forgot_id)},function(err, result) {
+            if(typeof result != 'undefined' && result != null && result != "" && (err == null || err == "")){
+                if(result.password_reset_code == forgot_code){
+                    return res.send({"msg":"success"});
+                } else {
+                    return res.send({"msg":"error","err_msg": "Invalid reset code"});
+                }
+            } else {
+                return res.send({"msg":"error","err_msg": "Invalid reset code"});
+            }
+        });
+    }
+    if(action == "app_forgotpassword"){
+        var nodemailer = require('nodemailer');
+        var mg = require('nodemailer-mailgun-transport');
+        var sblue = require('nodemailer-sendinblue-transport');
+        var ejs = require("ejs");
+
+        var forgot_email = req.body.forgot_email;
+        var dbConn = require( '../db' );
+        var dbo = dbConn.getDb();
+        var error = '', name = '', password_reset_code = '', record_id = '';
+        dbo.collection("users").findOne({"email" : forgot_email},function(err, result) {
+            if(typeof result != 'undefined' && result != null && result != "" && (err == null || err == "")){
+                async.waterfall([
+                    function(next) {
+                        record_id = result._id;
+                        name = result.first_name+" "+result.last_name;
+                        password_reset_code = passwordCode(6);
+                        dbo.collection("users").updateOne({"_id": new ObjectId(record_id)}, {$set: {"password_reset_code": password_reset_code}}, function (err, result) {
+                            next(null);
+                        });
+                    }, function(next) {
+                        if(process.env.MAIL_PROVIDER == 'SENDINBLUE'){
+                            var transporter = nodemailer.createTransport(sblue({
+                                apiKey: process.env.SBLUE_APIKEY,
+                                apiUrl: process.env.SBLUE_DOMAIN,
+                                proxy: process.env.PROXY
+                            }));
+                        } else {
+                            var transporter = nodemailer.createTransport({
+                                host: process.env.GMAIL_HOST,
+                                port: process.env.GMAIL_PORT,
+                                secure: true, // use TLS
+                                auth: {
+                                  user: process.env.GMAIL_USERNAME,
+                                  pass: process.env.GMAIL_PASSWORD
+                                },
+                                proxy: process.env.PROXY
+                            });
+                        }
+
+                        var pass_template = {
+                            siteurl: process.env.SERVER_URL,
+                            sitename:process.env.SITE_NAME,
+                            name: name,
+                            password_reset_code: password_reset_code
+                        }
+
+                        var email_content = ejs.renderFile('views/emails/forgot_password.ejs',pass_template);
+                        email_content.then(function (result_content) {
+                            var options = {
+                                from: {name: process.env.SITE_NAME, address: process.env.ADMIN_EMAIL},
+                                to: forgot_email,
+                                subject: 'Password Reset - '+process.env.SITE_NAME,
+                                html: result_content,
+                                text: '',
+                                'o:tracking': 'no','o:tracking-clicks': 'no','o:tracking-opens': 'no'
+                            };
+                            transporter.sendMail(options, function (error, info) {
+                                //console.log(error);
+                                if (error) {
+                                    return res.send({"msg":"error","err_msg": "Password reset process failed. Try again later"});
+                                }
+                                else {
+                                    return res.send({"msg":"success","record_id" : record_id,"succ_msg" : "Email with password reset code has been sent to your email address."});
+                                }
+                            });
+                        });
+                    }
+                ]);
+            } else {
+                error = 'Email Address not exists';
+                return res.send({msg: "error",err_msg: error});
+            }
+        });
+    }
+
+    if(action == "app_registration"){
+        var email = req.body.email_address,
+        username = req.body.username,
+        password = req.body.password,
+        repassword = req.body.repassword,
+        phone = req.body.phone;
+        dob = req.body.birthday;
+        
+        first_name = req.body.first_name;
+        last_name = req.body.last_name;
+        address = req.body.address;
+        city = req.body.city;
+        state = req.body.state;
+        zipcode = req.body.zipcode;
+        
+        var dbConn = require( '../db' );
+        var dbo = dbConn.getDb();
+        var error = '';
+        dbo.collection("users").findOne( { $or: [ {"username" : username},{"email" : email},{"phone_number" : phone} ] } , function(err, result) {
+            if(typeof result != 'undefined' && result != null && result != "" && (err == null || err == "")){
+                if(result.username == username){
+                    error+= '<li>Username already exists</li>';
+                }
+                if(result.email == email){
+                    error+= '<li>Email Address already exists</li>';
+                }
+                if(result.phone_number == phone){
+                    error+= '<li>Phone number already exists</li>';
+                }
+                if(error != ''){
+                    error = "<ul class='errListing'>"+error+"</ul>";
+                }
+                return res.send({msg: "error",err_msg: error});
+            } else {
+                var password_hash = '';
+                async.waterfall([
+                    function(next) {
+                        bcrypt.genSalt(10, function(err, salt) {
+                            bcrypt.hash(password, salt, function(err, hash) {
+                                // Store hash in database
+                                password_hash = hash;
+                                next(null);
+                            });
+                        });
+                    },function(next) {
+                        dbo.collection("users").insertOne({ first_name: first_name, last_name: last_name, username: username, dob: dob, email: email, password: password_hash, phone_number: phone,address:address,city:city,state:state,zipcode:zipcode, user_type: "shopper", active: "1"}, 
+                        function(err,inserted_id){
+                            if(inserted_id.insertedId != '' && !err){
+                                return res.send({msg: "success",logged_user_id: inserted_id.insertedId,succ_msg: "User created successfully. Logging you in..."});
+                            } else {
+                                return res.send({msg: "error",err_msg: "Error in registration. Try again later"});
+                            }
+                        });
+                    }
+                ]);
+            }
+        });
     }
 
     if(action == "get_download_link"){
@@ -1817,7 +2001,9 @@ exports = module.exports = function (req, res, next) {
                     // Get Client ID Client Secret & API URL
                     dbo.collection("site_settings").find({}).toArray(function (err, result) {
                         if (err){
-                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                            dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Site settings fetch error", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                            });
                         } else {
                             if(typeof result != "undefined" && result != null){
                                 resulteach = result[0];
@@ -1828,7 +2014,9 @@ exports = module.exports = function (req, res, next) {
                                 aliantpay_api_token = resulteach.aliantpay_api_token;
                                 next(null);
                             } else {
-                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Site settings fetch error", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                    return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                });
                             }
                         }
                     });
@@ -1841,7 +2029,9 @@ exports = module.exports = function (req, res, next) {
                             //coinbase_account_id  = result.coinbase_account_id;
                             next(null);
                         } else {
-                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                            dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "User access token and refresh token fetch error", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                            });
                         }
                     });
                 },function(next) {
@@ -1866,6 +2056,7 @@ exports = module.exports = function (req, res, next) {
                     client.getAccounts({limit: 50}, function(err, accounts) {
                         if(err != null){
                             //console.log(err.statusCode);
+                            var errMsg = err.message;
                             //console.log(err.message);
                             if(err.statusCode == "401"){
                                 console.log("INSIDE Access Token Renew Process");
@@ -1882,7 +2073,9 @@ exports = module.exports = function (req, res, next) {
                                     body: JSON.stringify(auth_req)
                                 },function(error, response, body){
                                     if (error){
-                                        return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                        dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Token renew process failed", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                        });
                                     } else {
                                         var body = JSON.parse(body);
                                         if(typeof body != "undefined" && body != null && typeof body.access_token != "undefined" && body.access_token != null && body.access_token != ''){
@@ -1898,12 +2091,16 @@ exports = module.exports = function (req, res, next) {
 
                                             });
                                         } else {
-                                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                            dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Token renew process failed", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                            });
                                         }
                                     }
                                 });
                             } else {
-                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errMsg, "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                    return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                });
                             }
                         } else {
                             all_account_obj = accounts;
@@ -1924,10 +2121,14 @@ exports = module.exports = function (req, res, next) {
 							next(null);
 						} else {
 							console.log("NO SUITABLE WALLET ACCOUNT FOUND FOR COIN TYPE");
-							return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                            dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "NO SUITABLE WALLET ACCOUNT FOUND FOR COIN TYPE", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                            });
 						}
 					} else {
-						return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                        dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Coinbase Get all accounts return value is null", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                        });
 					}
 				}, function(next) {
                     // Get Account Object by Account ID for Sending Money.
@@ -1938,6 +2139,7 @@ exports = module.exports = function (req, res, next) {
                         if(err != null){
                             console.log(err.statusCode);
                             console.log(err.message);
+                            var errMsg = err.message;
                             if(err.statusCode == "401"){
                                 console.log("INSIDE Access Token Renew Process");
                                 // Access Token Renew Process
@@ -1953,7 +2155,9 @@ exports = module.exports = function (req, res, next) {
                                     body: JSON.stringify(auth_req)
                                 },function(error, response, body){
                                     if (error){
-                                        return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                        dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Token renew process failed", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                        });
                                     } else {
                                         var body = JSON.parse(body);
                                         if(typeof body != "undefined" && body != null && typeof body.access_token != "undefined" && body.access_token != null && body.access_token != ''){
@@ -1969,12 +2173,16 @@ exports = module.exports = function (req, res, next) {
 
                                             });
                                         } else {
-                                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                            dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Token renew process failed", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                            });
                                         }
                                     }
                                 });
                             } else {
-                                return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errMsg, "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                                    return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                                });
                             }
                         } else {
                             account_obj = account;
@@ -2017,12 +2225,12 @@ exports = module.exports = function (req, res, next) {
 													headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
 													url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
 												},function(error, resp, body){
-													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errmsg,"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
 														return res.send({msg:"error",txt:"You do not have enough crypto for this purchase. Please choose another type of crypto or wallet. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
 													});
 												});
 											} else {
-												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errmsg,"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
 													return res.send({msg:"error",txt:"You do not have enough crypto for this purchase. Please choose another type of crypto or wallet. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
 												});
 											}
@@ -2032,12 +2240,12 @@ exports = module.exports = function (req, res, next) {
 													headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
 													url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
 												},function(error, resp, body){
-													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errmsg,"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
 														return res.send({msg:"error",txt:"You have insufficient balance in your coinbase account to pay for this transaction. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
 													});
 												});
 											} else {
-												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errmsg,"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
 													return res.send({msg:"error",txt:"You have insufficient balance in your coinbase account to pay for this transaction. This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
 												});
 											}
@@ -2047,12 +2255,12 @@ exports = module.exports = function (req, res, next) {
 													headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
 													url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
 												},function(error, resp, body){
-													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+													dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errmsg,"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
 														return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
 													});
 												});
 											} else {
-												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errmsg,"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
 													return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
 												});
 											}
@@ -2060,17 +2268,18 @@ exports = module.exports = function (req, res, next) {
                                     } else if(err.statusCode == '402'){
                                         return res.send({msg:"enterotp",txt:err.message});
                                     } else {
+                                        var errmsg = err.message;
 										if(bitcoin_sale_id != ''){
 											request.delete({
 												headers: {'content-type' : 'application/json','Authorization': 'Bearer '+aliantpay_api_token},
 												url: "https://aliantpay.io/api/v2/Invoices/"+bitcoin_sale_id
 											},function(error, resp, body){
-												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+												dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errmsg,"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
 													return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
 												});
 											});
 										} else {
-											dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+											dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": errmsg,"manual_cancel": "1","status": "cancelled"}}, function (err, result) {
 												return res.send({msg:"error",txt:"This transaction has been canceled. There have been no charges. In order to make a purchase, click \"Pay Now!\" again."});
 											});
 										}
@@ -2085,12 +2294,16 @@ exports = module.exports = function (req, res, next) {
                                     bitcoin_sale_id = resp_tx.id;
                                     next(null);
                                 } else {
-                                    return res.send({msg:"error",txt:'Coinbase Payment Failed'});
+                                    dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Coinbase Payment failed"}}, function (err, result) {
+                                        return res.send({msg:"error",txt:'Coinbase Payment Failed'});
+                                    });
                                 }
                             }
                         },otp_coinbase);
                     } else {
-                        return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                        dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {"err_msg": "Coinbase User account id is null", "manual_cancel": "1","status": "cancelled"}}, function (err, result) {
+                            return res.send({msg:"error",txt:'Error in processing.  Try again later'});
+                        });
                     }
                 },function(next) {
                     dbo.collection("transaction").updateOne({"_id": new ObjectId(trans_id)}, {$set: {status: "processed","coinbase_sale_id": bitcoin_sale_id}}, function (err, result) {
@@ -3503,9 +3716,9 @@ exports = module.exports = function (req, res, next) {
                         if(error){
                             return res.send({msg:"error",txt:'Error in processing.  Try again later'});
                         }
-                        console.log("TOKEN CHECK");
-                        console.log(response.statusCode);
-                        console.log("/TOKEN CHECK");
+                        //console.log("TOKEN CHECK");
+                        //console.log(response.statusCode);
+                        //console.log("/TOKEN CHECK");
                         if(response.statusCode == '403' || response.statusCode == '401'){
                             /**New Token Generation by API**/
                             var auth_req = {
@@ -3522,9 +3735,9 @@ exports = module.exports = function (req, res, next) {
                                     return res.send({msg:"error",txt:'Error in processing.  Try again later'});
                                 } else {
                                     vcard_token = JSON.parse(body).Token;
-                                    console.log("NEW TOKEN");
-                                    console.log(vcard_token);
-                                    console.log("/NEW TOKEN");
+                                    //console.log("NEW TOKEN");
+                                    //console.log(vcard_token);
+                                    //console.log("/NEW TOKEN");
                                     dbo.collection("site_settings").updateOne({"_id": new ObjectId(settings_tbl_id)}, {$set: {"vcard_token": vcard_token}}, function (err, result) {
                                         next(null);
                                     });
@@ -3573,7 +3786,8 @@ exports = module.exports = function (req, res, next) {
                         var accres = JSON.parse(body);
                         availableBalance = accres.AvailableBalance;
                         pay_value = parseFloat(pay_value).toFixed(2);
-                        
+                        //console.log(availableBalance);
+                        //console.log(pay_value);
                         if(pay_value > availableBalance){
                             return res.send({msg:"reconvert"});
                         } else {
