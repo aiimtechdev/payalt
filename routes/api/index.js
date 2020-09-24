@@ -813,6 +813,11 @@ exports = module.exports = function (req, res, next) {
     }
 
     if(action == "app_registration"){
+        var nodemailer = require('nodemailer');
+        var mg = require('nodemailer-mailgun-transport');
+        var sblue = require('nodemailer-sendinblue-transport');
+        var ejs = require("ejs");
+
         var email = req.body.email_address,
         username = req.body.username,
         password = req.body.password,
@@ -829,7 +834,7 @@ exports = module.exports = function (req, res, next) {
         
         var dbConn = require( '../db' );
         var dbo = dbConn.getDb();
-        var error = '';
+        var error = '', userRegisteredID = '';
         dbo.collection("users").findOne( { $or: [ {"username" : username},{"email" : email},{"phone_number" : phone} ] } , function(err, result) {
             if(typeof result != 'undefined' && result != null && result != "" && (err == null || err == "")){
                 if(result.username == username){
@@ -860,10 +865,63 @@ exports = module.exports = function (req, res, next) {
                         dbo.collection("users").insertOne({ first_name: first_name, last_name: last_name, username: username, dob: dob, email: email, password: password_hash, phone_number: phone,address:address,city:city,state:state,zipcode:zipcode, user_type: "shopper", active: "1"}, 
                         function(err,inserted_id){
                             if(inserted_id.insertedId != '' && !err){
-                                return res.send({msg: "success",logged_user_id: inserted_id.insertedId,succ_msg: "User created successfully. Logging you in..."});
+                                userRegisteredID = inserted_id.insertedId;
+                                next(null);
                             } else {
                                 return res.send({msg: "error",err_msg: "Error in registration. Try again later"});
                             }
+                        });
+                    },function(next) {
+                        if(process.env.MAIL_PROVIDER == 'SENDINBLUE'){
+                            var transporter = nodemailer.createTransport(sblue({
+                                apiKey: process.env.SBLUE_APIKEY,
+                                apiUrl: process.env.SBLUE_DOMAIN
+                            }));
+                        } /*else if(process.env.MAIL_PROVIDER == 'MAILGUN'){
+                            var transporter = nodemailer.createTransport(mg({
+                                service:  'Mailgun',
+                                auth: {
+                                    api_key: process.env.MAILGUN_APIKEY,
+                                    domain: process.env.MAILGUN_DOMAIN
+                                },
+                                proxy: process.env.PROXY
+                            }));
+                        }*/ else {
+                            var transporter = nodemailer.createTransport({
+                                host: process.env.GMAIL_HOST,
+                                port: process.env.GMAIL_PORT,
+                                secure: true, // use TLS
+                                auth: {
+                                  user: process.env.GMAIL_USERNAME,
+                                  pass: process.env.GMAIL_PASSWORD
+                                },
+                                proxy: process.env.PROXY
+                            });
+                        }
+
+                        var pass_template = {
+                            siteurl: process.env.SERVER_URL,
+                            sitename:process.env.SITE_NAME,
+                            username: username,
+                            emailaddress: email,
+                            phone: phone,
+                            usertype: "Shopper",
+                            login_link: process.env.SERVER_URL+"/login"
+                        }
+
+                        var email_content = ejs.renderFile('views/emails/welcome_shopper.ejs',pass_template);
+                        email_content.then(function (result_content) {
+                            var options = {
+                                from: {name: process.env.SITE_NAME, address: process.env.ADMIN_EMAIL},
+                                to: email,
+                                subject: 'New Account Created - '+process.env.SITE_NAME,
+                                html: result_content,
+                                text: '',
+                                'o:tracking': 'no','o:tracking-clicks': 'no','o:tracking-opens': 'no'
+                            };
+                            transporter.sendMail(options, function (error, info) {
+                                return res.send({msg: "success",logged_user_id: userRegisteredID,succ_msg: "User created successfully. Logging you in..."});
+                            });
                         });
                     }
                 ]);

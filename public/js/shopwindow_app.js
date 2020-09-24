@@ -187,6 +187,19 @@ async function captureCurrPage(){
 	return pr;
 }
 $(document).ready(function(){
+    /** REMEMBER ME FUNCTIONALITY **/
+    var remember = localStorage.getItem('remember');
+    if ( remember == 'true' ) {
+        var username = localStorage.getItem('username');
+        var password = localStorage.getItem('password');
+        // autofill the fields
+        $('#login_box #remember_me').prop("checked",true);
+        $('#login_box #username').val(username);
+        $('#login_box #password').val(password);
+    }
+    /** REMEMBER ME FUNCTIONALITY **/
+    $("#terms_condition").attr("href",site_url+"/terms_conditions?raw=1");
+
     $('#login_box,#register_box,#forgot_box').modal({
         backdrop: 'static',
         keyboard: false,
@@ -532,6 +545,18 @@ $(document).on("submit", "#login_form", function(e){
             data: $("#login_form").serialize(),
             type: 'POST',
             success: function (data) {
+                if ($('#remember_me').prop('checked') == true) {
+                    var username = $('#login_box #username').val();
+                    var password = $('#login_box #password').val();
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('password', password);
+                    localStorage.setItem('remember', true);
+                } else {
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('password');
+                    localStorage.removeItem('remember');
+                }
+
                 $(".overlayloading,.overlaymain").hide();
                 if(data.msg == "success"){
                     $(".login_err_msg").html("");
