@@ -1,12 +1,11 @@
-<% include layout/header %>
-    <div class="content_login">
+<% include layout/login_header %>
+    <link rel="stylesheet" href="css/style.css" />
+    <div class="row content_login">
         <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
-            <h1 class="txtcenter">OTP Verification</h1>
-        </div>
-        <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+            <h1 class="txtcenter colorwhite">OTP Verification</h1>
             <div class="white-box">
                 <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
-                <div class="error"><%-err_msg%></div>
+                <div class="errorMsg alert alert-danger"><%-err_msg%></div>
                 <%}%>
 
                 <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
@@ -21,8 +20,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12 padtop20 rxstxtcenter">
-                            <input type="button" name="lgn-btn" id="lgn-btn" value="Confirm & Login">
+                        <div class="col-md-12 col-sm-12 col-xs-12 padtop20 rxstxtcenter mt-3">
+                            <input type="button" name="lgn-btn" id="lgn-btns" class="login_button" value="Confirm & Login">
                         </div>
                         <input type="hidden" name="otp_verify" value="1"/>
                     </form>
@@ -32,7 +31,7 @@
     </div>
     <script>
         jQuery(document).ready(function(){
-            jQuery("#lgn-btn").click(function(){
+            jQuery("#lgn-btns").click(function(){
                 if(jQuery("#otp_code").val().length <= 0)
                 {
                     jQuery("#otp_code").addClass("error");
@@ -44,4 +43,4 @@
             });
         });
     </script>
-  <% include layout/footer %>
+  <% include layout/login_footer %>

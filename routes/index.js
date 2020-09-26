@@ -41,6 +41,7 @@ router.all('/about', require('./views/about'));
 router.all('/chatcode', require('./views/chatcode'));
 router.all('/coinbase_oauth', require('./views/coinbase_oauth'));
 router.all('/coinbase_check', require('./views/coinbase_check'));
+router.all('/forgot_password', require('./views/forgot_password'));
 
 router.all('/business', require('./views/business'));
 router.all('/faq', require('./views/faq'));

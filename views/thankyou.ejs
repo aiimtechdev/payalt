@@ -1,11 +1,14 @@
-<% include layout/header %>
-<div class="thnkpagehegi">
-    <div id="thankyou-payalt" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paylt-padlr0">
-        <div class="container">
-            <!--<p>Thanks for joining  PayAlt! <u>Sync your Exchange for instant payments now.</u> Then start shopping!</p>
-            <a href=""><button type="button" class="syncwallet">Sync Your Wallet</button></a>-->
-            <p>Thanks for joining  PayAlt!</p>
-            <a class="shopnow_lnk" href="https://somiworks.cameyo.com/apps/11026488070783/play"><button type="button" class="startshopg">Start Shopping</button></a>
+<% include layout/login_header %>
+<link rel="stylesheet" href="css/style.css" />
+<div class="row content_login">
+    <div class="col-md-12 col-sm-12 col-xs-12 padtop20">
+        <div class="thnkpagehegi">
+            <div id="thankyou-payalt" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paylt-padlr0">
+                <div class="container">
+                    <p class="color_white">Thanks for joining  PayAlt!</p>
+                    <a class="shopnow_lnk" href="https://somiworks.cameyo.com/apps/11026488070783/play"><button type="button" class="startshopg">Start Shopping</button></a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -34,20 +37,22 @@
         font-family: Montserrat-SemiBoldItalic;
         font-size: 28px;
         font-weight: normal;
-        color: #464646 !important;
+        color: #ffffff !important;
         padding-top: 6%;
     }
     .startshopg, .syncwallet
     {
         border: none;
         padding: 10px 60px;
-        background: #55cac2;
         color: #fff;
         text-transform: uppercase;
         font-family: Montserrat-SemiBoldItalic;
         font-size: 22px;
         margin-top: 30px;
         cursor: pointer;
+        background: transparent linear-gradient(257deg, #1499F2 0%, #0129F2 100%) 0% 0% no-repeat padding-box;
+        border-radius: 40px;
+        height: 64px;
     }
     @media(min-width:992px)
     {
@@ -60,4 +65,4 @@
         }        
     }
 </style>
-<% include layout/footer %>
+<% include layout/login_footer %>

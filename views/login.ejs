@@ -1,166 +1,85 @@
-<% include layout/header %>
+<% include layout/login_header %>
     <script type="text/javascript" src="js/jquery.validate.min.js"></script>
-    <div class="login_pg content_login">
-        <div id="login_bx">
-            <div class="login_register_heading">
-                <div style="margin-bottom: 0px;">
-                    <span>New User?</span> Create an account: <a href="/register"><button type="button">Register Now!</button></a>
-                </div>
-                <!--<div>
-                    <span>Sync Exchange?</span> Sync now: <a href=""><button type="button">Sync Now!</button></a>
-                </div>-->
-            </div>            
-
-            <div class="login_box_area">
+    <div class="modal" id="login_box" tabindex="-1" role="dialog" aria-labelledby="paytransModalLabel" aria-hidden="true">
+        <div class="modal-content" style="max-width: 460px !important;">
+            <div class="modal-header">
+                <img src="images/payalt_login_logo.png" style="margin: 0 auto;padding: 40px 0;"/>
+            </div>
+            <div class="content modal-body" id="register_bx">
                 <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
-                <div class="alert alert-danger"><%=err_msg%></div>
+                <div class="alert alert-danger mb-4"><%=err_msg%></div>
                 <%}%>
                 <%if(typeof succ_msg != 'undefined' && succ_msg != ''){%>
-                <div class="alert alert-success"><%=succ_msg%></div>
+                <div class="alert alert-success mb-4"><%=succ_msg%></div>
                 <%}%>
-                <form action="/login" method="post" id="shopper_form">
+                <form action="/login" method="post" id="login_form" style="min-width: auto;">
                     <div class="uname_box">
-                        <input type="text" class="input wid100imp" id="username" required name="username" placeholder="EMAIL ADDRESS">
+                        <input type="text" class="input newtxtbox wid100imp" id="username" name="username" placeholder="Username" required value="">
                     </div>
-                    <div class="uname_box">
-                        <input type="password" class="input wid100imp" id="password" required name="password" placeholder="PASSWORD">
+                    <div class="uname_box mt-1">
+                        <input type="password" class="input newtxtbox wid100imp" id="password" name="password" placeholder="Password" required value="">
                     </div>
-                    <div class="txtcenter padtop10">
-                        <input type="submit" class="login_site_button" value="Login" id="login">
-                    </div>
+                    <input type="hidden" name="login_process" id="login_process" value="1"/>
                     <input type="hidden" name="shopper_login" value="1"/>
                     <input type="hidden" name="open_brow" value="1"/>
-                </form>
-
-                <!--<div class="row">
-                    <div class="col col-12 col-md-4 col-lg-4 col-xl-4 loginsec1">
-                        <h1 class="mtop0 txtcenter">SHOPPERS</h1>
-                        <form action="/login" method="post" id="shopper_form">
-                            <div class="uname_box">
-                                <input type="text" class="input wid100imp" id="username" required name="username" placeholder="EMAIL ADDRESS">
-                            </div>
-                            <div class="uname_box">
-                                <input type="password" class="input wid100imp" id="password" required name="password" placeholder="PASSWORD">
-                            </div>
-                            <div class="txtcenter padtop10">
-                                <input type="submit" class="login_site_button" value="Login" id="login">
-                            </div>
-                            <input type="hidden" name="shopper_login" value="1"/>
-                            <input type="hidden" name="open_brow" value="1"/>
-                        </form>
+                    <div class="txtright mt-1 mb-2">
+                        <input type="button" class="login_button" value="Login" id="login_shopping">
                     </div>
-                    <div class="col col-12 col-md-4 col-lg-4 col-xl-4 loginsec2">
-                        <h1 class="mtop0 txtcenter">MERCHANTS</h1>
-                        <form action="/login" method="post" id="merchant_form">
-                            <div class="uname_box">
-                                <input type="text" class="input wid100imp" id="username" required name="username" placeholder="EMAIL ADDRESS">
-                            </div>
-                            <div class="uname_box">
-                                <input type="password" class="input wid100imp" id="password" required name="password" placeholder="PASSWORD">
-                            </div>
-                            <div class="txtcenter padtop10">
-                                <input type="button" class="login_site_button" value="Login" id="login2">
-                            </div>
-                            <input type="hidden" name="merchant_login" value="1"/>
-                        </form>
+                    <div class="text-left mt-3 mb-3">
+                        <input type="checkbox" id="remember_me" name="remember_me" value=""/>
+                        <label for="remember_me">Remember me</label>
                     </div>
-                    <div class="col col-12 col-md-4 col-lg-4 col-xl-4 loginsec3">
-                        <h1 class="mtop0 txtcenter">PARTNERS</h1>
-                        <form action="/login" method="post" id="partner_form">
-                            <div class="uname_box">
-                                <input type="text" class="input wid100imp" id="username" required name="username" placeholder="EMAIL ADDRESS">
-                            </div>
-                            <div class="uname_box">
-                                <input type="password" class="input wid100imp" id="password" required name="password" placeholder="PASSWORD">
-                            </div>
-                            <div class="txtcenter padtop10">
-                                <input type="button" class="login_site_button" value="Login" id="login3">
-                            </div>
-                            <input type="hidden" name="partner_login" value="1"/>
-                        </form>
+                    <div class="text-center mt-4 mb-2">
+                        <a href="/register"><input type="button" class="register_button" value="Register" id="register_shopping"></a>
+                        <a href="/forgot_password" id="forgot_pwd_click" class="d-block mt-2 mb-3">Forgot Password?</a>
                     </div>
-                </div>-->
+                </form>                                
+            </div>
+        </div>
+        <div class="modal-absfooter">
+            <div>&copy; 2020 PAYALT</div>
+            <div class="modalfootericons mt-3 mb-2">
+                <a href="https://www.linkedin.com/company/payalt" target="_blank"><img src="images/linkedin_icon.png"/></a>
+                <a href="https://www.instagram.com/payalt_official/" target="_blank"><img src="images/insta_icon.png"/></a>
+                <a href="https://www.facebook.com/payaltofficial/" target="_blank"><img src="images/fb_icon.png"/></a>
             </div>
         </div>
     </div>
-    <style type="text/css">
-    .login_register_heading {font-size: 22px;width: 65%;margin: 3% auto 0% auto;text-align: center;border-bottom: 2px solid #dfdfdf;padding-bottom: 4%;}
-    .login_register_heading span{font-weight:bold;}
-    .login_register_heading button {
-        background: #55cac2;
-        color:#fff;
-        text-transform: uppercase;
-        border: none;
-        padding: 5px 0px;
-        font-family: Montserrat-SemiBoldItalic;
-        font-size: 22px;
-        cursor: pointer;
-        display: inline;
-        min-width: 300px;
-        margin-left: 20px;
-        font-weight: bold;
-    }
-    .login_site_button {
-        background: #55cac2;
-        color:#fff;
-        width: 100%;
-        text-transform: uppercase;
-        border: none;
-        padding: 5px 0px;
-        font-family: Montserrat-SemiBoldItalic;
-        font-size: 22px;
-        cursor: pointer;
-        display: inline;
-        font-weight: bold;
-    }
-    .login_box_area{
-        width:350px;margin: 5% auto 0 auto;padding-bottom: 10%;
-    }
-    .login_box_area h1{
-        color:#55cac2;font-size: 24px;font-family: Montserrat-SemiBoldItalic;margin-bottom: 20px;
-    }
-    .login_box_area input[type="text"],.login_box_area input[type="password"] {
-        padding: 10px 15px !important;
-        border: 1px solid #ccc !important;
-        border-radius: 50px;
-        margin-bottom: 15px !important;
-        width: 100% !important;
-        box-sizing: border-box;
-        color: #2C3E50;
-        font-size: 16px !important;
-        background: #fff !important;
-    }
-    .loginsec1,.loginsec2{
-        border-right: 2px solid #dfdfdf;padding-bottom: 8%;
-    }
-    @media (min-width: 320px) and (max-width: 774px){
-        .login_register_heading{
-            width: 85% !important;
-        }
-        .login_box_area{
-            width: 300px !important;
-        }
-        .loginsec1, .loginsec2 {
-            border-right: none !important;
-            border-bottom: 2px solid #dfdfdf;
-            margin-bottom: 8%;
-        }
-    }
-    @media (min-width: 775px) and (max-width: 1200px){
-        .login_register_heading{
-            width: 85% !important;
-        }
-        .login_box_area{
-            width: 350px !important;
-        }
-    }
-    </style>
     <script>
-    jQuery(document).on("click","#login",function(){
-        var valid = $("#shopper_form").valid();
+    jQuery(document).ready(function(){
+        $('#login_box').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: true
+        });
+        /** REMEMBER ME FUNCTIONALITY **/
+        var remember = localStorage.getItem('remember');
+        if ( remember == 'true' ) {
+            var username = localStorage.getItem('username');
+            var password = localStorage.getItem('password');
+            // autofill the fields
+            $('#login_box #remember_me').prop("checked",true);
+            $('#login_box #username').val(username);
+            $('#login_box #password').val(password);
+        }
+        /** REMEMBER ME FUNCTIONALITY **/
+    });
+    jQuery(document).on("click","#login_shopping",function(){
+        var valid = $("#login_form").valid();
         if(valid){
-            $("#shopper_form").submit();
+            if ($('#remember_me').prop('checked') == true) {
+                var username = $('#login_box #username').val();
+                var password = $('#login_box #password').val();
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+                localStorage.setItem('remember', true);
+            } else {
+                localStorage.removeItem('username');
+                localStorage.removeItem('password');
+                localStorage.removeItem('remember');
+            }
+            $("#login_form").submit();
         }
     });
     </script>
-<% include layout/footer %>
+<% include layout/login_footer %>

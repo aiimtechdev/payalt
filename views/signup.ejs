@@ -1,147 +1,172 @@
-<% include layout/header %>    
+<% include layout/login_header %>
     <script type="text/javascript" src="js/jquery.mask.js"></script>
     <script type="text/javascript" src="js/jquery.validate.min.js"></script>
-    <div class="content_login">
-        <div id="register_bx">
-            <h2 class="mtop0 register_heading" style="text-align: center;margin-top: 20px;">Sign Up</h2>
-            
-            <div class="container mobrespcontner">
-                <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
-                    <div class="error"><%-err_msg%></div>
-                <%}%>
-                <div class="row">
-                    <div class="col-md-12 register-payalt">
-                        <form id="msform" method="post" action="">
-                            <!-- progressbar -->
-                            <div class="regsteps">
-                            <ul id="progressbar" style="padding-left:0px;">
-                                <li class="active yelwcolor"><span>1</span></li>
-                                <li><span>2</span></li>
-                                <li><span>3</span></li>
-                                <div class="brderline"></div>
-                            </ul>
-                            </div>
-                            <!-- fieldsets -->
-                            <fieldset id="personinfo" class="animate">
-                                <div style="display:none;" class="mobstepsonly"><span>1</span></div>
-                                <h2 class="fs-title">Personal Information</h2>                   
-                                <div class="stepsheight1">
-                                <div class="row col-md-12 pdrmove">
-                                 <div class="col-md-4 col-xs-12 ">   
-                                     <div style="display:none;" data-error="first_name" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
-                                     <input type="text" id="first_name" class="txtOnly reqfled" name="first_name" placeholder="FIRST NAME" tabindex="1" value="<%=formData.first_name%>"/>
-                                 </div>
-                                 <div class="col-md-4 col-xs-12 "> 
-                                     <div style="display:none;" data-error="last_name" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>    
-                                    <input type="text" id="last_name" class="txtOnly reqfled" name="last_name" placeholder="LAST NAME" tabindex="2" value="<%=formData.last_name%>" />                                         
-                                 </div>
-                                 <div class="col-md-4 col-xs-12 ">   
-                                     <div style="display:none;" data-error="email" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
-                                     <input type="email" id="email" class="reqfled" name="email" placeholder="EMAIL ADDRESS" tabindex="3" value="<%=formData.email%>" />                      
-                                 </div>                
-                                </div>
-                                <div class="row col-md-12 pdrmove">
-                                    <div class="col-md-4 col-xs-12 ">   
-                                     <div style="display:none;" data-error="phone" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
-                                     <input id="phone" class="reqfled" type="text" name="phone" placeholder="PHONE" tabindex="4" value="<%=formData.phone%>" />
-                                    </div>
-                                    <div class="col-md-4 col-xs-12">
-                                        <div style="display:none;" data-error="dob" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
-                                        <input type="text" id="dob" class="reqfled" name="dob" placeholder="DATE OF BIRTH" tabindex="5" value="<%=formData.dob%>" />
-                                    </div>
-                                 <div class="col-md-4 col-xs-12 ovregtndiv">      
-                                     <div class="ovreigtn">Over Eighteen ?</div>
-                                      <label class="radiocontainer radiocotone">Yes
-                                        <input class="regover" type="radio" checked="checked" name="radio" value="yes" tabindex="6" >
-                                        <span class="radiocheckmark"></span>
-                                      </label>
-                                      <label class="radiocontainer radiocottwo">No
-                                        <input class="regover" type="radio" name="radio" value="no" tabindex="7" >
-                                        <span class="radiocheckmark"></span>
-                                      </label>
-                                     <div style="display:none;" class="overeight">Can't register, Age must be above 18 years</div>
-                                 </div>                 
-                                </div> 
-                                </div>
-                                <div class="nextbttnregtr col-md-12 col-xs-12 col-sm-12">
-                                    <button id="nextbtn1" type="button" name="next" class="next  register-button">  Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>      
-                                </div>
-                            </fieldset>
-                            <fieldset style="display:none;" id="billinfo" class="animate">
-                                <div style="display:none;" class="mobstepsonly"><span>2</span></div>
-                                <h2 class="fs-title">Billing Information</h2>
-                                <h3 class="fs-subtitle">( This will be the billing address that will be used for all credit cards we create for you. )</h3>
-                                <div class="stepsheight2">
-                                <div class="row col-md-12 pdrmove">
-                                <div class="col-md-4 col-xs-12"> 
-                                <div style="display:none;" data-error="address" class="errorfld"><i class="fa fa-exclamation-circle"></i></div> 
-                                <input type="text" id="address" class="reqfled" name="address" placeholder="ADDRESS" tabindex="8" value="<%=formData.address%>" />
-                                </div>                                                
-                                <div class="col-md-4 col-xs-12"> 
-                                <div style="display:none;" data-error="zipcode" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>    
-                                <input type="text" id="zipcode" class="reqfled numOnly" maxlength="5" name="zipcode" placeholder="ZIPCODE" tabindex="9" value="<%=formData.zipcode%>"/>
-                                </div>
-                                <div class="col-md-4 col-xs-12"> 
-                                <div style="display:none;" data-error="city" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>    
-                                <input type="text" id="city" class="txtOnly reqfled" name="city" placeholder="CITY" tabindex="10" value="<%=formData.city%>"/>
-                                </div>
-                                <div class="col-md-4 col-xs-12">           
-                                    <div style="display:none;" data-error="state" class="errorfld"><i class="fa fa-exclamation-circle"></i></div> 
-                                    <select class="form-control stateselfrm reqfled" id="state" name="state" placeholder="STATE" tabindex="11" >
-                                        <option value="">STATE</option>
-                                        <%us_states.forEach(function(rslt, index) {%>
-                                        <option value="<%=rslt%>" <%if(formData.state == rslt){%>selected<%}%>><%=rslt%></option>
-                                        <%})%>
-                                    </select>
-                                </div>
-                                </div>  
-                                </div>
-                                <div class="backregsbtn col-md-12 col-xs-12 col-sm-12">
-                                    <button id="backbtn2" type="button" class="previous action-button-previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i>Back </button>     
-                                    <button id="nextbtn2" type="button" class="next action-button"> Next <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-                                    <div class="clrbt"></div>
-                                </div>                
-                            </fieldset>
-                            <fieldset style="display:none;" id="logininfo" class="animate">
-                                <div style="display:none;" class="mobstepsonly"><span>3</span></div>
-                                <h2 class="fs-title">Login Information</h2>
-                                <h3 class="fs-subtitle"></h3>
-                                <div class="stepsheight3">
-                                    <div class="row col-md-12 pdrmove">
-                                        <div class="col-md-4 col-xs-12"> 
-                                            <div style="display:none;" data-error="username" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
-                                            <input type="text" id="username" class="reqfled noSpace" name="username" placeholder="USER NAME" tabindex="12" value="<%=formData.username%>"/>
-                                        </div>
-                                        <div class="col-md-4 col-xs-12"> 
-                                            <div style="display:none;" data-error="reg-password" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>    
-                                            <input type="password" id="reg-password" class="reqfled noSpace" name="password" placeholder="PASSWORD" tabindex="13" />
-                                            <div style="display:none;" class="passmsg1">Password should have atleast 6 characters.</div>
-                                        </div>
-                                        <div class="col-md-4 col-xs-12"> 
-                                            <div style="display:none;" data-error="reg-repassword" class="errorfld"><i class="fa fa-exclamation-circle"></i></div>
-                                            <input type="password" id="reg-repassword" class="reqfled noSpace" name="repassword" placeholder="CONFIRM PASSWORD" tabindex="14" />
-                                            <div style="display:none;" class="passmsg2">Confirm Password not matches with your Password.</div>
-                                        </div>
-                                    </div>
-                                    <div class="row col-md-12">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input reqfled" id="terms_all" data-id="all_terms" value="1">
-                                            <label class="custom-control-label" for="terms_all">I accept <a href="#terms_conditions_content" class="terms_conditions"> Terms and Conditions</a></label>
-                                            <div style="display:none;" class="termmsg">Agree to Terms and Conditions.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="clrbt"></div>
-                                <div class="col-md-12 col-xs-12 col-sm-12">
-                                    <button id="backbtn3" type="button" class="previous action-button-previous"> <i class="fa fa-chevron-left" aria-hidden="true"></i>Back </button>                               
-                                    <button type="button" id="submitbtnreg" class="action-button">Submit <i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-                                </div>
-                                <div class="clrbt"></div>
-                            </fieldset>
-                            <input type="hidden" name="submit_form_register" value="1"/>
-                        </form>
+    <script src="js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
+    <div class="modal" id="register_box" tabindex="-1" role="dialog" aria-labelledby="paytransModalLabel" aria-hidden="true">
+        <div class="modal-content" style="max-width: 1100px !important;">
+            <div class="modal-header">
+                <h2 class="modal-title text-left ml-lg-5 signupTitle">SIGN UP</h2>
+                <div class="signup_wizard">
+                    <div class="personal_info_circle active">
+                        <div class="info_circle">1</div><div class="info_text">Personal Information</div>
+                    </div>
+                    <div class="progressBR progressBR1">
+                        <div class="progressBR_rail"></div>
+                        <div class="progressBR_progress progressBR_progress_half"></div>
+                    </div>
+                    <div class="billing_info_circle">
+                        <div class="info_circle">2</div><div class="info_text">Billing Information</div>
+                    </div>
+                    <div class="progressBR progressBR2">
+                        <div class="progressBR_rail"></div>
+                        <div class="progressBR_progress"></div>
+                    </div>
+                    <div class="login_info_circle">
+                        <div class="info_circle">3</div><div class="info_text">Login Information</div>
                     </div>
                 </div>
+            </div>
+            <div class="content modal-body" id="register_bx">
+                <%if(typeof err_msg != 'undefined' && err_msg != ''){%>
+                    <div class="errorMsg alert alert-danger"><%-err_msg%></div>
+                <%}%>
+                <form action="" method="post" id="register_form" style="min-width: auto;">
+                    <input type="hidden" name="submit_form_register" value="1"/>
+                    <div class="personal_info">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="text" class="input txtOnly newtxtbox wid100imp" id="first_name" name="first_name" placeholder="First Name" tabindex="1" required value="<%=formData.first_name%>">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="text" class="input txtOnly newtxtbox wid100imp" id="last_name" name="last_name" placeholder="Last Name" tabindex="2" required value="<%=formData.last_name%>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-4 mt-sm-4 mt-md-4">
+                            <div class="col-lg-4 col-sm-4 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="email" class="input newtxtbox wid100imp" id="email" name="email" placeholder="Email Address" tabindex="3" required value="<%=formData.email%>">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="text" class="input newtxtbox wid100imp" id="phone" name="phone" placeholder="Phone" required tabindex="4" value="<%=formData.phone%>">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="text" class="input newtxtbox wid100imp datepicker" id="dob" name="dob" placeholder="Birthday" tabindex="5" required value="<%=formData.dob%>">
+                                    <img src="images/calendar.png" style="position: absolute;right: 20px;top: 20px;width: 20px;"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-4 mt-sm-4 mt-md-4 mtop-xs">
+                            <div class="col-6 text-left">
+                                <div style="display: inline-block;">Over Eighteen?</div>
+                                <label class="switch">
+                                    <input class="switch-input" name="over_eighteen" id="over_eighteen" type="checkbox" value="1" checked="true" required tabindex="6"/>
+                                    <span class="switch-label" data-on="YES" data-off="NO"></span> 
+                                    <span class="switch-handle"></span> 
+                                </label>
+                                <div style="display:none;" class="overeight">Can't register, Age must be above 18 years</div>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-4 mt-sm-4 mt-md-4 pt-3">
+                            <div class="col-6 text-left">
+                                <button type="button" name="back_login" id="back_login" class="cancel_button" style="width: auto;">Back to Login</button>
+                            </div>
+                            <div class="col-6 text-right">
+                                <button type="button" name="next_step2" id="next_step2" class="orange_button" style="width: 150px;"  tabindex="7">NEXT</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="billing_info" style="display: none;">
+                        <div class="mb-4 text-left">This will be the billing address that will be used for all credit cards we create for you</div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="text" class="input newtxtbox wid100imp" id="address" name="address" placeholder="Address" tabindex="8" required value="<%=formData.address%>">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="text" class="input numOnly newtxtbox wid100imp" id="zipcode" name="zipcode" placeholder="Zipcode" tabindex="9" required value="<%=formData.zipcode%>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-4 mt-sm-4 mt-md-4">
+                            <div class="col-lg-6 col-sm-6 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="text" class="input newtxtbox wid100imp" id="city" name="city" placeholder="City" required tabindex="10" value="<%=formData.city%>">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <select class="wid100imp drpdown" id="state" name="state" placeholder="STATE" tabindex="11" required>
+                                    <option value="">State</option>
+                                    <%us_states.forEach(function(rslt, index) {%>
+                                    <option value="<%=rslt%>" <%if(formData.state == rslt){%>selected<%}%>><%=rslt%></option>
+                                    <%})%>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-4 mt-sm-4 mt-md-4 pt-3">
+                            <div class="col-6 text-left">
+                                <button type="button" name="back_step1" id="back_step1" class="cancel_button" style="width: 150px;">Back</button>
+                            </div>
+                            <div class="col-6 text-right">
+                                <button type="button" name="next_step3" id="next_step3" class="orange_button" style="width: 150px;"  tabindex="12">NEXT</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="login_info" style="display: none;">
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-4 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="text" class="input noSpace newtxtbox wid100imp" id="username" name="username" placeholder="Username" tabindex="13" required value="<%=formData.username%>"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="password" class="input noSpace newtxtbox wid100imp" id="regpassword" name="password" placeholder="Password" tabindex="14" required value="" minlength="6"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-4 col-xs-12 mt-2 mt-lg-0 mt-sm-0">
+                                <div class="uname_box">
+                                    <input type="password" class="input noSpace newtxtbox wid100imp" id="repassword" name="repassword" placeholder="Confirm Password" tabindex="15" equalTo="#regpassword" required value="" minlength="6"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-4 mt-sm-4 mt-md-4 mtop-xs">
+                            <div class="col-12 text-left mb-3">
+                                <input type="checkbox" id="accept_terms" name="accept_terms" value="1" tabindex="16"/>
+                                <label for="accept_terms">I accept <a href="#terms_conditions_content" class="terms_conditions"> Terms and Conditions</a></label>
+                                <div style="display:none;" class="termmsg">Agree to the Terms and Conditions.</div>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-4 mt-sm-4 mt-md-4 pt-3">
+                            <div class="col-6 text-left">
+                                <button type="button" name="back_step2" id="back_step2" class="cancel_button" style="width: 150px;">Back</button>
+                            </div>
+                            <div class="col-6 text-right">
+                                <button type="button" name="finish_registration" id="finish_registration" class="orange_button" style="width: 150px;" tabindex="17">SUBMIT</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="modal-absfooter">
+            <div>&copy; 2020 PAYALT</div>
+            <div class="modalfootericons mt-3 mb-2">
+                <a href="https://www.linkedin.com/company/payalt" target="_blank"><img src="images/linkedin_icon.png"/></a>
+                <a href="https://www.instagram.com/payalt_official/" target="_blank"><img src="images/insta_icon.png"/></a>
+                <a href="https://www.facebook.com/payaltofficial/" target="_blank"><img src="images/fb_icon.png"/></a>
             </div>
         </div>
     </div>
@@ -334,7 +359,6 @@ All other feedback, comments, requests for technical support, and other communic
     <script src="js/fancybox/jquery.fancybox.js"></script>
     <script>
     jQuery(document).ready(function(){
-        
         jQuery(".terms_conditions").fancybox({
             title: "Terms & Conditions",
             titleShow: true,
@@ -342,10 +366,13 @@ All other feedback, comments, requests for technical support, and other communic
             autoDimensions: false,
             maxWidth: 600
         });
-
+        jQuery('#register_box').modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: true
+        });
         jQuery("#phone").mask('(000) 000-0000');
-        jQuery("#dob").mask("00/00/0000", {placeholder: 'MM/DD/YYYY'});
-
+        jQuery('.datepicker').datepicker();
         jQuery( ".txtOnly" ).keydown(function(e) {               
             var key = e.keyCode;        
             if(!((key == 8) || (key == 46) || (key >= 35 && key <= 40) || (key >= 65 && key <= 90)) && (key != 9) && (key != 32)) 
@@ -370,11 +397,70 @@ All other feedback, comments, requests for technical support, and other communic
             }        
         });      
     });
-    </script>
-    <link rel="stylesheet" type="text/css" href="css/register.css"/>
-    <script>
-    jQuery("#email").keyup(function(){
-        jQuery("#username").val(jQuery(this).val());
+
+
+    $(document).on("click","#back_login",function(e){
+        window.location.href="/login"
+    });
+    $(document).on("click","#next_step2",function(e){
+        var valid = $("#register_form").valid();
+        if(valid == true){
+            if($("#over_eighteen").prop("checked") == true){
+                $(".overeight").hide();
+                $(".progressBR1 .progressBR_progress").removeClass("progressBR_progress_half").addClass("progressBR_progress_full");
+                $(".progressBR2 .progressBR_progress").removeClass("progressBR_progress_full").addClass("progressBR_progress_half");
+
+                $(".personal_info_circle,.login_info_circle").removeClass("active");
+                $(".billing_info_circle").addClass("active");
+                $(".personal_info").hide();
+                $(".billing_info").show();
+            } else {
+                $(".overeight").show();
+            }
+        }
+    });
+    $(document).on("click","#next_step3",function(e){
+        var valid = $("#register_form").valid();
+        if(valid == true){
+            $(".progressBR2 .progressBR_progress").removeClass("progressBR_progress_half").addClass("progressBR_progress_full");
+            
+            $(".billing_info_circle,.personal_info_circle").removeClass("active");
+            $(".login_info_circle").addClass("active");
+            $(".billing_info").hide();
+            $(".login_info").show();
+        }
+    });
+    $(document).on("click","#finish_registration",function(e){
+        var valid = $("#register_form").valid();
+        if(valid == true){
+            if($("#accept_terms").prop("checked") == true){
+                $('.termmsg').hide();
+                $("#finish_registration").html("Processing...").attr("disabled",true);
+                $("#register_form").submit();                
+            } else {
+                $('.termmsg').show();
+            }
+        }
+    });
+    $(document).on("click","#back_step1",function(e){
+        $(".progressBR1 .progressBR_progress").removeClass("progressBR_progress_full").addClass("progressBR_progress_half");
+        $(".progressBR2 .progressBR_progress").removeClass("progressBR_progress_half");
+        
+        $(".billing_info_circle,.login_info_circle").removeClass("active");
+        $(".personal_info_circle").addClass("active");
+        $(".billing_info").hide();
+        $(".personal_info").show();    
+    });
+    $(document).on("click","#back_step2",function(e){
+        $(".progressBR2 .progressBR_progress").removeClass("progressBR_progress_full").addClass("progressBR_progress_half");
+        
+        $(".personal_info_circle,.login_info_circle").removeClass("active");    
+        $(".billing_info_circle").addClass("active");
+        $(".login_info").hide();
+        $(".billing_info").show();    
+    });
+    $("#register_form #email").keyup(function(){
+        $("#register_form #username").val($(this).val());
     });
     function is_int(value){ 
         if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) {
@@ -383,210 +469,25 @@ All other feedback, comments, requests for technical support, and other communic
             return false;
         }
     }
-    $(document).on("keyup change","#zipcode",function() {
-        var el = jQuery(this);
+    $(document).on("keyup change","#register_form #zipcode",function() {
+        var el = $(this);
         if ((el.val().length == 5) && (is_int(el.val()))) {
-            jQuery.ajax({
+            $.ajax({
                 url: "http://api.zippopotam.us/US/" + el.val(),
                 cache: false,
                 dataType: "json",
                 type: "GET",
                 success: function(result, success) {
                     var city_abbr = "place name";
-                    jQuery("#city").val(result.places[0][city_abbr]);
+                    $("#register_form #city").val(result.places[0][city_abbr]);
                     var state_abbr = "state abbreviation";
-                    jQuery("#state").val(result.places[0][state_abbr]);
-                    //jQuery('#state').select2().trigger('change');
+                    $("#register_form #state").val(result.places[0][state_abbr]);
                 },
                 error: function(result, success) {
-                    $(".zip-error").show(); /* Ruh row */
+                    
                 }
             });
         }
     });
-
-    $(document).on("click","#nextbtn1",function()
-    {
-        var check = 0;
-        $("#personinfo .reqfled").each(function(i) 
-        {
-            var ids = $(this).attr('id');
-            if($.trim($(this).val()) == "")
-            {
-                $('div[data-error='+ids+']').show();
-                check = 1;
-            }
-            else
-            {
-               $('div[data-error='+ids+']').hide(); 
-            }
-            if(ids == 'email' && $(this).val() != "")
-            {            
-                var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
-                var emailres = pattern.test($(this).val());
-                if(emailres == false)
-                {
-                  $('div[data-error='+ids+']').show();
-                  check = 1;  
-                }
-            }
-            if(ids == 'phone' && $(this).val() != "")
-            {
-                var ph = $(this).val().replace(/[^0-9]/gi, '');
-                if(ph.length < 10)
-                {
-                    $('div[data-error='+ids+']').show();
-                    check = 1;
-                }
-            }
-        });
-        if($(".regover:checked").val() == 'no')
-        {
-            check = 1;
-            $(".overeight").show();        
-        }
-        else
-        {
-            $(".overeight").hide();
-        }
-        if(check == 0)
-        {
-            $("#personinfo").addClass("focusout_anime");
-            $("#billinfo").addClass("focusin_anime");
-            $("#personinfo").hide();
-            $("#progressbar li:nth-child(2)").addClass('yelwcolor');       
-            $("#billinfo").show();
-             setTimeout(function()
-             { 
-                 $("#personinfo").removeClass("focusout_anime");
-                 $("#billinfo").removeClass("focusin_anime"); 
-             }, 800);
-        }
-    });
-
-    $(document).on("click","#nextbtn2",function()
-    {
-        var check = 0;
-        $("#billinfo .reqfled").each(function(i) 
-        {
-            var ids = $(this).attr('id');
-            if($.trim($(this).val()) == "")
-            {
-                $('div[data-error='+ids+']').show();
-                check = 1;
-            }
-            else
-            {
-               $('div[data-error='+ids+']').hide(); 
-            }
-            if(ids == 'zipcode' && $(this).val() != "")
-            {                       
-                if($(this).val().length < 5)
-                {
-                  $('div[data-error='+ids+']').show();
-                  check = 1;  
-                }
-            }
-        });
-        if(check == 0)
-        {
-            $("#billinfo").addClass("focusout_anime");
-            $("#logininfo").addClass("focusin_anime");
-            $("#personinfo").hide();        
-            $("#billinfo").hide();
-            $("#progressbar li").addClass('yelwcolor');     
-            $("#username").val($("#email").val());
-            $("#logininfo").show();
-            setTimeout(function()
-             { 
-                 $("#billinfo").removeClass("focusout_anime");
-                 $("#logininfo").removeClass("focusin_anime"); 
-             }, 800);
-        }
-    });
-
-    $(document).on("click","#submitbtnreg",function()
-    {    
-        var check = 0;
-        $("#logininfo .reqfled").each(function(i) 
-        {
-            var ids = $(this).attr('id');
-            if($.trim($(this).val()) == "")
-            {
-                $('div[data-error='+ids+']').show();
-                check = 1;
-            }
-            else
-            {
-               $('div[data-error='+ids+']').hide(); 
-            }
-            if(ids == 'reg-password' && $.trim($(this).val()) != "")
-            {                       
-                if($(this).val().length < 6)
-                {
-                    $('div[data-error='+ids+']').show();
-                    $('.passmsg1').show();
-                    check = 1;
-                }
-                else { $('.passmsg1').hide(); }
-            }
-            if(ids == 'reg-repassword' && $.trim($(this).val()) != "")
-            {
-                var cp = $("#reg-password").val();
-                var rcp = $("#reg-repassword").val();            
-                if($.trim(cp) != $.trim(rcp))
-                {
-                    $('div[data-error='+ids+']').show();
-                    $('.passmsg2').show();
-                    check = 1;
-                }
-                else { $('.passmsg2').hide(); }
-            }
-            if(ids == 'terms_all')
-            {
-                if($(this).prop("checked") !== true)
-                {
-                    $('div[data-error='+ids+']').show();
-                    $('.termmsg').show();
-                    check = 1;
-                }
-                else { $('.termmsg').hide(); }
-            }
-        });
-        if(check == 0)
-        {
-            $("#msform").submit();
-        }
-    });
-
-    $(document).on('click',"#backbtn2",function()
-    {       
-        $("#billinfo").removeClass("focusin_anime").addClass("focusout_anime");
-        $("#personinfo").removeClass("focusout_anime").addClass("focusin_anime");        
-        $("#progressbar li:nth-child(2)").removeClass('yelwcolor');        
-        $("#billinfo").hide();
-        $("#logininfo").hide();
-        $("#personinfo").show();  
-        setTimeout(function()
-        { 
-            $("#personinfo").removeClass("focusin_anime");
-            $("#billinfo").removeClass("focusout_anime");
-        }, 800);
-    });
-
-    $(document).on('click',"#backbtn3",function()
-    {               
-        $("#billinfo").removeClass("focusout_anime").addClass("focusin_anime"); 
-        $("#logininfo").removeClass("focusin_anime").addClass("focusout_anime");
-        $("#progressbar li:nth-child(3)").removeClass('yelwcolor');
-        $("#logininfo").hide();
-        $("#personinfo").hide(); 
-        $("#billinfo").show();
-        setTimeout(function()
-        { 
-            $("#billinfo").removeClass("focusin_anime");
-            $("#logininfo").removeClass("focusout_anime"); 
-        }, 800);
-    });
     </script>
-    <% include layout/footer %>
+    <% include layout/login_footer %>

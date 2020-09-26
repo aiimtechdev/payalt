@@ -200,17 +200,18 @@ $(document).ready(function(){
     /** REMEMBER ME FUNCTIONALITY **/
     $("#terms_condition").attr("href",site_url+"/terms_conditions?raw=1");
 
-    $('#login_box,#register_box,#forgot_box').modal({
+    /*$('#login_box,#register_box,#forgot_box').modal({
         backdrop: 'static',
         keyboard: false,
         show: false
-    });
+    });*/
     if(typeof logged_user_id != 'undefined' && logged_user_id != '' && logged_user_id != null){
         $("#show_logged_users").css("visibility","visible");
         loadBalance(logged_user_id);
     }else{
         $("#show_logged_users").css("visibility","hidden");
-        $("#login_box").modal("show");
+        //$("#login_box").modal("show");
+        $("#login_box").show();
     }
 	if(logged_user_id != '' && logged_user_id != null){
         getUserTransactions();
